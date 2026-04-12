@@ -1,0 +1,73 @@
+export const MOCK_USER = {
+  id: '1',
+  username: 'alexforge',
+  full_name: 'Alex Samoilov',
+  avatar_url: null,
+  bio: 'Building Forge. Lift. Drive. Live well.',
+  city: 'Russia',
+  car: 'Land Cruiser 200',
+  sports: ['gym', 'tennis', 'padel'],
+};
+
+export const MOCK_POSTS = [
+  {
+    id: '1',
+    author: {
+      username: 'alexforge',
+      full_name: 'Alex Samoilov',
+      avatar_url: null,
+    },
+    image_url: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
+    caption: 'New PR today. 100kg bench. Six months of grinding. No shortcuts.',
+    category: 'gym' as const,
+    created_at: '2h ago',
+    likes_count: 24,
+    comments_count: 5,
+    is_liked: false,
+  },
+  {
+    id: '2',
+    author: {
+      username: 'dmitry_v',
+      full_name: 'Dmitry Volkov',
+      avatar_url: null,
+    },
+    image_url: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&q=80',
+    caption: 'Sunday detailing session. 4 hours. Worth every minute.',
+    category: 'cars' as const,
+    created_at: '5h ago',
+    likes_count: 47,
+    comments_count: 12,
+    is_liked: true,
+  },
+  {
+    id: '3',
+    author: {
+      username: 'mark_t',
+      full_name: 'Mark Torres',
+      avatar_url: null,
+    },
+    image_url: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80',
+    caption: 'Morning padel with the boys. Started the week right.',
+    category: 'sport' as const,
+    created_at: '8h ago',
+    likes_count: 31,
+    comments_count: 8,
+    is_liked: false,
+  },
+  {
+    id: '4',
+    author: {
+      username: 'ivan_k',
+      full_name: 'Ivan Korolev',
+      avatar_url: null,
+    },
+    image_url: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800&q=80',
+    caption: 'Finally picked her up. Dream since I was 15.',
+    category: 'cars' as const,
+    created_at: '1d ago',
+    likes_count: 156,
+    comments_count: 43,
+    is_liked: true,
+  },
+];

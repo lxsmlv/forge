@@ -1,65 +1,132 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export default function Home() {
+  const [hit, setHit] = useState(false);
+  const [showContent, setShowContent] = useState(false);
+  const [showInviteInput, setShowInviteInput] = useState(false);
+  const [inviteCode, setInviteCode] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleAnimationEnd = () => {
+    setHit(true);
+    setTimeout(() => setShowContent(true), 600);
+  };
+
+  const handleEnterClick = () => {
+    setShowInviteInput(true);
+  };
+
+  const handleSubmitCode = async () => {
+    if (!inviteCode.trim()) {
+      setError('Enter your invite code');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    await new Promise((r) => setTimeout(r, 600));
+
+    if (inviteCode.trim() === '000000') {
+      window.location.href = '/signup?code=' + encodeURIComponent(inviteCode.trim());
+    } else {
+      setError('Invalid invite code');
+      setLoading(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') handleSubmitCode();
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+    <div className="flex min-h-screen flex-col items-center justify-center bg-black text-white overflow-hidden">
+      <div className="relative flex flex-col items-center gap-8 px-6 text-center w-full">
+
+        {/* FORGE with anvil drop */}
+        <div className="relative w-full">
+          <div className={hit ? '' : 'animate-anvil-drop'} onAnimationEnd={handleAnimationEnd}>
+            <h1
+              className={`text-[14vw] leading-none tracking-[0.2em] transition-all duration-150 ${
+                hit ? 'text-white drop-shadow-[0_0_40px_rgba(168,85,247,0.5)]' : 'text-zinc-300'
+              }`}
+              style={{ fontFamily: 'var(--font-display)' }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              FORGE
+            </h1>
+          </div>
+
+          {/* Impact lines */}
+          {hit && (
+            <div className="absolute -bottom-1 left-0 right-0 flex justify-center pointer-events-none">
+              <div className="w-full max-w-[80vw] h-[2px] bg-gradient-to-r from-transparent via-purple-500 to-transparent animate-impact-line" />
+            </div>
+          )}
+          {hit && (
+            <div className="absolute bottom-[-5px] left-0 right-0 flex justify-center pointer-events-none">
+              <div className="w-full max-w-[60vw] h-[1px] bg-gradient-to-r from-transparent via-purple-400/40 to-transparent animate-impact-line" />
+            </div>
+          )}
+        </div>
+
+        {/* Content after impact */}
+        <div
+          className={`flex flex-col items-center gap-6 transition-all duration-700 ${
+            showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          }`}
+        >
+          <p className="text-[2.2vw] text-zinc-500 tracking-[0.15em]">
+            Private club for men who lift, drive, and live well.
+          </p>
+
+          {/* Invite code input or button */}
+          {!showInviteInput ? (
+            <Button
+              size="lg"
+              onClick={handleEnterClick}
+              className="bg-purple-600 hover:bg-purple-500 text-white font-bold px-8 shadow-[0_0_25px_rgba(147,51,234,0.4)] hover:shadow-[0_0_40px_rgba(147,51,234,0.6)] transition-all duration-300"
             >
-              Learning
-            </a>{" "}
-            center.
+              Enter with invite code
+            </Button>
+          ) : (
+            <div className="flex flex-col items-center gap-3 animate-in fade-in duration-300">
+              <div className="flex gap-2">
+                <Input
+                  type="text"
+                  placeholder="INVITE CODE"
+                  value={inviteCode}
+                  onChange={(e) => {
+                    setInviteCode(e.target.value.toUpperCase());
+                    setError('');
+                  }}
+                  onKeyDown={handleKeyDown}
+                  autoFocus
+                  className="w-64 bg-zinc-900 border-zinc-800 text-white text-center tracking-[0.3em] placeholder:text-zinc-600 placeholder:tracking-[0.3em] focus:border-purple-600 focus:ring-purple-600/30"
+                />
+                <Button
+                  onClick={handleSubmitCode}
+                  disabled={loading}
+                  className="bg-purple-600 hover:bg-purple-500 text-white font-bold px-6 shadow-[0_0_25px_rgba(147,51,234,0.4)] transition-all duration-300 disabled:opacity-50"
+                >
+                  {loading ? '...' : 'GO'}
+                </Button>
+              </div>
+              {error && (
+                <p className="text-red-500 text-sm animate-in fade-in duration-200">{error}</p>
+              )}
+            </div>
+          )}
+
+          <p className="text-sm text-zinc-700">
+            Invite only. No exceptions.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
     </div>
   );
 }

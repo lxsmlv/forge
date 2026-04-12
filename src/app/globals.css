@@ -128,3 +128,65 @@
     @apply font-sans;
   }
 }
+
+/* Forge anvil drop animation */
+@keyframes anvil-drop {
+  0% {
+    transform: translateY(-400px) scale(1.1);
+    opacity: 0;
+  }
+  30% {
+    transform: translateY(-400px) scale(1.1);
+    opacity: 0;
+  }
+  45% {
+    opacity: 1;
+  }
+  78% {
+    transform: translateY(10px) scale(1.03);
+    opacity: 1;
+  }
+  88% {
+    transform: translateY(-6px) scale(1);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-anvil-drop {
+  animation: anvil-drop 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Sparks flying with custom direction */
+@keyframes spark-move {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx, 100px), var(--dy, -60px)) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Impact glow line */
+@keyframes impact-line {
+  0% {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  20% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleX(1);
+  }
+}
+
+.animate-impact-line {
+  animation: impact-line 1s ease-out forwards;
+}
