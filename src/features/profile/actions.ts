@@ -8,44 +8,28 @@ export async function getMyProfile() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
-    .single();
-
-  if (!profile) return null;
-
-  const { count: postsCount } = await supabase
-    .from('posts')
-    .select('*', { count: 'exact', head: true })
-    .eq('author_id', user.id);
-
-  const { count: followersCount } = await supabase
-    .from('follows')
-    .select('*', { count: 'exact', head: true })
-    .eq('following_id', user.id);
-
-  const { count: followingCount } = await supabase
-    .from('follows')
-    .select('*', { count: 'exact', head: true })
-    .eq('follower_id', user.id);
-
-  const { count: workoutsCount } = await supabase
-    .from('workouts')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id);
-
-  const { data: myPosts } = await supabase
-    .from('posts')
-    .select(`
+  const [
+    { data: profile },
+    { count: postsCount },
+    { count: followersCount },
+    { count: followingCount },
+    { count: workoutsCount },
+    { data: myPosts },
+  ] = await Promise.all([
+    supabase.from('profiles').select('*').eq('id', user.id).single(),
+    supabase.from('posts').select('*', { count: 'exact', head: true }).eq('author_id', user.id),
+    supabase.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', user.id),
+    supabase.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', user.id),
+    supabase.from('workouts').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
+    supabase.from('posts').select(`
       id, image_url, caption, category, created_at,
       author:profiles!author_id (username, full_name, avatar_url),
       likes (user_id),
       comments (id)
-    `)
-    .eq('author_id', user.id)
-    .order('created_at', { ascending: false });
+    `).eq('author_id', user.id).order('created_at', { ascending: false }),
+  ]);
+
+  if (!profile) return null;
 
   const posts = (myPosts || []).map((post: any) => ({
     id: post.id,
@@ -79,11 +63,7 @@ export async function updateProfile(data: {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return;
 
-  await supabase
-    .from('profiles')
-    .update(data)
-    .eq('id', user.id);
-
+  await supabase.from('profiles').update(data).eq('id', user.id);
   revalidatePath('/profile');
 }
 
@@ -108,10 +88,7 @@ export async function uploadAvatar(formData: FormData) {
     .from('posts')
     .getPublicUrl(fileName);
 
-  await supabase
-    .from('profiles')
-    .update({ avatar_url: publicUrl })
-    .eq('id', user.id);
+  await supabase.from('profiles').update({ avatar_url: publicUrl }).eq('id', user.id);
 
   revalidatePath('/profile');
   revalidatePath('/feed');

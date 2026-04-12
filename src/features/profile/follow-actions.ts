@@ -15,52 +15,31 @@ export async function getProfileByUsername(username: string) {
 
   if (!profile) return null;
 
-  const { count: postsCount } = await supabase
-    .from('posts')
-    .select('*', { count: 'exact', head: true })
-    .eq('author_id', profile.id);
-
-  const { count: followersCount } = await supabase
-    .from('follows')
-    .select('*', { count: 'exact', head: true })
-    .eq('following_id', profile.id);
-
-  const { count: followingCount } = await supabase
-    .from('follows')
-    .select('*', { count: 'exact', head: true })
-    .eq('follower_id', profile.id);
-
-  const { count: workoutsCount } = await supabase
-    .from('workouts')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', profile.id);
-
-  let is_following = false;
-  let is_own = false;
-
-  if (user) {
-    is_own = user.id === profile.id;
-    if (!is_own) {
-      const { data: follow } = await supabase
-        .from('follows')
-        .select('id')
-        .eq('follower_id', user.id)
-        .eq('following_id', profile.id)
-        .maybeSingle();
-      is_following = !!follow;
-    }
-  }
-
-  const { data: posts } = await supabase
-    .from('posts')
-    .select(`
+  const [
+    { count: postsCount },
+    { count: followersCount },
+    { count: followingCount },
+    { count: workoutsCount },
+    { data: posts },
+    followCheck,
+  ] = await Promise.all([
+    supabase.from('posts').select('*', { count: 'exact', head: true }).eq('author_id', profile.id),
+    supabase.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', profile.id),
+    supabase.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', profile.id),
+    supabase.from('workouts').select('*', { count: 'exact', head: true }).eq('user_id', profile.id),
+    supabase.from('posts').select(`
       id, image_url, caption, category, created_at,
       author:profiles!author_id (username, full_name, avatar_url),
       likes (user_id),
       comments (id)
-    `)
-    .eq('author_id', profile.id)
-    .order('created_at', { ascending: false });
+    `).eq('author_id', profile.id).order('created_at', { ascending: false }),
+    user && user.id !== profile.id
+      ? supabase.from('follows').select('id').eq('follower_id', user.id).eq('following_id', profile.id).maybeSingle()
+      : Promise.resolve({ data: null }),
+  ]);
+
+  const is_own = user ? user.id === profile.id : false;
+  const is_following = !!followCheck?.data;
 
   const formattedPosts = (posts || []).map((post: any) => ({
     id: post.id,
