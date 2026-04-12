@@ -138,6 +138,10 @@ export default function Home() {
           <p className="text-sm text-zinc-700">
             Invite only. No exceptions.
           </p>
+
+          <a href="/login" className="text-xs text-zinc-600 hover:text-purple-400 transition-colors">
+            Already a member? Sign in
+          </a>
         </div>
       </div>
     </div>
