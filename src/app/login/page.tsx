@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
+import Link from 'next/link';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -108,9 +109,9 @@ export default function Login() {
           </Button>
         </div>
 
-        <a href="/" className="text-xs text-zinc-600 hover:text-purple-400 transition-colors">
+        <Link href="/" className="text-xs text-zinc-600 hover:text-purple-400 transition-colors">
           Don't have an account? Enter with invite code
-        </a>
+        </Link>
       </div>
     </div>
   );

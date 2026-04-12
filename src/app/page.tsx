@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
+import Link from 'next/link';
 
 export default function Home() {
   const [hit, setHit] = useState(false);
@@ -139,9 +140,9 @@ export default function Home() {
             Invite only. No exceptions.
           </p>
 
-          <a href="/login" className="text-xs text-zinc-600 hover:text-purple-400 transition-colors">
+          <Link href="/login" className="text-xs text-zinc-600 hover:text-purple-400 transition-colors">
             Already a member? Sign in
-          </a>
+          </Link>
         </div>
       </div>
     </div>

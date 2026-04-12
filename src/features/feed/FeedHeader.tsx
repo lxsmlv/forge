@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { User } from 'lucide-react';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 
 export function FeedHeader() {
@@ -31,13 +32,13 @@ export function FeedHeader() {
         >
           FORGE
         </h1>
-        <a href="/profile" className="h-9 w-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-purple-600/50 transition-colors overflow-hidden">
+        <Link href="/profile" className="h-9 w-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-purple-600/50 transition-colors overflow-hidden">
           {avatarUrl ? (
             <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
           ) : (
             <User className="w-4 h-4 text-zinc-400" />
           )}
-        </a>
+        </Link>
       </div>
     </header>
   );

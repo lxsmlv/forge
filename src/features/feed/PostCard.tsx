@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react';
 import { Heart, MessageCircle, Trash2, MoreVertical } from 'lucide-react';
 import { toggleLike, deletePost } from './actions';
 import { CommentsSheet } from './CommentsSheet';
+import Link from 'next/link';
 
 interface PostProps {
   id: string;
@@ -50,17 +51,17 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
     <>
       <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl overflow-hidden">
         <div className="flex items-center gap-3 px-4 py-3">
-          <a href={`/profile/${post.author.username}`} className="h-10 w-10 rounded-full bg-purple-600/20 border border-purple-600/30 flex items-center justify-center text-sm font-bold text-purple-400 hover:border-purple-500 transition-colors overflow-hidden">
+          <Link href={`/profile/${post.author.username}`} className="h-10 w-10 rounded-full bg-purple-600/20 border border-purple-600/30 flex items-center justify-center text-sm font-bold text-purple-400 hover:border-purple-500 transition-colors overflow-hidden">
             {post.author.avatar_url ? (
               <img src={post.author.avatar_url} alt="" className="w-full h-full object-cover" />
             ) : (
               initials
             )}
-          </a>
-          <a href={`/profile/${post.author.username}`} className="flex-1 hover:opacity-80 transition-opacity">
+          </Link>
+          <Link href={`/profile/${post.author.username}`} className="flex-1 hover:opacity-80 transition-opacity">
             <p className="text-sm font-semibold text-white">{post.author.full_name}</p>
             <p className="text-xs text-zinc-600">@{post.author.username} · {post.created_at}</p>
-          </a>
+          </Link>
           <div className="flex items-center gap-2">
             <span className="text-xs text-zinc-700 bg-zinc-900 px-2 py-1 rounded-full uppercase tracking-wider">
               {post.category}
