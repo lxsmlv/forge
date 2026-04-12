@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { createClient } from '@/lib/supabase/client';
 
 export default function Home() {
   const [hit, setHit] = useState(false);
@@ -30,14 +31,26 @@ export default function Home() {
     setLoading(true);
     setError('');
 
-    await new Promise((r) => setTimeout(r, 600));
+    const supabase = createClient();
+    const { data, error: dbError } = await supabase
+      .from('invite_codes')
+      .select('id, used_by')
+      .eq('code', inviteCode.trim())
+      .maybeSingle();
 
-    if (inviteCode.trim() === '000000') {
-      window.location.href = '/signup?code=' + encodeURIComponent(inviteCode.trim());
-    } else {
+    if (dbError || !data) {
       setError('Invalid invite code');
       setLoading(false);
+      return;
     }
+
+    if (data.used_by) {
+      setError('This code has already been used');
+      setLoading(false);
+      return;
+    }
+
+    window.location.href = '/signup?code=' + encodeURIComponent(inviteCode.trim());
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

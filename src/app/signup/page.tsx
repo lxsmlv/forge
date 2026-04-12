@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { createClient } from '@/lib/supabase/client';
 
-export default function SignUp() {
+function SignUpForm() {
   const searchParams = useSearchParams();
   const inviteCode = searchParams.get('code') || '';
 
@@ -32,16 +33,46 @@ export default function SignUp() {
       setError('Password must be at least 6 characters');
       return;
     }
+    if (form.username.length < 3) {
+      setError('Username must be at least 3 characters');
+      return;
+    }
 
     setLoading(true);
     setError('');
 
-    // TODO: регистрация через Supabase Auth
-    // TODO: сохранение профиля в таблицу users
-    // TODO: пометить invite code как использованный
-    await new Promise((r) => setTimeout(r, 1000));
+    const res = await fetch('/api/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: form.email,
+        password: form.password,
+        username: form.username,
+        full_name: form.full_name,
+        invite_code: inviteCode,
+      }),
+    });
 
-    // Пока заглушка — редирект на будущую ленту
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.error || 'Something went wrong');
+      setLoading(false);
+      return;
+    }
+
+    const supabase = createClient();
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: form.email,
+      password: form.password,
+    });
+
+    if (signInError) {
+      setError(signInError.message);
+      setLoading(false);
+      return;
+    }
+
     window.location.href = '/feed';
   };
 
@@ -52,8 +83,6 @@ export default function SignUp() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-black text-white">
       <div className="flex flex-col items-center gap-8 px-6 w-full max-w-md">
-
-        {/* Logo */}
         <h1
           className="text-5xl tracking-[0.2em] text-white drop-shadow-[0_0_30px_rgba(168,85,247,0.4)]"
           style={{ fontFamily: 'var(--font-display)' }}
@@ -65,7 +94,6 @@ export default function SignUp() {
           Your invite code: <span className="text-purple-400 tracking-widest">{inviteCode}</span>
         </p>
 
-        {/* Form */}
         <div className="flex flex-col gap-4 w-full" onKeyDown={handleKeyDown}>
           <Input
             type="text"
@@ -114,5 +142,13 @@ export default function SignUp() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function SignUp() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-black" />}>
+      <SignUpForm />
+    </Suspense>
   );
 }
