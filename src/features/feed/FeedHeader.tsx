@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { User } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import { SearchBar } from './SearchBar';
 
 export function FeedHeader() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
@@ -32,13 +33,16 @@ export function FeedHeader() {
         >
           FORGE
         </h1>
-        <Link href="/profile" className="h-9 w-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-purple-600/50 transition-colors overflow-hidden">
-          {avatarUrl ? (
-            <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
-          ) : (
-            <User className="w-4 h-4 text-zinc-400" />
-          )}
-        </Link>
+        <div className="flex items-center gap-2">
+          <SearchBar />
+          <Link href="/profile" className="h-9 w-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-purple-600/50 transition-colors overflow-hidden">
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <User className="w-4 h-4 text-zinc-400" />
+            )}
+          </Link>
+        </div>
       </div>
     </header>
   );

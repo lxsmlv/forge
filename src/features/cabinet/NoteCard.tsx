@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, Circle, Car, Dumbbell, User, FileText } from 'lucide-react';
+import { Check, Circle, Car, Dumbbell, User, FileText, Trash2 } from 'lucide-react';
 
 interface NoteProps {
   id: string;
@@ -10,6 +10,7 @@ interface NoteProps {
   is_done: boolean;
   due_date: string | null;
   onToggle: (id: string) => void;
+  onDelete: (id: string) => void;
 }
 
 const CATEGORY_CONFIG = {
@@ -19,7 +20,7 @@ const CATEGORY_CONFIG = {
   general: { icon: FileText, color: 'text-zinc-400', bg: 'bg-zinc-400/10', border: 'border-zinc-400/30' },
 };
 
-export function NoteCard({ id, title, text, category, is_done, due_date, onToggle }: NoteProps) {
+export function NoteCard({ id, title, text, category, is_done, due_date, onToggle, onDelete }: NoteProps) {
   const config = CATEGORY_CONFIG[category];
   const Icon = config.icon;
 
@@ -59,6 +60,10 @@ export function NoteCard({ id, title, text, category, is_done, due_date, onToggl
             <p className={`text-xs mt-1 ${is_done ? 'text-zinc-700' : 'text-zinc-600'}`}>📅 {due_date}</p>
           )}
         </div>
+
+        <button onClick={() => onDelete(id)} className="shrink-0 text-zinc-800 hover:text-red-400 transition-colors">
+          <Trash2 className="w-4 h-4" />
+        </button>
       </div>
     </div>
   );

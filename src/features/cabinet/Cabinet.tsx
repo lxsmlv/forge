@@ -3,7 +3,7 @@
 import { useState, useEffect, useTransition } from 'react';
 import { NoteCard } from './NoteCard';
 import { WorkoutCard } from './WorkoutCard';
-import { getNotes, createNote, toggleNote, getWorkouts, createWorkout } from './actions';
+import { getNotes, createNote, toggleNote, deleteNote, getWorkouts, createWorkout } from './actions';
 import { Plus, StickyNote, Dumbbell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -52,6 +52,13 @@ export function Cabinet() {
       await toggleNote(noteId);
       const updated = await getNotes();
       setNotes(updated);
+    });
+  };
+
+  const handleDeleteNote = (noteId: string) => {
+    setNotes(notes.filter((n) => n.id !== noteId));
+    startTransition(async () => {
+      await deleteNote(noteId);
     });
   };
 
@@ -176,7 +183,7 @@ export function Cabinet() {
             </div>
           ) : (
             notes.map((note) => (
-              <NoteCard key={note.id} {...note} onToggle={handleToggleNote} />
+              <NoteCard key={note.id} {...note} onToggle={handleToggleNote} onDelete={handleDeleteNote} />
             ))
           )}
         </div>
