@@ -23,7 +23,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid invite code' }, { status: 400 });
   }
 
-  if (invite.used_by) {
+  // Master code 000000 is reusable, other codes are single-use
+  if (invite.used_by && invite_code !== '000000') {
     return NextResponse.json({ error: 'Invite code already used' }, { status: 400 });
   }
 

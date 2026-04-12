@@ -44,7 +44,7 @@ export default function Home() {
       return;
     }
 
-    if (data.used_by) {
+    if (data.used_by && inviteCode.trim() !== '000000') {
       setError('This code has already been used');
       setLoading(false);
       return;

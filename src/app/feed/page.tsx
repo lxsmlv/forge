@@ -1,17 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PostCard } from '@/features/feed/PostCard';
 import { Cabinet } from '@/features/cabinet/Cabinet';
-import { MOCK_POSTS } from '@/shared/constants/mock-data';
+import { getPosts } from '@/features/feed/actions';
 import { Plus, User, Home, PenSquare } from 'lucide-react';
 
 export default function Feed() {
   const [activeTab, setActiveTab] = useState<'feed' | 'cabinet'>('feed');
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getPosts().then((data) => {
+      setPosts(data);
+      setLoading(false);
+    });
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Header */}
       <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800/50">
         <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
           <h1
@@ -20,15 +28,12 @@ export default function Feed() {
           >
             FORGE
           </h1>
-          <div className="flex items-center gap-2">
-            <a href="/profile" className="h-9 w-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-purple-600/50 transition-colors">
-              <User className="w-4 h-4 text-zinc-400" />
-            </a>
-          </div>
+          <a href="/profile" className="h-9 w-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-purple-600/50 transition-colors">
+            <User className="w-4 h-4 text-zinc-400" />
+          </a>
         </div>
       </header>
 
-      {/* Tab switcher */}
       <div className="max-w-lg mx-auto px-4 pt-4">
         <div className="flex gap-1 bg-zinc-950 rounded-lg p-1 border border-zinc-800/50">
           <button
@@ -56,20 +61,29 @@ export default function Feed() {
         </div>
       </div>
 
-      {/* Content */}
       <main className="max-w-lg mx-auto px-4 py-4">
         {activeTab === 'feed' ? (
-          <div className="flex flex-col gap-4">
-            {MOCK_POSTS.map((post) => (
-              <PostCard key={post.id} post={post} />
-            ))}
-          </div>
+          loading ? (
+            <div className="flex justify-center py-20">
+              <div className="h-8 w-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : posts.length > 0 ? (
+            <div className="flex flex-col gap-4">
+              {posts.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center py-20 text-zinc-600">
+              <p className="text-lg font-medium text-zinc-500">No posts yet</p>
+              <p className="text-sm text-zinc-700 mt-1">Be the first to share something</p>
+            </div>
+          )
         ) : (
           <Cabinet />
         )}
       </main>
 
-      {/* FAB — Create post */}
       <a
         href="/create"
         className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-purple-600 hover:bg-purple-500 shadow-[0_0_30px_rgba(147,51,234,0.5)] hover:shadow-[0_0_40px_rgba(147,51,234,0.7)] flex items-center justify-center transition-all duration-300 active:scale-95"

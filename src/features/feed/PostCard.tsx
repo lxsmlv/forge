@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { Heart, MessageCircle } from 'lucide-react';
+import { toggleLike } from './actions';
 
 interface PostProps {
+  id: string;
   author: {
     username: string;
     full_name: string;
@@ -21,21 +23,25 @@ interface PostProps {
 export function PostCard({ post }: { post: PostProps }) {
   const [liked, setLiked] = useState(post.is_liked);
   const [likesCount, setLikesCount] = useState(post.likes_count);
+  const [isPending, startTransition] = useTransition();
 
-  const toggleLike = () => {
+  const handleLike = () => {
     setLiked(!liked);
     setLikesCount(liked ? likesCount - 1 : likesCount + 1);
+    startTransition(() => {
+      toggleLike(post.id);
+    });
   };
 
   const initials = post.author.full_name
     .split(' ')
     .map((n) => n[0])
     .join('')
-    .toUpperCase();
+    .toUpperCase()
+    .slice(0, 2);
 
   return (
     <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl overflow-hidden">
-      {/* Author header */}
       <div className="flex items-center gap-3 px-4 py-3">
         <div className="h-10 w-10 rounded-full bg-purple-600/20 border border-purple-600/30 flex items-center justify-center text-sm font-bold text-purple-400">
           {initials}
@@ -49,7 +55,6 @@ export function PostCard({ post }: { post: PostProps }) {
         </span>
       </div>
 
-      {/* Image */}
       <div className="relative aspect-[4/3] bg-zinc-900">
         <img
           src={post.image_url}
@@ -58,9 +63,8 @@ export function PostCard({ post }: { post: PostProps }) {
         />
       </div>
 
-      {/* Actions */}
       <div className="px-4 py-3 flex items-center gap-5">
-        <button onClick={toggleLike} className="flex items-center gap-1.5 group">
+        <button onClick={handleLike} disabled={isPending} className="flex items-center gap-1.5 group">
           <Heart
             className={`w-5 h-5 transition-all ${
               liked
@@ -78,13 +82,14 @@ export function PostCard({ post }: { post: PostProps }) {
         </button>
       </div>
 
-      {/* Caption */}
-      <div className="px-4 pb-4">
-        <p className="text-sm text-zinc-300">
-          <span className="font-semibold text-white mr-1.5">@{post.author.username}</span>
-          {post.caption}
-        </p>
-      </div>
+      {post.caption && (
+        <div className="px-4 pb-4">
+          <p className="text-sm text-zinc-300">
+            <span className="font-semibold text-white mr-1.5">@{post.author.username}</span>
+            {post.caption}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
