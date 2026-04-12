@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Heart, MessageCircle } from 'lucide-react';
-import { toggleLike } from './actions';
+import { Heart, MessageCircle, Trash2, MoreVertical } from 'lucide-react';
+import { toggleLike, deletePost } from './actions';
 import { CommentsSheet } from './CommentsSheet';
 
 interface PostProps {
@@ -21,27 +21,30 @@ interface PostProps {
   is_liked: boolean;
 }
 
-export function PostCard({ post }: { post: PostProps }) {
+export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () => void }) {
   const [liked, setLiked] = useState(post.is_liked);
   const [likesCount, setLikesCount] = useState(post.likes_count);
   const [commentsCount, setCommentsCount] = useState(post.comments_count);
   const [showComments, setShowComments] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const handleLike = () => {
     setLiked(!liked);
     setLikesCount(liked ? likesCount - 1 : likesCount + 1);
-    startTransition(() => {
-      toggleLike(post.id);
+    startTransition(() => { toggleLike(post.id); });
+  };
+
+  const handleDelete = () => {
+    if (!confirm('Delete this post?')) return;
+    startTransition(async () => {
+      await deletePost(post.id);
+      onDeleted?.();
     });
   };
 
   const initials = post.author.full_name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
+    .split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
 
   return (
     <>
@@ -54,9 +57,26 @@ export function PostCard({ post }: { post: PostProps }) {
             <p className="text-sm font-semibold text-white">{post.author.full_name}</p>
             <p className="text-xs text-zinc-600">@{post.author.username} · {post.created_at}</p>
           </a>
-          <span className="text-xs text-zinc-700 bg-zinc-900 px-2 py-1 rounded-full uppercase tracking-wider">
-            {post.category}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-zinc-700 bg-zinc-900 px-2 py-1 rounded-full uppercase tracking-wider">
+              {post.category}
+            </span>
+            <div className="relative">
+              <button onClick={() => setShowMenu(!showMenu)} className="text-zinc-700 hover:text-zinc-400 transition-colors">
+                <MoreVertical className="w-4 h-4" />
+              </button>
+              {showMenu && (
+                <div className="absolute right-0 top-6 bg-zinc-900 border border-zinc-800 rounded-lg shadow-lg z-10 py-1 min-w-[120px]">
+                  <button
+                    onClick={() => { setShowMenu(false); handleDelete(); }}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-zinc-800 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" /> Delete
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="relative aspect-[4/3] bg-zinc-900">

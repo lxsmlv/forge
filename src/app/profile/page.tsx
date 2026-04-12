@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { getMyProfile, updateProfile } from '@/features/profile/actions';
+import { useState, useEffect, useRef } from 'react';
+import { getMyProfile, updateProfile, uploadAvatar } from '@/features/profile/actions';
 import { PostCard } from '@/features/feed/PostCard';
 import { ArrowLeft, Settings, Car, Dumbbell, MapPin, Edit3, Check, LogOut } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -19,6 +19,7 @@ export default function Profile() {
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState({ bio: '', city: '', car: '', sports: [] as string[] });
   const [activeTab, setActiveTab] = useState<'posts' | 'stats'>('posts');
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     getMyProfile().then((data) => {
@@ -85,9 +86,28 @@ export default function Profile() {
 
       <main className="max-w-lg mx-auto px-4 py-6">
         <div className="flex flex-col items-center gap-4 mb-8">
-          <div className="h-24 w-24 rounded-full bg-purple-600/20 border-2 border-purple-600/40 flex items-center justify-center">
-            <span className="text-3xl font-bold text-purple-400">{initials}</span>
-          </div>
+          <button onClick={() => avatarInputRef.current?.click()} className="relative group">
+            <div className="h-24 w-24 rounded-full bg-purple-600/20 border-2 border-purple-600/40 flex items-center justify-center overflow-hidden">
+              {profile.avatar_url ? (
+                <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-3xl font-bold text-purple-400">{initials}</span>
+              )}
+            </div>
+            <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <Edit3 className="w-5 h-5 text-white" />
+            </div>
+          </button>
+          <input ref={avatarInputRef} type="file" accept="image/*" className="hidden" onChange={async (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const fd = new FormData();
+            fd.append('avatar', file);
+            const result = await uploadAvatar(fd);
+            if (result?.url) {
+              setProfile({ ...profile, avatar_url: result.url + '?t=' + Date.now() });
+            }
+          }} />
 
           <div className="text-center">
             <h2 className="text-xl font-bold text-white">{profile.full_name}</h2>

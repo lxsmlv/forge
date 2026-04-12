@@ -87,6 +87,37 @@ export async function updateProfile(data: {
   revalidatePath('/profile');
 }
 
+export async function uploadAvatar(formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: 'Not authenticated' };
+
+  const file = formData.get('avatar') as File;
+  if (!file || file.size === 0) return { error: 'No file' };
+
+  const ext = file.name.split('.').pop();
+  const fileName = `${user.id}/avatar.${ext}`;
+
+  const { error: uploadError } = await supabase.storage
+    .from('posts')
+    .upload(fileName, file, { upsert: true });
+
+  if (uploadError) return { error: uploadError.message };
+
+  const { data: { publicUrl } } = supabase.storage
+    .from('posts')
+    .getPublicUrl(fileName);
+
+  await supabase
+    .from('profiles')
+    .update({ avatar_url: publicUrl })
+    .eq('id', user.id);
+
+  revalidatePath('/profile');
+  revalidatePath('/feed');
+  return { url: publicUrl };
+}
+
 function formatTimeAgo(dateStr: string): string {
   const now = new Date();
   const date = new Date(dateStr);

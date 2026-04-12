@@ -3,29 +3,34 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 
-export async function getPosts() {
+export async function getPosts(mode: 'all' | 'following' = 'all') {
   const supabase = await createClient();
-
   const { data: { user } } = await supabase.auth.getUser();
 
-  const { data: posts, error } = await supabase
+  let query = supabase
     .from('posts')
     .select(`
-      id,
-      image_url,
-      caption,
-      category,
-      created_at,
-      author:profiles!author_id (
-        username,
-        full_name,
-        avatar_url
-      ),
+      id, image_url, caption, category, created_at, author_id,
+      author:profiles!author_id (username, full_name, avatar_url),
       likes (user_id),
       comments (id)
     `)
     .order('created_at', { ascending: false })
     .limit(50);
+
+  if (mode === 'following' && user) {
+    const { data: follows } = await supabase
+      .from('follows')
+      .select('following_id')
+      .eq('follower_id', user.id);
+
+    const followingIds = (follows || []).map((f) => f.following_id);
+    followingIds.push(user.id);
+
+    query = query.in('author_id', followingIds);
+  }
+
+  const { data: posts, error } = await query;
 
   if (error) {
     console.error('getPosts error:', error);
@@ -103,6 +108,15 @@ export async function createPost(formData: FormData) {
   return { success: true };
 }
 
+export async function deletePost(postId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  await supabase.from('posts').delete().eq('id', postId).eq('author_id', user.id);
+  revalidatePath('/feed');
+}
+
 function formatTimeAgo(dateStr: string): string {
   const now = new Date();
   const date = new Date(dateStr);
@@ -110,7 +124,6 @@ function formatTimeAgo(dateStr: string): string {
   const diffMin = Math.floor(diffMs / 60000);
   const diffHour = Math.floor(diffMin / 60);
   const diffDay = Math.floor(diffHour / 24);
-
   if (diffMin < 1) return 'now';
   if (diffMin < 60) return `${diffMin}m ago`;
   if (diffHour < 24) return `${diffHour}h ago`;
