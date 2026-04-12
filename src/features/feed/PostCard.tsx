@@ -50,8 +50,12 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
     <>
       <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl overflow-hidden">
         <div className="flex items-center gap-3 px-4 py-3">
-          <a href={`/profile/${post.author.username}`} className="h-10 w-10 rounded-full bg-purple-600/20 border border-purple-600/30 flex items-center justify-center text-sm font-bold text-purple-400 hover:border-purple-500 transition-colors">
-            {initials}
+          <a href={`/profile/${post.author.username}`} className="h-10 w-10 rounded-full bg-purple-600/20 border border-purple-600/30 flex items-center justify-center text-sm font-bold text-purple-400 hover:border-purple-500 transition-colors overflow-hidden">
+            {post.author.avatar_url ? (
+              <img src={post.author.avatar_url} alt="" className="w-full h-full object-cover" />
+            ) : (
+              initials
+            )}
           </a>
           <a href={`/profile/${post.author.username}`} className="flex-1 hover:opacity-80 transition-opacity">
             <p className="text-sm font-semibold text-white">{post.author.full_name}</p>
