@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Search as SearchIcon } from 'lucide-react';
+import { Search as SearchIcon, Hash, TrendingUp } from 'lucide-react';
 import { searchUsers } from '@/features/feed/search-actions';
 import { getDiscoverProfiles } from '@/features/feed/discover-actions';
+import { getTrendingHashtags } from '@/features/feed/hashtag-actions';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 
@@ -11,12 +12,14 @@ export default function SearchPage() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<any[]>([]);
   const [discover, setDiscover] = useState<any[]>([]);
+  const [trendingTags, setTrendingTags] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     getDiscoverProfiles().then(setDiscover);
+    getTrendingHashtags().then(setTrendingTags);
   }, []);
 
   useEffect(() => {
@@ -93,6 +96,26 @@ export default function SearchPage() {
 
         {!loading && query.length >= 2 && results.length === 0 && (
           <p className="text-center text-sm text-zinc-600 py-8">No one found</p>
+        )}
+
+        {query.length < 2 && trendingTags.length > 0 && (
+          <div className="flex flex-col gap-3 mb-6">
+            <h2 className="text-sm font-medium text-zinc-400 flex items-center gap-1.5">
+              <TrendingUp className="w-4 h-4" /> Trending tags
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {trendingTags.map((tag) => (
+                <Link
+                  key={tag.name}
+                  href={`/hashtag/${tag.name}`}
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-zinc-950 border border-zinc-800/50 hover:border-purple-600/30 text-sm text-purple-400 transition-colors"
+                >
+                  <Hash className="w-3 h-3" />{tag.name}
+                  <span className="text-xs text-zinc-600 ml-1">{tag.posts_count}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
         )}
 
         {query.length < 2 && discover.length > 0 && (

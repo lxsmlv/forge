@@ -1,9 +1,17 @@
 'use client';
 
-import { MessageCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { MessageCircle, Flame } from 'lucide-react';
 import Link from 'next/link';
+import { getStreak } from './streak-actions';
 
 export function FeedHeader() {
+  const [streak, setStreak] = useState(0);
+
+  useEffect(() => {
+    getStreak().then((data) => setStreak(data.current));
+  }, []);
+
   return (
     <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800/50">
       <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
@@ -13,9 +21,17 @@ export function FeedHeader() {
         >
           FORGE
         </h1>
-        <Link href="/messages" className="h-9 w-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-purple-600/50 transition-colors">
-          <MessageCircle className="w-4 h-4 text-zinc-400" />
-        </Link>
+        <div className="flex items-center gap-2">
+          {streak > 0 && (
+            <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-500/10 border border-orange-500/20">
+              <Flame className="w-3.5 h-3.5 text-orange-400" />
+              <span className="text-xs font-bold text-orange-400">{streak}</span>
+            </div>
+          )}
+          <Link href="/messages" className="h-9 w-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-purple-600/50 transition-colors">
+            <MessageCircle className="w-4 h-4 text-zinc-400" />
+          </Link>
+        </div>
       </div>
     </header>
   );

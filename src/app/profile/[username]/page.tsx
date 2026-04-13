@@ -82,6 +82,11 @@ export default function UserProfile() {
           <div className="text-center">
             <h2 className="text-xl font-bold text-white">{profile.full_name}</h2>
             {profile.bio && <p className="text-sm text-zinc-500 mt-1">{profile.bio}</p>}
+            {profile.last_active_date && (
+              <p className="text-xs text-zinc-700 mt-1">
+                Last active: {new Date(profile.last_active_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              </p>
+            )}
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-2">
@@ -149,6 +154,12 @@ export default function UserProfile() {
               <span className="text-lg font-bold text-white">{profile.workouts_count}</span>
               <span className="text-xs text-zinc-600">Workouts</span>
             </div>
+            {profile.current_streak > 0 && (
+              <div className="flex flex-col items-center">
+                <span className="text-lg font-bold text-orange-400">🔥{profile.current_streak}</span>
+                <span className="text-xs text-zinc-600">Streak</span>
+              </div>
+            )}
           </div>
         </div>
 
