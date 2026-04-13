@@ -136,11 +136,29 @@ export function StoriesBar() {
               </div>
             )}
 
+            {/* Reactions */}
+            <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-4" onClick={(e) => e.stopPropagation()}>
+              {['🔥', '💪', '👊', '🏆', '💜', '😎'].map((emoji) => (
+                <button
+                  key={emoji}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const btn = e.currentTarget;
+                    btn.classList.add('scale-150');
+                    setTimeout(() => btn.classList.remove('scale-150'), 200);
+                  }}
+                  className="text-2xl hover:scale-125 transition-transform active:scale-150"
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+
             {/* Navigation zones */}
-            <div className="absolute inset-0 flex">
-              <div className="w-1/3" onClick={(e) => { e.stopPropagation(); prevStory(); }} />
+            <div className="absolute inset-0 flex pointer-events-none">
+              <div className="w-1/3 pointer-events-auto" onClick={(e) => { e.stopPropagation(); prevStory(); }} />
               <div className="w-1/3" />
-              <div className="w-1/3" onClick={(e) => { e.stopPropagation(); nextStory(); }} />
+              <div className="w-1/3 pointer-events-auto" onClick={(e) => { e.stopPropagation(); nextStory(); }} />
             </div>
           </div>
         </div>

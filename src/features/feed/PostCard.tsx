@@ -7,7 +7,7 @@ import { CommentsSheet } from './CommentsSheet';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
-import { renderTextWithHashtags } from '@/lib/hashtags';
+import { renderTextWithLinks } from '@/lib/hashtags';
 import { toast } from 'sonner';
 
 const CATEGORIES = [
@@ -185,7 +185,18 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
             lastTapRef.current = now;
           }}
         >
-          <img src={allImages[currentImg]} alt={caption} className="w-full h-full object-cover" draggable={false} />
+          {/\.(mp4|mov|webm)(\?|$)/i.test(allImages[currentImg]) ? (
+            <video
+              src={allImages[currentImg]}
+              className="w-full h-full object-cover"
+              controls
+              playsInline
+              muted
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <img src={allImages[currentImg]} alt={caption} className="w-full h-full object-cover" draggable={false} />
+          )}
 
           {allImages.length > 1 && (
             <>
@@ -256,9 +267,13 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
           <div className="px-4 pb-4">
             <p className="text-sm text-zinc-300">
               <span className="font-semibold text-white mr-1.5">@{post.author.username}</span>
-              {renderTextWithHashtags(caption).map((part, i) =>
+              {renderTextWithLinks(caption).map((part, i) =>
                 part.type === 'hashtag' ? (
                   <Link key={i} href={`/hashtag/${part.value.slice(1)}`} className="text-purple-400 hover:text-purple-300">
+                    {part.value}
+                  </Link>
+                ) : part.type === 'mention' ? (
+                  <Link key={i} href={`/profile/${part.value.slice(1)}`} className="text-purple-400 hover:text-purple-300">
                     {part.value}
                   </Link>
                 ) : (

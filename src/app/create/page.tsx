@@ -120,11 +120,15 @@ export default function CreatePost() {
             className="aspect-[4/3] rounded-xl border-2 border-dashed border-zinc-800 hover:border-purple-600/50 flex flex-col items-center justify-center gap-3 transition-colors bg-zinc-950"
           >
             <ImagePlus className="w-10 h-10 text-zinc-700" />
-            <span className="text-sm text-zinc-600">Tap to add photos (up to 10)</span>
+            <span className="text-sm text-zinc-600">Tap to add photos or videos (up to 10)</span>
           </button>
         ) : (
           <div className="relative aspect-[4/3] rounded-xl overflow-hidden">
-            <img src={images[currentImage].preview} alt="" className="w-full h-full object-cover" />
+            {images[currentImage].file.type.startsWith('video/') ? (
+              <video src={images[currentImage].preview} className="w-full h-full object-cover" controls playsInline muted />
+            ) : (
+              <img src={images[currentImage].preview} alt="" className="w-full h-full object-cover" />
+            )}
             <button
               onClick={() => removeImage(currentImage)}
               className="absolute top-3 right-3 h-8 w-8 rounded-full bg-black/70 flex items-center justify-center hover:bg-black"
@@ -161,7 +165,7 @@ export default function CreatePost() {
           </div>
         )}
 
-        <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleImageSelect} className="hidden" />
+        <input ref={fileInputRef} type="file" accept="image/*,video/*" multiple onChange={handleImageSelect} className="hidden" />
 
         <Textarea
           placeholder="What's the story?"
