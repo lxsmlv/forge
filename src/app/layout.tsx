@@ -44,6 +44,20 @@ export const metadata: Metadata = {
     icon: '/icon-192.png',
     apple: '/icon-192.png',
   },
+  openGraph: {
+    title: 'FORGE — Private Club',
+    description: 'Lift. Drive. Live well. A private community for those who push forward.',
+    url: 'https://forgeclub.app',
+    siteName: 'FORGE',
+    type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FORGE — Private Club',
+    description: 'Lift. Drive. Live well.',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function RootLayout({

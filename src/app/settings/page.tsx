@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Lock, Trash2, LogOut, Shield, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, Lock, Trash2, LogOut, Shield, Sun, Moon, Download } from 'lucide-react';
+import { exportUserData } from '@/features/profile/block-actions';
 import { useTheme } from '@/features/theme/ThemeProvider';
 import Link from 'next/link';
 import { isAdmin } from '@/features/admin/actions';
@@ -138,6 +139,26 @@ export default function Settings() {
             Admin Panel
           </Link>
         )}
+
+        {/* Export Data */}
+        <button
+          onClick={async () => {
+            const data = await exportUserData();
+            if (data) {
+              const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = 'forge-data-export.json';
+              a.click();
+              URL.revokeObjectURL(url);
+            }
+          }}
+          className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex items-center gap-3 text-sm text-zinc-400 hover:text-white hover:border-zinc-700 transition-colors"
+        >
+          <Download className="w-4 h-4" />
+          Export my data
+        </button>
 
         {/* Logout */}
         <button

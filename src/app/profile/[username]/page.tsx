@@ -6,7 +6,9 @@ import { getProfileByUsername, toggleFollow } from '@/features/profile/follow-ac
 import { getUserAchievements } from '@/features/achievements/actions';
 import { ACHIEVEMENTS } from '@/lib/achievements';
 import { PostCard } from '@/features/feed/PostCard';
-import { ArrowLeft, Car, Dumbbell, MapPin, UserPlus, UserCheck, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Car, Dumbbell, MapPin, UserPlus, UserCheck, MessageCircle, Ban } from 'lucide-react';
+import { toggleBlock, isBlocked } from '@/features/profile/block-actions';
+import { toast } from 'sonner';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -22,6 +24,7 @@ export default function UserProfile() {
   const [followersCount, setFollowersCount] = useState(0);
   const [isPending, startTransition] = useTransition();
   const [achievements, setAchievements] = useState<any[]>([]);
+  const [blocked, setBlocked] = useState(false);
 
   useEffect(() => {
     getProfileByUsername(username).then((data) => {
@@ -32,7 +35,10 @@ export default function UserProfile() {
       setProfile(data);
       setFollowing(data?.is_following || false);
       setFollowersCount(data?.followers_count || 0);
-      if (data) getUserAchievements(data.id).then(setAchievements);
+      if (data) {
+        getUserAchievements(data.id).then(setAchievements);
+        isBlocked(data.id).then(setBlocked);
+      }
       setLoading(false);
     });
   }, [username, router]);
@@ -139,6 +145,20 @@ export default function UserProfile() {
             >
               <MessageCircle className="w-4 h-4" />
             </Link>
+            <button
+              onClick={() => {
+                setBlocked(!blocked);
+                startTransition(async () => {
+                  await toggleBlock(profile.id);
+                  toast(blocked ? 'Unblocked' : 'Blocked');
+                });
+              }}
+              className={`h-9 px-3 rounded-md flex items-center transition-colors text-sm ${
+                blocked ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-500'
+              }`}
+            >
+              <Ban className="w-4 h-4" />
+            </button>
           </div>
 
           <div className="flex gap-8 mt-2">
