@@ -143,7 +143,9 @@ function SignUpForm() {
         </div>
 
         <p className="text-xs text-zinc-700">
-          By joining you agree to push forward every day.
+          By joining you agree to our{' '}
+          <a href="/terms" className="text-zinc-500 hover:text-purple-400 underline">Terms</a> and{' '}
+          <a href="/privacy" className="text-zinc-500 hover:text-purple-400 underline">Privacy Policy</a>.
         </p>
       </div>
     </div>

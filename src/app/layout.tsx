@@ -4,6 +4,7 @@ import { Bebas_Neue } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/features/navigation/AppShell";
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/features/theme/ThemeProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -56,8 +57,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} h-full antialiased dark`}
     >
       <body className="min-h-full flex flex-col bg-black text-white safe-top safe-bottom">
-        <AppShell>{children}</AppShell>
-        <Toaster theme="dark" position="top-center" />
+        <ThemeProvider>
+          <AppShell>{children}</AppShell>
+          <Toaster theme="dark" position="top-center" />
+        </ThemeProvider>
       </body>
     </html>
   );

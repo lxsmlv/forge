@@ -143,6 +143,12 @@ export default function Home() {
           <Link href="/login" className="text-xs text-zinc-600 hover:text-purple-400 transition-colors">
             Already a member? Sign in
           </Link>
+
+          <div className="flex gap-3 text-[10px] text-zinc-700">
+            <Link href="/terms" className="hover:text-zinc-500 transition-colors">Terms</Link>
+            <span>·</span>
+            <Link href="/privacy" className="hover:text-zinc-500 transition-colors">Privacy</Link>
+          </div>
         </div>
       </div>
     </div>

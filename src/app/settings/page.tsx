@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Lock, Trash2, LogOut, Shield } from 'lucide-react';
+import { ArrowLeft, Lock, Trash2, LogOut, Shield, Sun, Moon } from 'lucide-react';
+import { useTheme } from '@/features/theme/ThemeProvider';
 import Link from 'next/link';
 import { isAdmin } from '@/features/admin/actions';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,8 @@ export default function Settings() {
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [showAdmin, setShowAdmin] = useState(false);
+
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => { isAdmin().then(setShowAdmin); }, []);
 
@@ -112,6 +115,18 @@ export default function Settings() {
             {passwordLoading ? '...' : 'Update password'}
           </Button>
         </div>
+
+        {/* Theme */}
+        <button
+          onClick={toggleTheme}
+          className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex items-center justify-between hover:border-zinc-700 transition-colors"
+        >
+          <div className="flex items-center gap-3 text-sm text-zinc-400">
+            {theme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+            {theme === 'dark' ? 'Dark mode' : 'Light mode'}
+          </div>
+          <span className="text-xs text-zinc-600">Tap to switch</span>
+        </button>
 
         {/* Admin */}
         {showAdmin && (

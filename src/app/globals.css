@@ -129,6 +129,19 @@
   }
 }
 
+/* Light mode overrides */
+.light body { background: #fafafa; color: #09090b; }
+.light .bg-black { background: #fafafa; }
+.light .bg-zinc-950 { background: #f4f4f5; }
+.light .bg-zinc-900 { background: #e4e4e7; }
+.light .border-zinc-800\/50 { border-color: rgba(228, 228, 231, 0.8); }
+.light .border-zinc-800 { border-color: #d4d4d8; }
+.light .text-white { color: #09090b; }
+.light .text-zinc-400 { color: #71717a; }
+.light .text-zinc-500 { color: #52525b; }
+.light .text-zinc-600 { color: #3f3f46; }
+.light .text-zinc-700 { color: #27272a; }
+
 /* Dark mode for system elements */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
