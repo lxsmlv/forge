@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useTransition, useEffect } from 'react';
-import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame, Trophy, Share2, Flag, Bookmark, Eye, ChevronLeft, ChevronRight, Repeat2 } from 'lucide-react';
-import { toggleLike, deletePost, updatePost, toggleBookmark, incrementViews, repostPost } from './actions';
+import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame, Trophy, Share2, Flag, Bookmark, Eye, ChevronLeft, ChevronRight, Repeat2, Pin } from 'lucide-react';
+import { toggleLike, deletePost, updatePost, toggleBookmark, incrementViews, repostPost, reactToPost, pinPost } from './actions';
 import { CommentsSheet } from './CommentsSheet';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -34,6 +34,7 @@ interface PostProps {
   is_bookmarked?: boolean;
   views_count?: number;
   location?: string;
+  is_pinned?: boolean;
 }
 
 export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () => void }) {
@@ -46,6 +47,7 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
   const [showMenu, setShowMenu] = useState(false);
   const [editing, setEditing] = useState(false);
   const [bookmarked, setBookmarked] = useState(post.is_bookmarked || false);
+  const [showReactions, setShowReactions] = useState(false);
   const [showHeartAnim, setShowHeartAnim] = useState(false);
   const [currentImg, setCurrentImg] = useState(0);
   const [extraImages, setExtraImages] = useState<string[]>([]);
@@ -143,6 +145,16 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
                     <Repeat2 className="w-4 h-4" /> Repost
                   </button>
                   <button
+                    onClick={() => {
+                      setShowMenu(false);
+                      startTransition(() => { pinPost(post.id); });
+                      toast(post.is_pinned ? 'Unpinned' : 'Pinned to profile');
+                    }}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 transition-colors"
+                  >
+                    <Pin className="w-4 h-4" /> {post.is_pinned ? 'Unpin' : 'Pin to profile'}
+                  </button>
+                  <button
                     onClick={() => { setShowMenu(false); handleDelete(); }}
                     className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-zinc-800 transition-colors"
                   >
@@ -226,10 +238,33 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
         </div>
 
         <div className="px-4 py-3 flex items-center gap-5">
-          <button onClick={handleLike} disabled={isPending} className="flex items-center gap-1.5 group">
-            <Heart className={`w-5 h-5 transition-all ${liked ? 'fill-purple-500 text-purple-500 scale-110' : 'text-zinc-500 group-hover:text-purple-400'}`} />
-            <span className={`text-sm ${liked ? 'text-purple-400' : 'text-zinc-500'}`}>{likesCount}</span>
-          </button>
+          <div className="relative">
+            <button
+              onClick={handleLike}
+              onContextMenu={(e) => { e.preventDefault(); setShowReactions(!showReactions); }}
+              disabled={isPending}
+              className="flex items-center gap-1.5 group"
+            >
+              <Heart className={`w-5 h-5 transition-all ${liked ? 'fill-purple-500 text-purple-500 scale-110' : 'text-zinc-500 group-hover:text-purple-400'}`} />
+              <span className={`text-sm ${liked ? 'text-purple-400' : 'text-zinc-500'}`}>{likesCount}</span>
+            </button>
+            {showReactions && (
+              <div className="absolute bottom-8 left-0 bg-zinc-900 border border-zinc-800 rounded-full px-2 py-1 flex gap-1 z-10 shadow-lg">
+                {['🔥', '💪', '🏆', '💜', '😎', '👊'].map((emoji) => (
+                  <button
+                    key={emoji}
+                    onClick={() => {
+                      setShowReactions(false);
+                      startTransition(() => { reactToPost(post.id, emoji); });
+                    }}
+                    className="text-lg hover:scale-125 transition-transform px-0.5"
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <button onClick={() => setShowComments(true)} className="flex items-center gap-1.5 group">
             <MessageCircle className="w-5 h-5 text-zinc-500 group-hover:text-purple-400 transition-colors" />
             <span className="text-sm text-zinc-500">{commentsCount}</span>

@@ -204,6 +204,42 @@ export async function deletePost(postId: string) {
   revalidatePath('/feed');
 }
 
+export async function reactToPost(postId: string, emoji: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data: existing } = await supabase
+    .from('reactions')
+    .select('id, emoji')
+    .eq('post_id', postId)
+    .eq('user_id', user.id)
+    .maybeSingle();
+
+  if (existing && existing.emoji === emoji) {
+    await supabase.from('reactions').delete().eq('id', existing.id);
+  } else if (existing) {
+    await supabase.from('reactions').update({ emoji }).eq('id', existing.id);
+  } else {
+    await supabase.from('reactions').insert({ post_id: postId, user_id: user.id, emoji });
+  }
+
+  revalidatePath('/feed');
+}
+
+export async function pinPost(postId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data: post } = await supabase.from('posts').select('is_pinned').eq('id', postId).eq('author_id', user.id).single();
+  if (!post) return;
+
+  await supabase.from('posts').update({ is_pinned: !post.is_pinned }).eq('id', postId).eq('author_id', user.id);
+  revalidatePath('/feed');
+  revalidatePath('/profile');
+}
+
 export async function toggleBookmark(postId: string) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
