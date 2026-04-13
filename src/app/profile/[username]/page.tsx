@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { getProfileByUsername, toggleFollow } from '@/features/profile/follow-actions';
 import { getUserAchievements } from '@/features/achievements/actions';
 import { ACHIEVEMENTS } from '@/lib/achievements';
+import { ActivityGrid } from '@/features/profile/ActivityGrid';
 import { PostCard } from '@/features/feed/PostCard';
 import { ArrowLeft, Car, Dumbbell, MapPin, UserPlus, UserCheck, MessageCircle, Ban } from 'lucide-react';
 import { toggleBlock, isBlocked } from '@/features/profile/block-actions';
@@ -189,6 +190,10 @@ export default function UserProfile() {
               </div>
             )}
           </div>
+        </div>
+
+        <div className="max-w-lg mx-auto px-4">
+          <ActivityGrid userId={profile.id} />
         </div>
 
         {/* Achievements */}

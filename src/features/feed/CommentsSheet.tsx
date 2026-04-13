@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useTransition, useRef } from 'react';
-import { X, Send, Trash2, Reply } from 'lucide-react';
-import { getComments, addComment, deleteComment } from './comments-actions';
+import { X, Send, Trash2, Reply, Heart } from 'lucide-react';
+import { getComments, addComment, deleteComment, toggleCommentLike } from './comments-actions';
 import { Input } from '@/components/ui/input';
 
 interface Props {
@@ -11,6 +11,8 @@ interface Props {
 }
 
 function CommentItem({ comment, postId, onRefresh, onReply }: { comment: any; postId: string; onRefresh: () => void; onReply: (username: string, parentId: string) => void }) {
+  const [liked, setLiked] = useState(comment.is_liked || false);
+  const [likesCount, setLikesCount] = useState(comment.likes_count || 0);
   const initials = comment.author.full_name
     .split(' ')
     .map((n: string) => n[0])
@@ -34,12 +36,25 @@ function CommentItem({ comment, postId, onRefresh, onReply }: { comment: any; po
             <span className="text-xs text-zinc-600">{comment.created_at}</span>
           </div>
           <p className="text-sm text-zinc-300 mt-0.5">{comment.text}</p>
-          <button
-            onClick={() => onReply(comment.author.username, comment.id)}
-            className="text-xs text-zinc-600 hover:text-purple-400 mt-1 transition-colors"
-          >
-            Reply
-          </button>
+          <div className="flex items-center gap-3 mt-1">
+            <button
+              onClick={() => onReply(comment.author.username, comment.id)}
+              className="text-xs text-zinc-600 hover:text-purple-400 transition-colors"
+            >
+              Reply
+            </button>
+            <button
+              onClick={async () => {
+                setLiked(!liked);
+                setLikesCount(liked ? likesCount - 1 : likesCount + 1);
+                await toggleCommentLike(comment.id);
+              }}
+              className="flex items-center gap-1 text-xs"
+            >
+              <Heart className={`w-3 h-3 transition-all ${liked ? 'fill-purple-500 text-purple-500' : 'text-zinc-600 hover:text-purple-400'}`} />
+              {likesCount > 0 && <span className={liked ? 'text-purple-400' : 'text-zinc-600'}>{likesCount}</span>}
+            </button>
+          </div>
         </div>
         <button
           onClick={async () => {

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { getMyProfile, updateProfile, uploadAvatar } from '@/features/profile/actions';
 import { getUserAchievements } from '@/features/achievements/actions';
 import { ACHIEVEMENTS } from '@/lib/achievements';
+import { ActivityGrid } from '@/features/profile/ActivityGrid';
 import { PostCard } from '@/features/feed/PostCard';
 import { ArrowLeft, Settings, Car, Dumbbell, MapPin, Edit3, Check } from 'lucide-react';
 import Link from 'next/link';
@@ -234,6 +235,8 @@ export default function Profile() {
                 <span className="text-xs text-zinc-600">Posts</span>
               </div>
             </div>
+
+            <ActivityGrid userId={profile.id} />
 
             {achievements.length > 0 && (
               <div className="mt-4">

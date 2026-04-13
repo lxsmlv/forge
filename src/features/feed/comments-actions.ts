@@ -8,11 +8,14 @@ import { containsBannedWords } from '@/lib/moderation';
 export async function getComments(postId: string) {
   const supabase = await createClient();
 
+  const { data: { user } } = await supabase.auth.getUser();
+
   const { data, error } = await supabase
     .from('comments')
     .select(`
       id, text, created_at, parent_id,
-      author:profiles!author_id (username, full_name, avatar_url)
+      author:profiles!author_id (username, full_name, avatar_url),
+      comment_likes (user_id)
     `)
     .eq('post_id', postId)
     .order('created_at', { ascending: true });
@@ -22,6 +25,8 @@ export async function getComments(postId: string) {
   const comments = (data || []).map((c: any) => ({
     ...c,
     created_at: formatTimeAgo(c.created_at),
+    likes_count: c.comment_likes?.length || 0,
+    is_liked: user ? c.comment_likes?.some((l: any) => l.user_id === user.id) : false,
     replies: [] as any[],
   }));
 
@@ -60,6 +65,25 @@ export async function addComment(postId: string, text: string, parentId?: string
   if (post) await createNotification(post.author_id, 'comment', user.id, postId);
 
   revalidatePath('/feed');
+}
+
+export async function toggleCommentLike(commentId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data: existing } = await supabase
+    .from('comment_likes')
+    .select('id')
+    .eq('comment_id', commentId)
+    .eq('user_id', user.id)
+    .maybeSingle();
+
+  if (existing) {
+    await supabase.from('comment_likes').delete().eq('id', existing.id);
+  } else {
+    await supabase.from('comment_likes').insert({ comment_id: commentId, user_id: user.id });
+  }
 }
 
 export async function deleteComment(commentId: string) {
