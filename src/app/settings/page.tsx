@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { ArrowLeft, Lock, Trash2, LogOut } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ArrowLeft, Lock, Trash2, LogOut, Shield } from 'lucide-react';
+import Link from 'next/link';
+import { isAdmin } from '@/features/admin/actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
@@ -15,6 +17,9 @@ export default function Settings() {
   const [passwordMsg, setPasswordMsg] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [showAdmin, setShowAdmin] = useState(false);
+
+  useEffect(() => { isAdmin().then(setShowAdmin); }, []);
 
   const handleChangePassword = async () => {
     if (newPassword.length < 6) {
@@ -107,6 +112,17 @@ export default function Settings() {
             {passwordLoading ? '...' : 'Update password'}
           </Button>
         </div>
+
+        {/* Admin */}
+        {showAdmin && (
+          <Link
+            href="/admin"
+            className="bg-zinc-950 border border-red-900/30 rounded-xl p-4 flex items-center gap-3 text-sm text-red-400 hover:text-red-300 hover:border-red-900/50 transition-colors"
+          >
+            <Shield className="w-4 h-4" />
+            Admin Panel
+          </Link>
+        )}
 
         {/* Logout */}
         <button

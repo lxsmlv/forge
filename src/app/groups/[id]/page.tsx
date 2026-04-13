@@ -2,9 +2,11 @@
 
 import { useState, useEffect, useTransition } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Users, UserPlus, UserMinus } from 'lucide-react';
+import { ArrowLeft, Users, UserPlus, UserMinus, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getGroupById, joinGroup, leaveGroup } from '@/features/groups/actions';
+import { PostCard } from '@/features/feed/PostCard';
+import { getGroupById, joinGroup, leaveGroup, getGroupPosts } from '@/features/groups/actions';
+import { toast } from 'sonner';
 
 export default function GroupPage() {
   const params = useParams();
@@ -12,16 +14,18 @@ export default function GroupPage() {
   const groupId = params.id as string;
 
   const [group, setGroup] = useState<any>(null);
+  const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isMember, setIsMember] = useState(false);
   const [membersCount, setMembersCount] = useState(0);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    getGroupById(groupId).then((data) => {
-      setGroup(data);
-      setIsMember(data?.is_member || false);
-      setMembersCount(data?.members_count || 0);
+    Promise.all([getGroupById(groupId), getGroupPosts(groupId)]).then(([g, p]) => {
+      setGroup(g);
+      setPosts(p);
+      setIsMember(g?.is_member || false);
+      setMembersCount(g?.members_count || 0);
       setLoading(false);
     });
   }, [groupId]);
@@ -59,22 +63,33 @@ export default function GroupPage() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <span className="text-sm font-medium text-zinc-400">{group.name}</span>
-          <div className="w-5" />
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(`${window.location.origin}/groups/${groupId}`);
+              toast('Group link copied');
+            }}
+            className="text-zinc-400 hover:text-white transition-colors"
+          >
+            <Share2 className="w-5 h-5" />
+          </button>
         </div>
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-6">
-        <div className="flex flex-col items-center gap-4 mb-8">
-          <div className="h-20 w-20 rounded-2xl bg-purple-600/20 border-2 border-purple-600/40 flex items-center justify-center">
-            <Users className="w-8 h-8 text-purple-400" />
+        <div className="flex flex-col items-center gap-4 mb-6">
+          <div className="h-16 w-16 rounded-2xl bg-purple-600/20 border-2 border-purple-600/40 flex items-center justify-center">
+            <Users className="w-7 h-7 text-purple-400" />
           </div>
-          <h2 className="text-xl font-bold text-white">{group.name}</h2>
-          {group.description && <p className="text-sm text-zinc-500 text-center">{group.description}</p>}
-          <p className="text-xs text-zinc-600">{membersCount} members</p>
+          <div className="text-center">
+            <h2 className="text-lg font-bold text-white">{group.name}</h2>
+            {group.description && <p className="text-sm text-zinc-500 mt-1">{group.description}</p>}
+            <p className="text-xs text-zinc-600 mt-1">{membersCount} members</p>
+          </div>
 
           <Button
             onClick={handleToggleMembership}
             disabled={isPending}
+            size="sm"
             className={`px-6 font-bold transition-all ${
               isMember
                 ? 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300'
@@ -89,9 +104,18 @@ export default function GroupPage() {
           </Button>
         </div>
 
-        <div className="flex flex-col items-center py-12 text-zinc-600">
-          <p className="text-sm">Group feed coming soon</p>
-        </div>
+        {posts.length > 0 ? (
+          <div className="flex flex-col gap-4">
+            {posts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center py-12 text-zinc-600">
+            <p className="text-sm">No posts in this group yet</p>
+            <p className="text-xs text-zinc-700 mt-1">Share a post to this group to get started</p>
+          </div>
+        )}
       </main>
     </div>
   );
