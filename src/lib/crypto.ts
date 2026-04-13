@@ -1,7 +1,8 @@
 const PRIVATE_KEY_STORAGE = 'forge_private_key';
 
-function arrayBufferToBase64(buffer: ArrayBuffer): string {
-  return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+function arrayBufferToBase64(buffer: ArrayBuffer | Uint8Array): string {
+  const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
+  return btoa(String.fromCharCode(...bytes));
 }
 
 function base64ToArrayBuffer(base64: string): ArrayBuffer {
