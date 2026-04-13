@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, ImagePlus, X, Dumbbell, Car, Flame, Trophy, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ImagePlus, X, Dumbbell, Car, Flame, Trophy, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 
@@ -27,6 +27,7 @@ export default function CreatePost() {
   const [category, setCategory] = useState<string>('lifestyle');
   const [images, setImages] = useState<ImageItem[]>([]);
   const [currentImage, setCurrentImage] = useState(0);
+  const [location, setLocation] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -76,6 +77,7 @@ export default function CreatePost() {
       image_url: uploadedUrls[0],
       caption: caption || '',
       category: category || 'lifestyle',
+      location: location || null,
     }).select('id').single();
 
     if (insertError || !post) { setError(insertError?.message || 'Error'); setLoading(false); return; }
@@ -168,6 +170,17 @@ export default function CreatePost() {
           rows={3}
           className="bg-zinc-950 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30 resize-none"
         />
+
+        <div className="relative">
+          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+          <input
+            type="text"
+            placeholder="Add location (optional)"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
+            className="w-full h-10 pl-10 pr-4 bg-zinc-950 border border-zinc-800 rounded-lg text-white text-sm placeholder:text-zinc-600 focus:border-purple-600 focus:ring-1 focus:ring-purple-600/30 outline-none"
+          />
+        </div>
 
         <div className="flex flex-col gap-2">
           <span className="text-xs text-zinc-600 uppercase tracking-wider">Category</span>

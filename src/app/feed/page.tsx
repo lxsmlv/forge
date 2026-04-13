@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { PostCard } from '@/features/feed/PostCard';
+import { FeedSkeleton } from '@/features/feed/PostSkeleton';
 import { Cabinet } from '@/features/cabinet/Cabinet';
 import { getPosts } from '@/features/feed/actions';
 import { updateStreak } from '@/features/feed/streak-actions';
@@ -178,9 +179,7 @@ export default function Feed() {
             </div>
 
             {loading ? (
-              <div className="flex justify-center py-20">
-                <div className="h-8 w-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
-              </div>
+              <FeedSkeleton />
             ) : filteredPosts.length > 0 ? (
               <div className="flex flex-col gap-4">
                 {filteredPosts.map((post) => (

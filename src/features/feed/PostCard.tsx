@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
 import { renderTextWithHashtags } from '@/lib/hashtags';
+import { toast } from 'sonner';
 
 const CATEGORIES = [
   { id: 'gym', label: 'Gym', icon: Dumbbell },
@@ -32,6 +33,7 @@ interface PostProps {
   is_liked: boolean;
   is_bookmarked?: boolean;
   views_count?: number;
+  location?: string;
 }
 
 export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () => void }) {
@@ -106,7 +108,10 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
           </Link>
           <Link href={`/profile/${post.author.username}`} className="flex-1 hover:opacity-80 transition-opacity">
             <p className="text-sm font-semibold text-white">{post.author.full_name}</p>
-            <p className="text-xs text-zinc-600">@{post.author.username} · {post.created_at}</p>
+            <p className="text-xs text-zinc-600">
+              @{post.author.username} · {post.created_at}
+              {post.location && <span className="ml-1">📍 {post.location}</span>}
+            </p>
           </Link>
           <div className="flex items-center gap-2">
             <span className="text-xs text-zinc-700 bg-zinc-900 px-2 py-1 rounded-full uppercase tracking-wider">
@@ -129,6 +134,7 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
                       setShowMenu(false);
                       startTransition(async () => {
                         await repostPost(post.id);
+                        toast('Reposted');
                         onDeleted?.();
                       });
                     }}
@@ -154,7 +160,7 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
                           post_id: post.id,
                           reason: 'inappropriate content',
                         });
-                        alert('Report submitted. Thank you.');
+                        toast('Report submitted');
                       }
                     }}
                     className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-400 hover:bg-zinc-800 transition-colors"
@@ -236,6 +242,7 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
               onClick={() => {
                 const url = `${window.location.origin}/post/${post.id}`;
                 navigator.clipboard.writeText(url);
+                toast('Link copied');
               }}
               className="group"
             >

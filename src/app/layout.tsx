@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Bebas_Neue } from "next/font/google";
 import "./globals.css";
 import { AppShell } from "@/features/navigation/AppShell";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -56,6 +57,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-black text-white safe-top safe-bottom">
         <AppShell>{children}</AppShell>
+        <Toaster theme="dark" position="top-center" />
       </body>
     </html>
   );
