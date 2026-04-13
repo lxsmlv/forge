@@ -5,11 +5,12 @@ import { PostCard } from '@/features/feed/PostCard';
 import { Cabinet } from '@/features/cabinet/Cabinet';
 import { getPosts } from '@/features/feed/actions';
 import { FeedHeader } from '@/features/feed/FeedHeader';
+import { StoriesBar } from '@/features/stories/StoriesBar';
 import { Home, PenSquare, Users, Globe, RefreshCw, Dumbbell, Car, Flame, Trophy, Bookmark } from 'lucide-react';
 
 export default function Feed() {
   const [activeTab, setActiveTab] = useState<'feed' | 'cabinet'>('feed');
-  const [feedMode, setFeedMode] = useState<'all' | 'following' | 'bookmarks'>('all');
+  const [feedMode, setFeedMode] = useState<'all' | 'following' | 'bookmarks' | 'trending'>('all');
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,6 +63,10 @@ export default function Feed() {
   return (
     <div className="min-h-screen bg-black text-white pb-20">
       <FeedHeader />
+
+      <div className="max-w-lg mx-auto border-b border-zinc-800/30">
+        <StoriesBar />
+      </div>
 
       <div className="max-w-lg mx-auto px-4 pt-4">
         <div className="flex gap-1 bg-zinc-950 rounded-lg p-1 border border-zinc-800/50">
@@ -127,6 +132,17 @@ export default function Feed() {
               >
                 <Bookmark className="w-3 h-3" />
                 Saved
+              </button>
+              <button
+                onClick={() => setFeedMode('trending')}
+                className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all shrink-0 ${
+                  feedMode === 'trending'
+                    ? 'border-purple-600/40 text-purple-400 bg-purple-600/10'
+                    : 'border-zinc-800 text-zinc-600 hover:border-zinc-700'
+                }`}
+              >
+                <Flame className="w-3 h-3" />
+                Trending
               </button>
 
               <div className="w-px h-5 bg-zinc-800 shrink-0" />

@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { createNotification } from '@/features/notifications/actions';
 import { containsBannedWords } from '@/lib/moderation';
 
-export async function getPosts(mode: 'all' | 'following' | 'bookmarks' = 'all', offset: number = 0, limit: number = 20) {
+export async function getPosts(mode: 'all' | 'following' | 'bookmarks' | 'trending' = 'all', offset: number = 0, limit: number = 20) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -51,7 +51,7 @@ export async function getPosts(mode: 'all' | 'following' | 'bookmarks' = 'all', 
     return [];
   }
 
-  return (posts || []).map((post: any) => ({
+  let mapped = (posts || []).map((post: any) => ({
     id: post.id,
     image_url: post.image_url,
     caption: post.caption,
@@ -63,6 +63,12 @@ export async function getPosts(mode: 'all' | 'following' | 'bookmarks' = 'all', 
     is_liked: user ? post.likes?.some((l: any) => l.user_id === user.id) : false,
     is_bookmarked: user ? post.bookmarks?.some((b: any) => b.user_id === user.id) : false,
   }));
+
+  if (mode === 'trending') {
+    mapped = mapped.sort((a: any, b: any) => b.likes_count - a.likes_count);
+  }
+
+  return mapped;
 }
 
 export async function toggleLike(postId: string) {

@@ -129,6 +129,20 @@
   }
 }
 
+/* Dark mode for system elements */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px #18181b inset !important;
+  -webkit-text-fill-color: #fff !important;
+  caret-color: #fff;
+}
+
+::selection {
+  background: rgba(147, 51, 234, 0.4);
+  color: #fff;
+}
+
 /* Hide scrollbar for filter chips */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
@@ -137,6 +151,16 @@
 @supports (padding-top: env(safe-area-inset-top)) {
   .safe-top { padding-top: env(safe-area-inset-top); }
   .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+}
+
+/* Story progress animation */
+@keyframes story-progress {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+.animate-story-progress {
+  animation: story-progress 5s linear forwards;
 }
 
 /* Forge anvil drop animation */
