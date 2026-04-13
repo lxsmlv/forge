@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { getMyProfile, updateProfile, uploadAvatar } from '@/features/profile/actions';
+import { getUserAchievements } from '@/features/achievements/actions';
+import { ACHIEVEMENTS } from '@/lib/achievements';
 import { PostCard } from '@/features/feed/PostCard';
 import { ArrowLeft, Settings, Car, Dumbbell, MapPin, Edit3, Check } from 'lucide-react';
 import Link from 'next/link';
@@ -20,6 +22,7 @@ export default function Profile() {
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState({ bio: '', city: '', car: '', sports: [] as string[] });
   const [activeTab, setActiveTab] = useState<'posts' | 'stats'>('posts');
+  const [achievements, setAchievements] = useState<any[]>([]);
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -33,6 +36,7 @@ export default function Profile() {
           sports: data.sports || [],
         });
       }
+      if (data) getUserAchievements(data.id).then(setAchievements);
       setLoading(false);
     });
   }, []);
@@ -217,18 +221,41 @@ export default function Profile() {
             </div>
           )
         ) : (
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex flex-col items-center gap-1">
-              <Dumbbell className="w-5 h-5 text-purple-400 mb-1" />
-              <span className="text-2xl font-bold text-white">{profile.workouts_count}</span>
-              <span className="text-xs text-zinc-600">Workouts</span>
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex flex-col items-center gap-1">
+                <Dumbbell className="w-5 h-5 text-purple-400 mb-1" />
+                <span className="text-2xl font-bold text-white">{profile.workouts_count}</span>
+                <span className="text-xs text-zinc-600">Workouts</span>
+              </div>
+              <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex flex-col items-center gap-1">
+                <Car className="w-5 h-5 text-purple-400 mb-1" />
+                <span className="text-2xl font-bold text-white">{profile.posts_count}</span>
+                <span className="text-xs text-zinc-600">Posts</span>
+              </div>
             </div>
-            <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex flex-col items-center gap-1">
-              <Car className="w-5 h-5 text-purple-400 mb-1" />
-              <span className="text-2xl font-bold text-white">{profile.posts_count}</span>
-              <span className="text-xs text-zinc-600">Posts</span>
-            </div>
-          </div>
+
+            {achievements.length > 0 && (
+              <div className="mt-4">
+                <h3 className="text-sm font-medium text-zinc-400 mb-3">Achievements</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {achievements.map((a) => {
+                    const info = ACHIEVEMENTS[a.type];
+                    if (!info) return null;
+                    return (
+                      <div key={a.type} className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-3 flex items-center gap-3">
+                        <span className="text-2xl">{info.emoji}</span>
+                        <div>
+                          <p className="text-xs font-semibold text-white">{info.title}</p>
+                          <p className="text-[10px] text-zinc-600">{info.description}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </>
         )}
       </main>
     </div>

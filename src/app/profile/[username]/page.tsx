@@ -3,6 +3,8 @@
 import { useState, useEffect, useTransition } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getProfileByUsername, toggleFollow } from '@/features/profile/follow-actions';
+import { getUserAchievements } from '@/features/achievements/actions';
+import { ACHIEVEMENTS } from '@/lib/achievements';
 import { PostCard } from '@/features/feed/PostCard';
 import { ArrowLeft, Car, Dumbbell, MapPin, UserPlus, UserCheck, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
@@ -19,6 +21,7 @@ export default function UserProfile() {
   const [following, setFollowing] = useState(false);
   const [followersCount, setFollowersCount] = useState(0);
   const [isPending, startTransition] = useTransition();
+  const [achievements, setAchievements] = useState<any[]>([]);
 
   useEffect(() => {
     getProfileByUsername(username).then((data) => {
@@ -29,6 +32,7 @@ export default function UserProfile() {
       setProfile(data);
       setFollowing(data?.is_following || false);
       setFollowersCount(data?.followers_count || 0);
+      if (data) getUserAchievements(data.id).then(setAchievements);
       setLoading(false);
     });
   }, [username, router]);
@@ -162,6 +166,24 @@ export default function UserProfile() {
             )}
           </div>
         </div>
+
+        {/* Achievements */}
+        {achievements.length > 0 && (
+          <div className="mb-4">
+            <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+              {achievements.map((a) => {
+                const info = ACHIEVEMENTS[a.type];
+                if (!info) return null;
+                return (
+                  <div key={a.type} className="shrink-0 bg-zinc-950 border border-zinc-800/50 rounded-xl px-3 py-2 flex items-center gap-2">
+                    <span className="text-lg">{info.emoji}</span>
+                    <span className="text-xs font-medium text-zinc-400">{info.title}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Posts */}
         {profile.posts.length > 0 ? (

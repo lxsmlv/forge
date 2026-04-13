@@ -6,6 +6,7 @@ import { FeedSkeleton } from '@/features/feed/PostSkeleton';
 import { Cabinet } from '@/features/cabinet/Cabinet';
 import { getPosts } from '@/features/feed/actions';
 import { updateStreak } from '@/features/feed/streak-actions';
+import { checkAndAwardAchievements } from '@/features/achievements/actions';
 import { FeedHeader } from '@/features/feed/FeedHeader';
 import { StoriesBar } from '@/features/stories/StoriesBar';
 import { Home, PenSquare, Users, Globe, RefreshCw, Dumbbell, Car, Flame, Trophy, Bookmark } from 'lucide-react';
@@ -43,6 +44,7 @@ export default function Feed() {
   useEffect(() => {
     loadPosts(feedMode);
     updateStreak();
+    checkAndAwardAchievements();
   }, [feedMode]);
 
   useEffect(() => {
