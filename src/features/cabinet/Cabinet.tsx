@@ -16,6 +16,7 @@ export function Cabinet() {
   const [activeSection, setActiveSection] = useState<'notes' | 'workouts'>('notes');
   const [notes, setNotes] = useState<any[]>([]);
   const [workouts, setWorkouts] = useState<any[]>([]);
+  const [noteFilter, setNoteFilter] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [isPending, startTransition] = useTransition();
 
@@ -176,13 +177,29 @@ export function Cabinet() {
             </div>
           )}
 
-          {notes.length === 0 ? (
+          <div className="flex gap-1.5 mb-2">
+            {['all', ...NOTE_CATEGORIES].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setNoteFilter(cat === 'all' ? null : cat)}
+                className={`text-xs px-2.5 py-1 rounded-full border transition-all capitalize ${
+                  (cat === 'all' && !noteFilter) || noteFilter === cat
+                    ? 'bg-purple-600/20 border-purple-600/40 text-purple-400'
+                    : 'border-zinc-800 text-zinc-600 hover:border-zinc-700'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          {(noteFilter ? notes.filter((n) => n.category === noteFilter) : notes).length === 0 ? (
             <div className="flex flex-col items-center py-12 text-zinc-600">
               <StickyNote className="w-8 h-8 mb-2 text-zinc-700" />
               <p className="text-sm">No notes yet</p>
             </div>
           ) : (
-            notes.map((note) => (
+            (noteFilter ? notes.filter((n) => n.category === noteFilter) : notes).map((note) => (
               <NoteCard key={note.id} {...note} onToggle={handleToggleNote} onDelete={handleDeleteNote} />
             ))
           )}
