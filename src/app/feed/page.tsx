@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { PostCard } from '@/features/feed/PostCard';
 import { Cabinet } from '@/features/cabinet/Cabinet';
 import { getPosts } from '@/features/feed/actions';
@@ -13,18 +13,43 @@ export default function Feed() {
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const observerRef = useRef<HTMLDivElement>(null);
 
   const loadPosts = (mode: 'all' | 'following') => {
     setLoading(true);
-    getPosts(mode).then((data) => {
+    setHasMore(true);
+    getPosts(mode, 0, 20).then((data) => {
       setPosts(data);
       setLoading(false);
+      if (data.length < 20) setHasMore(false);
     });
   };
+
+  const loadMore = useCallback(() => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    getPosts(feedMode, posts.length, 20).then((data) => {
+      setPosts((prev) => [...prev, ...data]);
+      setLoadingMore(false);
+      if (data.length < 20) setHasMore(false);
+    });
+  }, [feedMode, posts.length, loadingMore, hasMore]);
 
   useEffect(() => {
     loadPosts(feedMode);
   }, [feedMode]);
+
+  useEffect(() => {
+    const el = observerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) loadMore();
+    }, { threshold: 0.1 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [loadMore]);
 
   const filteredPosts = categoryFilter
     ? posts.filter((p) => p.category === categoryFilter)
@@ -132,6 +157,13 @@ export default function Feed() {
                 {filteredPosts.map((post) => (
                   <PostCard key={post.id} post={post} onDeleted={handlePostDeleted} />
                 ))}
+                {hasMore && (
+                  <div ref={observerRef} className="flex justify-center py-4">
+                    {loadingMore && (
+                      <div className="h-6 w-6 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+                    )}
+                  </div>
+                )}
               </div>
             ) : (
               <div className="flex flex-col items-center py-20 text-zinc-600">

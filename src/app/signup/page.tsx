@@ -78,7 +78,7 @@ function SignUpForm() {
     savePrivateKey(keyPair.privateKey);
     await supabase.from('profiles').update({ public_key: keyPair.publicKey }).eq('id', data.user_id);
 
-    window.location.href = '/feed';
+    window.location.href = '/onboarding';
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

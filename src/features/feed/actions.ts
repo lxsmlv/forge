@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { createNotification } from '@/features/notifications/actions';
 import { containsBannedWords } from '@/lib/moderation';
 
-export async function getPosts(mode: 'all' | 'following' = 'all') {
+export async function getPosts(mode: 'all' | 'following' = 'all', offset: number = 0, limit: number = 20) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -18,7 +18,7 @@ export async function getPosts(mode: 'all' | 'following' = 'all') {
       comments (id)
     `)
     .order('created_at', { ascending: false })
-    .limit(50);
+    .range(offset, offset + limit - 1);
 
   if (mode === 'following' && user) {
     const { data: follows } = await supabase
