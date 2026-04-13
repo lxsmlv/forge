@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useTransition } from 'react';
-import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame, Trophy, Share2, Flag, Bookmark, Eye } from 'lucide-react';
+import { useState, useTransition, useEffect } from 'react';
+import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame, Trophy, Share2, Flag, Bookmark, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { toggleLike, deletePost, updatePost, toggleBookmark, incrementViews } from './actions';
 import { CommentsSheet } from './CommentsSheet';
 import { Button } from '@/components/ui/button';
@@ -44,8 +44,26 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
   const [editing, setEditing] = useState(false);
   const [bookmarked, setBookmarked] = useState(post.is_bookmarked || false);
   const [showHeartAnim, setShowHeartAnim] = useState(false);
-  const [viewed, setViewed] = useState(false);
+  const [currentImg, setCurrentImg] = useState(0);
+  const [extraImages, setExtraImages] = useState<string[]>([]);
   const lastTapRef = { current: 0 };
+
+  const allImages = [post.image_url, ...extraImages];
+
+  useEffect(() => {
+    const { createClient } = require('@/lib/supabase/client');
+    const supabase = createClient();
+    supabase
+      .from('post_images')
+      .select('image_url, sort_order')
+      .eq('post_id', post.id)
+      .order('sort_order')
+      .then(({ data }: any) => {
+        if (data && data.length > 0) {
+          setExtraImages(data.map((d: any) => d.image_url).filter((url: string) => url !== post.image_url));
+        }
+      });
+  }, [post.id, post.image_url]);
   const [editCaption, setEditCaption] = useState(post.caption);
   const [editCategory, setEditCategory] = useState(post.category);
   const [isPending, startTransition] = useTransition();
@@ -148,7 +166,28 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
             lastTapRef.current = now;
           }}
         >
-          <img src={post.image_url} alt={caption} className="w-full h-full object-cover" draggable={false} />
+          <img src={allImages[currentImg]} alt={caption} className="w-full h-full object-cover" draggable={false} />
+
+          {allImages.length > 1 && (
+            <>
+              {currentImg > 0 && (
+                <button onClick={(e) => { e.stopPropagation(); setCurrentImg(currentImg - 1); }} className="absolute left-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-black/50 flex items-center justify-center">
+                  <ChevronLeft className="w-4 h-4 text-white" />
+                </button>
+              )}
+              {currentImg < allImages.length - 1 && (
+                <button onClick={(e) => { e.stopPropagation(); setCurrentImg(currentImg + 1); }} className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-black/50 flex items-center justify-center">
+                  <ChevronRight className="w-4 h-4 text-white" />
+                </button>
+              )}
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+                {allImages.map((_, i) => (
+                  <div key={i} className={`h-1.5 rounded-full transition-all ${i === currentImg ? 'bg-purple-500 w-3' : 'bg-zinc-600 w-1.5'}`} />
+                ))}
+              </div>
+            </>
+          )}
+
           {showHeartAnim && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <Heart className="w-20 h-20 fill-purple-500 text-purple-500 animate-ping" />

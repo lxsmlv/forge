@@ -3,9 +3,9 @@
 import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, ImagePlus, X, Dumbbell, Car, Flame, Trophy } from 'lucide-react';
+import { ArrowLeft, ImagePlus, X, Dumbbell, Car, Flame, Trophy, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { createPost } from '@/features/feed/actions';
+import { createClient } from '@/lib/supabase/client';
 
 const CATEGORIES = [
   { id: 'gym', label: 'Gym', icon: Dumbbell },
@@ -14,50 +14,79 @@ const CATEGORIES = [
   { id: 'sport', label: 'Sport', icon: Trophy },
 ] as const;
 
+interface ImageItem {
+  file: File;
+  preview: string;
+}
+
 export default function CreatePost() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [caption, setCaption] = useState('');
   const [category, setCategory] = useState<string>('lifestyle');
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [images, setImages] = useState<ImageItem[]>([]);
+  const [currentImage, setCurrentImage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setImageFile(file);
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
 
-    const reader = new FileReader();
-    reader.onloadend = () => setImagePreview(reader.result as string);
-    reader.readAsDataURL(file);
-  };
+    const newImages = files.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
 
-  const removeImage = () => {
-    setImagePreview(null);
-    setImageFile(null);
+    setImages((prev) => [...prev, ...newImages].slice(0, 10));
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
+  const removeImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+    if (currentImage >= images.length - 1) setCurrentImage(Math.max(0, images.length - 2));
+  };
+
   const handlePublish = async () => {
-    if (!imageFile) return;
+    if (images.length === 0) return;
 
     setLoading(true);
     setError('');
 
-    const formData = new FormData();
-    formData.append('image', imageFile);
-    formData.append('caption', caption);
-    formData.append('category', category);
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setError('Not authenticated'); setLoading(false); return; }
 
-    const result = await createPost(formData);
+    const uploadedUrls: string[] = [];
 
-    if (result?.error) {
-      setError(result.error);
-      setLoading(false);
-      return;
+    for (const img of images) {
+      const ext = img.file.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage.from('posts').upload(fileName, img.file);
+      if (uploadError) { setError(uploadError.message); setLoading(false); return; }
+
+      const { data: { publicUrl } } = supabase.storage.from('posts').getPublicUrl(fileName);
+      uploadedUrls.push(publicUrl);
+    }
+
+    const { data: post, error: insertError } = await supabase.from('posts').insert({
+      author_id: user.id,
+      image_url: uploadedUrls[0],
+      caption: caption || '',
+      category: category || 'lifestyle',
+    }).select('id').single();
+
+    if (insertError || !post) { setError(insertError?.message || 'Error'); setLoading(false); return; }
+
+    if (uploadedUrls.length > 1) {
+      const imageRows = uploadedUrls.map((url, i) => ({
+        post_id: post.id,
+        image_url: url,
+        sort_order: i,
+      }));
+      await supabase.from('post_images').insert(imageRows);
     }
 
     router.push('/feed');
@@ -73,7 +102,7 @@ export default function CreatePost() {
           <span className="text-sm font-medium text-zinc-400">New Post</span>
           <Button
             onClick={handlePublish}
-            disabled={!imageFile || loading}
+            disabled={images.length === 0 || loading}
             size="sm"
             className="bg-purple-600 hover:bg-purple-500 text-white font-bold shadow-[0_0_15px_rgba(147,51,234,0.3)] disabled:opacity-30 disabled:shadow-none transition-all"
           >
@@ -83,27 +112,54 @@ export default function CreatePost() {
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-6 flex flex-col gap-6">
-        {!imagePreview ? (
+        {images.length === 0 ? (
           <button
             onClick={() => fileInputRef.current?.click()}
             className="aspect-[4/3] rounded-xl border-2 border-dashed border-zinc-800 hover:border-purple-600/50 flex flex-col items-center justify-center gap-3 transition-colors bg-zinc-950"
           >
             <ImagePlus className="w-10 h-10 text-zinc-700" />
-            <span className="text-sm text-zinc-600">Tap to add photo</span>
+            <span className="text-sm text-zinc-600">Tap to add photos (up to 10)</span>
           </button>
         ) : (
           <div className="relative aspect-[4/3] rounded-xl overflow-hidden">
-            <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+            <img src={images[currentImage].preview} alt="" className="w-full h-full object-cover" />
             <button
-              onClick={removeImage}
-              className="absolute top-3 right-3 h-8 w-8 rounded-full bg-black/70 flex items-center justify-center hover:bg-black transition-colors"
+              onClick={() => removeImage(currentImage)}
+              className="absolute top-3 right-3 h-8 w-8 rounded-full bg-black/70 flex items-center justify-center hover:bg-black"
             >
               <X className="w-4 h-4 text-white" />
+            </button>
+
+            {images.length > 1 && (
+              <>
+                {currentImage > 0 && (
+                  <button onClick={() => setCurrentImage(currentImage - 1)} className="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-black/50 flex items-center justify-center">
+                    <ChevronLeft className="w-5 h-5 text-white" />
+                  </button>
+                )}
+                {currentImage < images.length - 1 && (
+                  <button onClick={() => setCurrentImage(currentImage + 1)} className="absolute right-12 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-black/50 flex items-center justify-center">
+                    <ChevronRight className="w-5 h-5 text-white" />
+                  </button>
+                )}
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                  {images.map((_, i) => (
+                    <div key={i} className={`h-1.5 w-1.5 rounded-full transition-all ${i === currentImage ? 'bg-purple-500 w-3' : 'bg-zinc-600'}`} />
+                  ))}
+                </div>
+              </>
+            )}
+
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute bottom-3 right-3 h-8 px-3 rounded-full bg-black/70 flex items-center gap-1.5 text-xs text-white hover:bg-black"
+            >
+              <ImagePlus className="w-3.5 h-3.5" /> {images.length}/10
             </button>
           </div>
         )}
 
-        <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
+        <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleImageSelect} className="hidden" />
 
         <Textarea
           placeholder="What's the story?"
