@@ -19,9 +19,28 @@ const bebasNeue = Bebas_Neue({
   subsets: ["latin"],
 });
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover' as const,
+};
+
 export const metadata: Metadata = {
   title: 'FORGE — Private Club',
   description: 'Lift. Drive. Live well. A private community for those who push forward.',
+  manifest: '/manifest.json',
+  themeColor: '#7c3aed',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'FORGE',
+  },
+  icons: {
+    icon: '/icon-192.png',
+    apple: '/icon-192.png',
+  },
 };
 
 export default function RootLayout({
