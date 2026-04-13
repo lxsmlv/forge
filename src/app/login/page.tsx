@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
+import { generateKeyPair, savePrivateKey, getStoredPrivateKey } from '@/lib/crypto';
 import Link from 'next/link';
 
 export default function Login() {
@@ -61,6 +62,19 @@ export default function Login() {
       setError('Invalid credentials');
       setLoading(false);
       return;
+    }
+
+    if (!getStoredPrivateKey()) {
+      const supabase2 = createClient();
+      const { data: { user } } = await supabase2.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase2.from('profiles').select('public_key').eq('id', user.id).single();
+        if (!profile?.public_key) {
+          const keyPair = await generateKeyPair();
+          savePrivateKey(keyPair.privateKey);
+          await supabase2.from('profiles').update({ public_key: keyPair.publicKey }).eq('id', user.id);
+        }
+      }
     }
 
     window.location.href = '/feed';

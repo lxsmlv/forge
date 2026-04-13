@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
+import { generateKeyPair, savePrivateKey } from '@/lib/crypto';
 
 function SignUpForm() {
   const searchParams = useSearchParams();
@@ -72,6 +73,10 @@ function SignUpForm() {
       setLoading(false);
       return;
     }
+
+    const keyPair = await generateKeyPair();
+    savePrivateKey(keyPair.privateKey);
+    await supabase.from('profiles').update({ public_key: keyPair.publicKey }).eq('id', data.user_id);
 
     window.location.href = '/feed';
   };

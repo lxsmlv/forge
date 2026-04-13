@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef, useTransition } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Send } from 'lucide-react';
-import { getMessages, sendMessage } from '@/features/messages/actions';
+import { ArrowLeft, Send, Shield } from 'lucide-react';
+import { getMessages, sendEncryptedMessage } from '@/features/messages/actions';
+import { decryptMessage, encryptMessage, getStoredPrivateKey } from '@/lib/crypto';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
 
@@ -13,6 +14,7 @@ export default function Chat() {
   const otherUserId = params.userId as string;
 
   const [messages, setMessages] = useState<any[]>([]);
+  const [decryptedMessages, setDecryptedMessages] = useState<any[]>([]);
   const [otherUser, setOtherUser] = useState<any>(null);
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(true);
@@ -23,7 +25,7 @@ export default function Chat() {
     const supabase = createClient();
     supabase
       .from('profiles')
-      .select('username, full_name, avatar_url')
+      .select('username, full_name, avatar_url, public_key')
       .eq('id', otherUserId)
       .single()
       .then(({ data }) => setOtherUser(data));
@@ -35,25 +37,47 @@ export default function Chat() {
   }, [otherUserId]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    async function decrypt() {
+      const results = await Promise.all(
+        messages.map(async (msg) => {
+          if (msg.encrypted_key && msg.iv) {
+            const decrypted = await decryptMessage(msg.text, msg.encrypted_key, msg.iv);
+            return { ...msg, text: decrypted };
+          }
+          return msg;
+        }),
+      );
+      setDecryptedMessages(results);
+    }
+    decrypt();
   }, [messages]);
 
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [decryptedMessages]);
+
   const handleSend = () => {
-    if (!text.trim()) return;
+    if (!text.trim() || !otherUser) return;
     const currentText = text;
     setText('');
 
-    setMessages((prev) => [
+    setDecryptedMessages((prev) => [
       ...prev,
-      { id: Date.now().toString(), text: currentText, is_mine: true, time: 'now' },
+      { id: Date.now().toString(), text: currentText, is_mine: true, time: 'now', encrypted: true },
     ]);
 
     startTransition(async () => {
-      await sendMessage(otherUserId, currentText);
+      if (otherUser.public_key) {
+        const encrypted = await encryptMessage(currentText, otherUser.public_key);
+        await sendEncryptedMessage(otherUserId, encrypted.encryptedText, encrypted.encryptedKey, encrypted.iv);
+      } else {
+        await sendEncryptedMessage(otherUserId, currentText, '', '');
+      }
     });
   };
 
   const initials = otherUser?.full_name?.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2) || '?';
+  const hasE2E = !!otherUser?.public_key && !!getStoredPrivateKey();
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
@@ -71,7 +95,15 @@ export default function Chat() {
                   initials
                 )}
               </div>
-              <span className="text-sm font-medium text-white">@{otherUser.username}</span>
+              <div className="flex-1">
+                <span className="text-sm font-medium text-white">@{otherUser.username}</span>
+                {hasE2E && (
+                  <div className="flex items-center gap-1">
+                    <Shield className="w-3 h-3 text-green-400" />
+                    <span className="text-[10px] text-green-400">end-to-end encrypted</span>
+                  </div>
+                )}
+              </div>
             </>
           )}
         </div>
@@ -82,13 +114,15 @@ export default function Chat() {
           <div className="flex justify-center py-20">
             <div className="h-8 w-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
           </div>
-        ) : messages.length === 0 ? (
+        ) : decryptedMessages.length === 0 ? (
           <div className="flex flex-col items-center py-20 text-zinc-600">
-            <p className="text-sm">Start the conversation</p>
+            <Shield className="w-8 h-8 mb-2 text-green-400/50" />
+            <p className="text-sm">Messages are end-to-end encrypted</p>
+            <p className="text-xs text-zinc-700 mt-1">Only you and @{otherUser?.username} can read them</p>
           </div>
         ) : (
           <div className="flex flex-col gap-2">
-            {messages.map((msg) => (
+            {decryptedMessages.map((msg) => (
               <div key={msg.id} className={`flex ${msg.is_mine ? 'justify-end' : 'justify-start'}`}>
                 <div
                   className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm ${
@@ -110,7 +144,7 @@ export default function Chat() {
       <div className="sticky bottom-0 bg-black/80 backdrop-blur-md border-t border-zinc-800/50">
         <div className="max-w-lg mx-auto px-4 py-3 flex gap-2">
           <Input
-            placeholder="Message..."
+            placeholder={hasE2E ? '🔒 Encrypted message...' : 'Message...'}
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
