@@ -5,11 +5,11 @@ import { PostCard } from '@/features/feed/PostCard';
 import { Cabinet } from '@/features/cabinet/Cabinet';
 import { getPosts } from '@/features/feed/actions';
 import { FeedHeader } from '@/features/feed/FeedHeader';
-import { Home, PenSquare, Users, Globe, RefreshCw, Dumbbell, Car, Flame, Trophy } from 'lucide-react';
+import { Home, PenSquare, Users, Globe, RefreshCw, Dumbbell, Car, Flame, Trophy, Bookmark } from 'lucide-react';
 
 export default function Feed() {
   const [activeTab, setActiveTab] = useState<'feed' | 'cabinet'>('feed');
-  const [feedMode, setFeedMode] = useState<'all' | 'following'>('all');
+  const [feedMode, setFeedMode] = useState<'all' | 'following' | 'bookmarks'>('all');
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -116,6 +116,17 @@ export default function Feed() {
               >
                 <Users className="w-3 h-3" />
                 Following
+              </button>
+              <button
+                onClick={() => setFeedMode('bookmarks')}
+                className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all shrink-0 ${
+                  feedMode === ('bookmarks')
+                    ? 'border-purple-600/40 text-purple-400 bg-purple-600/10'
+                    : 'border-zinc-800 text-zinc-600 hover:border-zinc-700'
+                }`}
+              >
+                <Bookmark className="w-3 h-3" />
+                Saved
               </button>
 
               <div className="w-px h-5 bg-zinc-800 shrink-0" />

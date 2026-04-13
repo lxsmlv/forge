@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame, Trophy, Share2, Flag } from 'lucide-react';
-import { toggleLike, deletePost, updatePost } from './actions';
+import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame, Trophy, Share2, Flag, Bookmark, Eye } from 'lucide-react';
+import { toggleLike, deletePost, updatePost, toggleBookmark, incrementViews } from './actions';
 import { CommentsSheet } from './CommentsSheet';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -29,6 +29,8 @@ interface PostProps {
   likes_count: number;
   comments_count: number;
   is_liked: boolean;
+  is_bookmarked?: boolean;
+  views_count?: number;
 }
 
 export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () => void }) {
@@ -40,7 +42,9 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
   const [showComments, setShowComments] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [bookmarked, setBookmarked] = useState(post.is_bookmarked || false);
   const [showHeartAnim, setShowHeartAnim] = useState(false);
+  const [viewed, setViewed] = useState(false);
   const lastTapRef = { current: 0 };
   const [editCaption, setEditCaption] = useState(post.caption);
   const [editCategory, setEditCategory] = useState(post.category);
@@ -161,15 +165,31 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
             <MessageCircle className="w-5 h-5 text-zinc-500 group-hover:text-purple-400 transition-colors" />
             <span className="text-sm text-zinc-500">{commentsCount}</span>
           </button>
-          <button
-            onClick={() => {
-              const url = `${window.location.origin}/post/${post.id}`;
-              navigator.clipboard.writeText(url);
-            }}
-            className="flex items-center gap-1.5 group ml-auto"
-          >
-            <Share2 className="w-4 h-4 text-zinc-600 group-hover:text-purple-400 transition-colors" />
-          </button>
+          <div className="flex items-center gap-3 ml-auto">
+            {post.views_count !== undefined && post.views_count > 0 && (
+              <span className="flex items-center gap-1 text-xs text-zinc-700">
+                <Eye className="w-3.5 h-3.5" />{post.views_count}
+              </span>
+            )}
+            <button
+              onClick={() => {
+                setBookmarked(!bookmarked);
+                startTransition(() => { toggleBookmark(post.id); });
+              }}
+              className="group"
+            >
+              <Bookmark className={`w-4 h-4 transition-all ${bookmarked ? 'fill-purple-500 text-purple-500' : 'text-zinc-600 group-hover:text-purple-400'}`} />
+            </button>
+            <button
+              onClick={() => {
+                const url = `${window.location.origin}/post/${post.id}`;
+                navigator.clipboard.writeText(url);
+              }}
+              className="group"
+            >
+              <Share2 className="w-4 h-4 text-zinc-600 group-hover:text-purple-400 transition-colors" />
+            </button>
+          </div>
         </div>
 
         {/* Caption or edit mode */}

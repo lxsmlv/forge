@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { createNotification } from '@/features/notifications/actions';
 import { containsBannedWords } from '@/lib/moderation';
 
-export async function getPosts(mode: 'all' | 'following' = 'all', offset: number = 0, limit: number = 20) {
+export async function getPosts(mode: 'all' | 'following' | 'bookmarks' = 'all', offset: number = 0, limit: number = 20) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -15,7 +15,8 @@ export async function getPosts(mode: 'all' | 'following' = 'all', offset: number
       id, image_url, caption, category, created_at, author_id,
       author:profiles!author_id (username, full_name, avatar_url),
       likes (user_id),
-      comments (id)
+      comments (id),
+      bookmarks (user_id)
     `)
     .order('created_at', { ascending: false })
     .range(offset, offset + limit - 1);
@@ -30,6 +31,17 @@ export async function getPosts(mode: 'all' | 'following' = 'all', offset: number
     followingIds.push(user.id);
 
     query = query.in('author_id', followingIds);
+  }
+
+  if (mode === 'bookmarks' && user) {
+    const { data: bms } = await supabase
+      .from('bookmarks')
+      .select('post_id')
+      .eq('user_id', user.id);
+
+    const postIds = (bms || []).map((b) => b.post_id);
+    if (postIds.length === 0) return [];
+    query = query.in('id', postIds);
   }
 
   const { data: posts, error } = await query;
@@ -49,6 +61,7 @@ export async function getPosts(mode: 'all' | 'following' = 'all', offset: number
     likes_count: post.likes?.length || 0,
     comments_count: post.comments?.length || 0,
     is_liked: user ? post.likes?.some((l: any) => l.user_id === user.id) : false,
+    is_bookmarked: user ? post.bookmarks?.some((b: any) => b.user_id === user.id) : false,
   }));
 }
 
@@ -135,6 +148,32 @@ export async function deletePost(postId: string) {
 
   await supabase.from('posts').delete().eq('id', postId).eq('author_id', user.id);
   revalidatePath('/feed');
+}
+
+export async function toggleBookmark(postId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data: existing } = await supabase
+    .from('bookmarks')
+    .select('id')
+    .eq('post_id', postId)
+    .eq('user_id', user.id)
+    .maybeSingle();
+
+  if (existing) {
+    await supabase.from('bookmarks').delete().eq('id', existing.id);
+  } else {
+    await supabase.from('bookmarks').insert({ post_id: postId, user_id: user.id });
+  }
+
+  revalidatePath('/feed');
+}
+
+export async function incrementViews(postId: string) {
+  const supabase = await createClient();
+  await supabase.rpc('increment_views', { post_id: postId }).catch(() => {});
 }
 
 function formatTimeAgo(dateStr: string): string {
