@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Plus, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getStories, createStory } from './actions';
 
@@ -30,18 +30,24 @@ export function StoriesBar() {
     setCurrentStory(0);
   };
 
-  const nextStory = () => {
+  const nextStory = useCallback(() => {
     if (!viewing) return;
     if (currentStory < viewing.stories.length - 1) {
       setCurrentStory(currentStory + 1);
     } else {
       setViewing(null);
     }
-  };
+  }, [viewing, currentStory]);
 
   const prevStory = () => {
     if (currentStory > 0) setCurrentStory(currentStory - 1);
   };
+
+  useEffect(() => {
+    if (!viewing) return;
+    const timer = setTimeout(nextStory, 5000);
+    return () => clearTimeout(timer);
+  }, [viewing, currentStory, nextStory]);
 
   return (
     <>

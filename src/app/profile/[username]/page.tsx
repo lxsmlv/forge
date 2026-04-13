@@ -137,14 +137,14 @@ export default function UserProfile() {
               <span className="text-lg font-bold text-white">{profile.posts_count}</span>
               <span className="text-xs text-zinc-600">Posts</span>
             </div>
-            <div className="flex flex-col items-center">
+            <Link href={`/profile/${username}/followers`} className="flex flex-col items-center hover:opacity-80 transition-opacity">
               <span className="text-lg font-bold text-white">{followersCount}</span>
               <span className="text-xs text-zinc-600">Followers</span>
-            </div>
-            <div className="flex flex-col items-center">
+            </Link>
+            <Link href={`/profile/${username}/following`} className="flex flex-col items-center hover:opacity-80 transition-opacity">
               <span className="text-lg font-bold text-white">{profile.following_count}</span>
               <span className="text-xs text-zinc-600">Following</span>
-            </div>
+            </Link>
             <div className="flex flex-col items-center">
               <span className="text-lg font-bold text-white">{profile.workouts_count}</span>
               <span className="text-xs text-zinc-600">Workouts</span>
