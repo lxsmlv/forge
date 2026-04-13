@@ -112,6 +112,20 @@ export async function createPost(formData: FormData) {
   return { success: true };
 }
 
+export async function updatePost(postId: string, caption: string, category: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  await supabase
+    .from('posts')
+    .update({ caption, category })
+    .eq('id', postId)
+    .eq('author_id', user.id);
+
+  revalidatePath('/feed');
+}
+
 export async function deletePost(postId: string) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

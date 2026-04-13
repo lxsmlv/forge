@@ -1,10 +1,19 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Heart, MessageCircle, Trash2, MoreVertical } from 'lucide-react';
-import { toggleLike, deletePost } from './actions';
+import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame, Trophy } from 'lucide-react';
+import { toggleLike, deletePost, updatePost } from './actions';
 import { CommentsSheet } from './CommentsSheet';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
+
+const CATEGORIES = [
+  { id: 'gym', label: 'Gym', icon: Dumbbell },
+  { id: 'cars', label: 'Cars', icon: Car },
+  { id: 'lifestyle', label: 'Lifestyle', icon: Flame },
+  { id: 'sport', label: 'Sport', icon: Trophy },
+] as const;
 
 interface PostProps {
   id: string;
@@ -26,8 +35,13 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
   const [liked, setLiked] = useState(post.is_liked);
   const [likesCount, setLikesCount] = useState(post.likes_count);
   const [commentsCount, setCommentsCount] = useState(post.comments_count);
+  const [caption, setCaption] = useState(post.caption);
+  const [category, setCategory] = useState(post.category);
   const [showComments, setShowComments] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const [editCaption, setEditCaption] = useState(post.caption);
+  const [editCategory, setEditCategory] = useState(post.category);
   const [isPending, startTransition] = useTransition();
 
   const handleLike = () => {
@@ -42,6 +56,13 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
       await deletePost(post.id);
       onDeleted?.();
     });
+  };
+
+  const handleSaveEdit = () => {
+    setCaption(editCaption);
+    setCategory(editCategory);
+    setEditing(false);
+    startTransition(() => { updatePost(post.id, editCaption, editCategory); });
   };
 
   const initials = post.author.full_name
@@ -64,7 +85,7 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
           </Link>
           <div className="flex items-center gap-2">
             <span className="text-xs text-zinc-700 bg-zinc-900 px-2 py-1 rounded-full uppercase tracking-wider">
-              {post.category}
+              {category}
             </span>
             <div className="relative">
               <button onClick={() => setShowMenu(!showMenu)} className="text-zinc-700 hover:text-zinc-400 transition-colors">
@@ -72,6 +93,12 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
               </button>
               {showMenu && (
                 <div className="absolute right-0 top-6 bg-zinc-900 border border-zinc-800 rounded-lg shadow-lg z-10 py-1 min-w-[120px]">
+                  <button
+                    onClick={() => { setShowMenu(false); setEditing(true); setEditCaption(caption); setEditCategory(category); }}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 transition-colors"
+                  >
+                    <Edit3 className="w-4 h-4" /> Edit
+                  </button>
                   <button
                     onClick={() => { setShowMenu(false); handleDelete(); }}
                     className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-zinc-800 transition-colors"
@@ -85,7 +112,7 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
         </div>
 
         <div className="relative aspect-[4/3] bg-zinc-900">
-          <img src={post.image_url} alt={post.caption} className="w-full h-full object-cover" />
+          <img src={post.image_url} alt={caption} className="w-full h-full object-cover" />
         </div>
 
         <div className="px-4 py-3 flex items-center gap-5">
@@ -99,14 +126,47 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
           </button>
         </div>
 
-        {post.caption && (
+        {/* Caption or edit mode */}
+        {editing ? (
+          <div className="px-4 pb-4 flex flex-col gap-3">
+            <Textarea
+              value={editCaption}
+              onChange={(e) => setEditCaption(e.target.value)}
+              rows={2}
+              autoFocus
+              className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30 resize-none text-sm"
+            />
+            <div className="flex gap-1.5">
+              {CATEGORIES.map((cat) => {
+                const Icon = cat.icon;
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setEditCategory(cat.id)}
+                    className={`flex items-center gap-1 text-xs px-2 py-1 rounded-full border transition-all ${
+                      editCategory === cat.id
+                        ? 'bg-purple-600/20 border-purple-600/40 text-purple-400'
+                        : 'border-zinc-800 text-zinc-600'
+                    }`}
+                  >
+                    <Icon className="w-3 h-3" />{cat.label}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="flex gap-2">
+              <Button onClick={handleSaveEdit} size="sm" className="bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs">Save</Button>
+              <Button onClick={() => setEditing(false)} size="sm" variant="ghost" className="text-zinc-500 hover:text-white text-xs">Cancel</Button>
+            </div>
+          </div>
+        ) : caption ? (
           <div className="px-4 pb-4">
             <p className="text-sm text-zinc-300">
               <span className="font-semibold text-white mr-1.5">@{post.author.username}</span>
-              {post.caption}
+              {caption}
             </p>
           </div>
-        )}
+        ) : null}
       </div>
 
       {showComments && (
