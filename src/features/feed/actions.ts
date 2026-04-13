@@ -179,7 +179,7 @@ export async function toggleBookmark(postId: string) {
 
 export async function incrementViews(postId: string) {
   const supabase = await createClient();
-  await supabase.rpc('increment_views', { post_id: postId }).catch(() => {});
+  try { await supabase.rpc('increment_views', { post_id: postId }); } catch {}
 }
 
 function formatTimeAgo(dateStr: string): string {

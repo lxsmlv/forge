@@ -18,7 +18,7 @@ export default function Feed() {
   const [hasMore, setHasMore] = useState(true);
   const observerRef = useRef<HTMLDivElement>(null);
 
-  const loadPosts = (mode: 'all' | 'following') => {
+  const loadPosts = (mode: 'all' | 'following' | 'bookmarks' | 'trending') => {
     setLoading(true);
     setHasMore(true);
     getPosts(mode, 0, 20).then((data) => {
