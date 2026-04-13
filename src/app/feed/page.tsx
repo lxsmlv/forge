@@ -6,11 +6,12 @@ import { Cabinet } from '@/features/cabinet/Cabinet';
 import { getPosts } from '@/features/feed/actions';
 import { FeedHeader } from '@/features/feed/FeedHeader';
 import Link from 'next/link';
-import { Plus, Home, PenSquare, Users, Globe } from 'lucide-react';
+import { Plus, Home, PenSquare, Users, Globe, RefreshCw, Dumbbell, Car, Flame, Trophy } from 'lucide-react';
 
 export default function Feed() {
   const [activeTab, setActiveTab] = useState<'feed' | 'cabinet'>('feed');
   const [feedMode, setFeedMode] = useState<'all' | 'following'>('all');
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,6 +26,10 @@ export default function Feed() {
   useEffect(() => {
     loadPosts(feedMode);
   }, [feedMode]);
+
+  const filteredPosts = categoryFilter
+    ? posts.filter((p) => p.category === categoryFilter)
+    : posts;
 
   const handlePostDeleted = () => {
     loadPosts(feedMode);
@@ -64,29 +69,58 @@ export default function Feed() {
       <main className="max-w-lg mx-auto px-4 py-4">
         {activeTab === 'feed' ? (
           <>
-            {/* Feed mode tabs */}
-            <div className="flex gap-3 mb-4">
+            {/* Feed mode + category filters */}
+            <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1 scrollbar-hide">
               <button
                 onClick={() => setFeedMode('all')}
-                className={`flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border transition-all ${
+                className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all shrink-0 ${
                   feedMode === 'all'
                     ? 'border-purple-600/40 text-purple-400 bg-purple-600/10'
                     : 'border-zinc-800 text-zinc-600 hover:border-zinc-700'
                 }`}
               >
-                <Globe className="w-3.5 h-3.5" />
+                <Globe className="w-3 h-3" />
                 All
               </button>
               <button
                 onClick={() => setFeedMode('following')}
-                className={`flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-full border transition-all ${
+                className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all shrink-0 ${
                   feedMode === 'following'
                     ? 'border-purple-600/40 text-purple-400 bg-purple-600/10'
                     : 'border-zinc-800 text-zinc-600 hover:border-zinc-700'
                 }`}
               >
-                <Users className="w-3.5 h-3.5" />
+                <Users className="w-3 h-3" />
                 Following
+              </button>
+
+              <div className="w-px h-5 bg-zinc-800 shrink-0" />
+
+              {[
+                { id: 'gym', icon: Dumbbell },
+                { id: 'cars', icon: Car },
+                { id: 'lifestyle', icon: Flame },
+                { id: 'sport', icon: Trophy },
+              ].map(({ id, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => setCategoryFilter(categoryFilter === id ? null : id)}
+                  className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-full border transition-all shrink-0 capitalize ${
+                    categoryFilter === id
+                      ? 'border-purple-600/40 text-purple-400 bg-purple-600/10'
+                      : 'border-zinc-800 text-zinc-600 hover:border-zinc-700'
+                  }`}
+                >
+                  <Icon className="w-3 h-3" />
+                  {id}
+                </button>
+              ))}
+
+              <button
+                onClick={() => loadPosts(feedMode)}
+                className="h-7 w-7 rounded-full border border-zinc-800 flex items-center justify-center text-zinc-600 hover:text-purple-400 hover:border-purple-600/40 transition-all shrink-0"
+              >
+                <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
               </button>
             </div>
 
@@ -94,9 +128,9 @@ export default function Feed() {
               <div className="flex justify-center py-20">
                 <div className="h-8 w-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
               </div>
-            ) : posts.length > 0 ? (
+            ) : filteredPosts.length > 0 ? (
               <div className="flex flex-col gap-4">
-                {posts.map((post) => (
+                {filteredPosts.map((post) => (
                   <PostCard key={post.id} post={post} onDeleted={handlePostDeleted} />
                 ))}
               </div>

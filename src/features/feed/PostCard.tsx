@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame, Trophy } from 'lucide-react';
+import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame, Trophy, Share2 } from 'lucide-react';
 import { toggleLike, deletePost, updatePost } from './actions';
 import { CommentsSheet } from './CommentsSheet';
 import { Button } from '@/components/ui/button';
@@ -123,6 +123,15 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
           <button onClick={() => setShowComments(true)} className="flex items-center gap-1.5 group">
             <MessageCircle className="w-5 h-5 text-zinc-500 group-hover:text-purple-400 transition-colors" />
             <span className="text-sm text-zinc-500">{commentsCount}</span>
+          </button>
+          <button
+            onClick={() => {
+              const url = `${window.location.origin}/post/${post.id}`;
+              navigator.clipboard.writeText(url);
+            }}
+            className="flex items-center gap-1.5 group ml-auto"
+          >
+            <Share2 className="w-4 h-4 text-zinc-600 group-hover:text-purple-400 transition-colors" />
           </button>
         </div>
 
