@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useTransition, useEffect } from 'react';
-import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame, Trophy, Share2, Flag, Bookmark, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
-import { toggleLike, deletePost, updatePost, toggleBookmark, incrementViews } from './actions';
+import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame, Trophy, Share2, Flag, Bookmark, Eye, ChevronLeft, ChevronRight, Repeat2 } from 'lucide-react';
+import { toggleLike, deletePost, updatePost, toggleBookmark, incrementViews, repostPost } from './actions';
 import { CommentsSheet } from './CommentsSheet';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
+import { renderTextWithHashtags } from '@/lib/hashtags';
 
 const CATEGORIES = [
   { id: 'gym', label: 'Gym', icon: Dumbbell },
@@ -124,6 +125,18 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
                     <Edit3 className="w-4 h-4" /> Edit
                   </button>
                   <button
+                    onClick={() => {
+                      setShowMenu(false);
+                      startTransition(async () => {
+                        await repostPost(post.id);
+                        onDeleted?.();
+                      });
+                    }}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 transition-colors"
+                  >
+                    <Repeat2 className="w-4 h-4" /> Repost
+                  </button>
+                  <button
                     onClick={() => { setShowMenu(false); handleDelete(); }}
                     className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-zinc-800 transition-colors"
                   >
@@ -231,7 +244,25 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
           </div>
         </div>
 
-        {/* Caption or edit mode */}
+        {/* Caption */}
+        {!editing && caption && (
+          <div className="px-4 pb-4">
+            <p className="text-sm text-zinc-300">
+              <span className="font-semibold text-white mr-1.5">@{post.author.username}</span>
+              {renderTextWithHashtags(caption).map((part, i) =>
+                part.type === 'hashtag' ? (
+                  <Link key={i} href={`/hashtag/${part.value.slice(1)}`} className="text-purple-400 hover:text-purple-300">
+                    {part.value}
+                  </Link>
+                ) : (
+                  <span key={i}>{part.value}</span>
+                )
+              )}
+            </p>
+          </div>
+        )}
+
+        {/* Edit mode */}
         {editing ? (
           <div className="px-4 pb-4 flex flex-col gap-3">
             <Textarea
@@ -263,13 +294,6 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
               <Button onClick={handleSaveEdit} size="sm" className="bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs">Save</Button>
               <Button onClick={() => setEditing(false)} size="sm" variant="ghost" className="text-zinc-500 hover:text-white text-xs">Cancel</Button>
             </div>
-          </div>
-        ) : caption ? (
-          <div className="px-4 pb-4">
-            <p className="text-sm text-zinc-300">
-              <span className="font-semibold text-white mr-1.5">@{post.author.username}</span>
-              {caption}
-            </p>
           </div>
         ) : null}
       </div>

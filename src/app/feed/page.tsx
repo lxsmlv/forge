@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { PostCard } from '@/features/feed/PostCard';
 import { Cabinet } from '@/features/cabinet/Cabinet';
 import { getPosts } from '@/features/feed/actions';
+import { updateStreak } from '@/features/feed/streak-actions';
 import { FeedHeader } from '@/features/feed/FeedHeader';
 import { StoriesBar } from '@/features/stories/StoriesBar';
 import { Home, PenSquare, Users, Globe, RefreshCw, Dumbbell, Car, Flame, Trophy, Bookmark } from 'lucide-react';
@@ -40,6 +41,7 @@ export default function Feed() {
 
   useEffect(() => {
     loadPosts(feedMode);
+    updateStreak();
   }, [feedMode]);
 
   useEffect(() => {

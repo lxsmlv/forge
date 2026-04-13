@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { createNotification } from '@/features/notifications/actions';
 import { containsBannedWords } from '@/lib/moderation';
+import { extractHashtags } from '@/lib/hashtags';
 
 export async function getPosts(mode: 'all' | 'following' | 'bookmarks' | 'trending' = 'all', offset: number = 0, limit: number = 20) {
   const supabase = await createClient();
@@ -120,14 +121,37 @@ export async function createPost(formData: FormData) {
     .from('posts')
     .getPublicUrl(fileName);
 
-  const { error: insertError } = await supabase.from('posts').insert({
+  const { data: postData, error: insertError } = await supabase.from('posts').insert({
     author_id: user.id,
     image_url: publicUrl,
     caption: caption || '',
     category: category || 'lifestyle',
-  });
+  }).select('id').single();
 
-  if (insertError) return { error: insertError.message };
+  if (insertError || !postData) return { error: insertError?.message || 'Error' };
+
+  const tags = extractHashtags(caption || '');
+  if (tags.length > 0) {
+    for (const tag of tags) {
+      const { data: existing } = await supabase
+        .from('hashtags')
+        .select('id')
+        .eq('name', tag)
+        .maybeSingle();
+
+      let hashtagId: string;
+      if (existing) {
+        hashtagId = existing.id;
+        await supabase.from('hashtags').update({ posts_count: (existing as any).posts_count + 1 }).eq('id', hashtagId);
+      } else {
+        const { data: newTag } = await supabase.from('hashtags').insert({ name: tag, posts_count: 1 }).select('id').single();
+        if (!newTag) continue;
+        hashtagId = newTag.id;
+      }
+
+      await supabase.from('post_hashtags').insert({ post_id: postData.id, hashtag_id: hashtagId });
+    }
+  }
 
   revalidatePath('/feed');
   return { success: true };
@@ -143,6 +167,30 @@ export async function updatePost(postId: string, caption: string, category: stri
     .update({ caption, category })
     .eq('id', postId)
     .eq('author_id', user.id);
+
+  revalidatePath('/feed');
+}
+
+export async function repostPost(postId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { data: original } = await supabase
+    .from('posts')
+    .select('image_url, caption, category')
+    .eq('id', postId)
+    .single();
+
+  if (!original) return;
+
+  await supabase.from('posts').insert({
+    author_id: user.id,
+    image_url: original.image_url,
+    caption: original.caption,
+    category: original.category,
+    repost_of: postId,
+  });
 
   revalidatePath('/feed');
 }
