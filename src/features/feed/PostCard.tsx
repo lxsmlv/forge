@@ -40,6 +40,8 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
   const [showComments, setShowComments] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [showHeartAnim, setShowHeartAnim] = useState(false);
+  const lastTapRef = { current: 0 };
   const [editCaption, setEditCaption] = useState(post.caption);
   const [editCategory, setEditCategory] = useState(post.category);
   const [isPending, startTransition] = useTransition();
@@ -111,8 +113,24 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
           </div>
         </div>
 
-        <div className="relative aspect-[4/3] bg-zinc-900">
-          <img src={post.image_url} alt={caption} className="w-full h-full object-cover" />
+        <div
+          className="relative aspect-[4/3] bg-zinc-900 select-none"
+          onClick={() => {
+            const now = Date.now();
+            if (now - lastTapRef.current < 300) {
+              if (!liked) handleLike();
+              setShowHeartAnim(true);
+              setTimeout(() => setShowHeartAnim(false), 800);
+            }
+            lastTapRef.current = now;
+          }}
+        >
+          <img src={post.image_url} alt={caption} className="w-full h-full object-cover" draggable={false} />
+          {showHeartAnim && (
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <Heart className="w-20 h-20 fill-purple-500 text-purple-500 animate-ping" />
+            </div>
+          )}
         </div>
 
         <div className="px-4 py-3 flex items-center gap-5">
