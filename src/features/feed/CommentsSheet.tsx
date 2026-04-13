@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useTransition, useRef } from 'react';
-import { X, Send } from 'lucide-react';
-import { getComments, addComment } from './comments-actions';
+import { X, Send, Trash2 } from 'lucide-react';
+import { getComments, addComment, deleteComment } from './comments-actions';
 import { Input } from '@/components/ui/input';
 
 interface Props {
@@ -68,7 +68,7 @@ export function CommentsSheet({ postId, onClose }: Props) {
                 .slice(0, 2);
 
               return (
-                <div key={comment.id} className="flex gap-3">
+                <div key={comment.id} className="flex gap-3 group">
                   <div className="h-8 w-8 shrink-0 rounded-full bg-purple-600/20 border border-purple-600/30 flex items-center justify-center text-xs font-bold text-purple-400 overflow-hidden">
                     {comment.author.avatar_url ? (
                       <img src={comment.author.avatar_url} alt="" className="w-full h-full object-cover" />
@@ -83,6 +83,16 @@ export function CommentsSheet({ postId, onClose }: Props) {
                     </div>
                     <p className="text-sm text-zinc-300 mt-0.5">{comment.text}</p>
                   </div>
+                  <button
+                    onClick={async () => {
+                      await deleteComment(comment.id);
+                      const updated = await getComments(postId);
+                      setComments(updated);
+                    }}
+                    className="shrink-0 text-zinc-800 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
                 </div>
               );
             })

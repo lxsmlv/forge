@@ -41,6 +41,20 @@ export async function addComment(postId: string, text: string) {
   revalidatePath('/feed');
 }
 
+export async function deleteComment(commentId: string) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  await supabase
+    .from('comments')
+    .delete()
+    .eq('id', commentId)
+    .eq('author_id', user.id);
+
+  revalidatePath('/feed');
+}
+
 function formatTimeAgo(dateStr: string): string {
   const now = new Date();
   const date = new Date(dateStr);
