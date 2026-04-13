@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame, Trophy, Share2 } from 'lucide-react';
+import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame, Trophy, Share2, Flag } from 'lucide-react';
 import { toggleLike, deletePost, updatePost } from './actions';
 import { CommentsSheet } from './CommentsSheet';
 import { Button } from '@/components/ui/button';
@@ -106,6 +106,25 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
                     className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-zinc-800 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" /> Delete
+                  </button>
+                  <button
+                    onClick={async () => {
+                      setShowMenu(false);
+                      const { createClient } = await import('@/lib/supabase/client');
+                      const supabase = createClient();
+                      const { data: { user } } = await supabase.auth.getUser();
+                      if (user) {
+                        await supabase.from('reports').insert({
+                          reporter_id: user.id,
+                          post_id: post.id,
+                          reason: 'inappropriate content',
+                        });
+                        alert('Report submitted. Thank you.');
+                      }
+                    }}
+                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-400 hover:bg-zinc-800 transition-colors"
+                  >
+                    <Flag className="w-4 h-4" /> Report
                   </button>
                 </div>
               )}

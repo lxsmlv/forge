@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { createNotification } from '@/features/notifications/actions';
+import { containsBannedWords } from '@/lib/moderation';
 
 export async function getPosts(mode: 'all' | 'following' = 'all') {
   const supabase = await createClient();
@@ -85,6 +86,7 @@ export async function createPost(formData: FormData) {
   const category = formData.get('category') as string;
 
   if (!file || file.size === 0) return { error: 'Image required' };
+  if (caption && containsBannedWords(caption)) return { error: 'Post contains inappropriate language' };
 
   const ext = file.name.split('.').pop();
   const fileName = `${user.id}/${Date.now()}.${ext}`;

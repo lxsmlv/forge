@@ -94,7 +94,7 @@ export default function Home() {
             showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
           }`}
         >
-          <p className="text-[2.2vw] text-zinc-500 tracking-[0.15em]">
+          <p className="text-sm sm:text-base md:text-[2.2vw] text-zinc-500 tracking-[0.1em] sm:tracking-[0.15em] px-4">
             Private club for those who lift, drive, and live well.
           </p>
 
@@ -120,7 +120,7 @@ export default function Home() {
                   }}
                   onKeyDown={handleKeyDown}
                   autoFocus
-                  className="w-64 bg-zinc-900 border-zinc-800 text-white text-center tracking-[0.3em] placeholder:text-zinc-600 placeholder:tracking-[0.3em] focus:border-purple-600 focus:ring-purple-600/30"
+                  className="w-48 sm:w-64 bg-zinc-900 border-zinc-800 text-white text-center tracking-[0.2em] sm:tracking-[0.3em] placeholder:text-zinc-600 placeholder:tracking-[0.2em] sm:placeholder:tracking-[0.3em] focus:border-purple-600 focus:ring-purple-600/30"
                 />
                 <Button
                   onClick={handleSubmitCode}

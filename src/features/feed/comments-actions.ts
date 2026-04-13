@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { createNotification } from '@/features/notifications/actions';
+import { containsBannedWords } from '@/lib/moderation';
 
 export async function getComments(postId: string) {
   const supabase = await createClient();
@@ -28,6 +29,7 @@ export async function addComment(postId: string, text: string) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user || !text.trim()) return;
+  if (containsBannedWords(text)) return;
 
   await supabase.from('comments').insert({
     post_id: postId,
