@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /terms
+Allow: /privacy
+Disallow: /feed
+Disallow: /profile
+Disallow: /messages
+Disallow: /settings
+Disallow: /admin
+Disallow: /create
+Disallow: /cabinet
+Disallow: /api
+
+Sitemap: https://forgeclub.app/sitemap.xml
