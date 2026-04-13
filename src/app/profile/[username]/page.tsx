@@ -4,7 +4,8 @@ import { useState, useEffect, useTransition } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getProfileByUsername, toggleFollow } from '@/features/profile/follow-actions';
 import { PostCard } from '@/features/feed/PostCard';
-import { ArrowLeft, Car, Dumbbell, MapPin, UserPlus, UserCheck } from 'lucide-react';
+import { ArrowLeft, Car, Dumbbell, MapPin, UserPlus, UserCheck, MessageCircle } from 'lucide-react';
+import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
@@ -106,22 +107,30 @@ export default function UserProfile() {
             </div>
           )}
 
-          {/* Follow button */}
-          <Button
-            onClick={handleFollow}
-            disabled={isPending}
-            className={`px-6 font-bold transition-all ${
-              following
-                ? 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300'
-                : 'bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_20px_rgba(147,51,234,0.4)]'
-            }`}
-          >
-            {following ? (
-              <><UserCheck className="w-4 h-4 mr-2" />Following</>
-            ) : (
-              <><UserPlus className="w-4 h-4 mr-2" />Follow</>
-            )}
-          </Button>
+          {/* Follow + Message buttons */}
+          <div className="flex gap-2">
+            <Button
+              onClick={handleFollow}
+              disabled={isPending}
+              className={`px-6 font-bold transition-all ${
+                following
+                  ? 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300'
+                  : 'bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_20px_rgba(147,51,234,0.4)]'
+              }`}
+            >
+              {following ? (
+                <><UserCheck className="w-4 h-4 mr-2" />Following</>
+              ) : (
+                <><UserPlus className="w-4 h-4 mr-2" />Follow</>
+              )}
+            </Button>
+            <Link
+              href={`/messages/${profile.id}`}
+              className="h-9 px-4 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-300 flex items-center gap-2 text-sm font-medium transition-colors"
+            >
+              <MessageCircle className="w-4 h-4" />
+            </Link>
+          </div>
 
           <div className="flex gap-8 mt-2">
             <div className="flex flex-col items-center">
