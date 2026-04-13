@@ -20,8 +20,8 @@ const bebasNeue = Bebas_Neue({
 });
 
 export const metadata: Metadata = {
-  title: 'FORGE — Private Club for Men',
-  description: 'Lift. Drive. Live well. A private community for men who push forward.',
+  title: 'FORGE — Private Club',
+  description: 'Lift. Drive. Live well. A private community for those who push forward.',
 };
 
 export default function RootLayout({

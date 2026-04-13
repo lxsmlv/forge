@@ -95,7 +95,7 @@ export default function Home() {
           }`}
         >
           <p className="text-[2.2vw] text-zinc-500 tracking-[0.15em]">
-            Private club for men who lift, drive, and live well.
+            Private club for those who lift, drive, and live well.
           </p>
 
           {/* Invite code input or button */}
