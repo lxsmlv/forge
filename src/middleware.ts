@@ -42,5 +42,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/feed', '/profile', '/profile/:path*', '/create', '/cabinet', '/settings', '/notifications', '/post/:path*', '/messages', '/messages/:path*'],
+  matcher: ['/feed', '/profile', '/profile/:path*', '/create', '/cabinet', '/settings', '/notifications', '/post/:path*', '/messages', '/messages/:path*', '/search'],
 };

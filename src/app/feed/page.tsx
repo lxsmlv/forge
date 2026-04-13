@@ -5,8 +5,7 @@ import { PostCard } from '@/features/feed/PostCard';
 import { Cabinet } from '@/features/cabinet/Cabinet';
 import { getPosts } from '@/features/feed/actions';
 import { FeedHeader } from '@/features/feed/FeedHeader';
-import Link from 'next/link';
-import { Plus, Home, PenSquare, Users, Globe, RefreshCw, Dumbbell, Car, Flame, Trophy } from 'lucide-react';
+import { Home, PenSquare, Users, Globe, RefreshCw, Dumbbell, Car, Flame, Trophy } from 'lucide-react';
 
 export default function Feed() {
   const [activeTab, setActiveTab] = useState<'feed' | 'cabinet'>('feed');
@@ -36,7 +35,7 @@ export default function Feed() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white pb-20">
       <FeedHeader />
 
       <div className="max-w-lg mx-auto px-4 pt-4">
@@ -150,12 +149,6 @@ export default function Feed() {
         )}
       </main>
 
-      <Link
-        href="/create"
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full bg-purple-600 hover:bg-purple-500 shadow-[0_0_30px_rgba(147,51,234,0.5)] hover:shadow-[0_0_40px_rgba(147,51,234,0.7)] flex items-center justify-center transition-all duration-300 active:scale-95"
-      >
-        <Plus className="w-6 h-6 text-white" />
-      </Link>
     </div>
   );
 }
