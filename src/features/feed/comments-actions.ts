@@ -11,7 +11,7 @@ export async function getComments(postId: string) {
   const { data, error } = await supabase
     .from('comments')
     .select(`
-      id, text, created_at,
+      id, text, created_at, parent_id,
       author:profiles!author_id (username, full_name, avatar_url)
     `)
     .eq('post_id', postId)
@@ -19,13 +19,31 @@ export async function getComments(postId: string) {
 
   if (error) return [];
 
-  return (data || []).map((c: any) => ({
+  const comments = (data || []).map((c: any) => ({
     ...c,
     created_at: formatTimeAgo(c.created_at),
+    replies: [] as any[],
   }));
+
+  const topLevel: any[] = [];
+  const byId = new Map<string, any>();
+
+  for (const c of comments) {
+    byId.set(c.id, c);
+  }
+
+  for (const c of comments) {
+    if (c.parent_id && byId.has(c.parent_id)) {
+      byId.get(c.parent_id).replies.push(c);
+    } else {
+      topLevel.push(c);
+    }
+  }
+
+  return topLevel;
 }
 
-export async function addComment(postId: string, text: string) {
+export async function addComment(postId: string, text: string, parentId?: string) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user || !text.trim()) return;
@@ -35,6 +53,7 @@ export async function addComment(postId: string, text: string) {
     post_id: postId,
     author_id: user.id,
     text: text.trim(),
+    parent_id: parentId || null,
   });
 
   const { data: post } = await supabase.from('posts').select('author_id').eq('id', postId).single();

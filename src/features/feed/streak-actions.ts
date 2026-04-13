@@ -8,6 +8,7 @@ export async function updateStreak() {
   if (!user) return;
 
   try { await supabase.rpc('update_streak', { uid: user.id }); } catch {}
+  await supabase.from('profiles').update({ last_online: new Date().toISOString() }).eq('id', user.id);
 }
 
 export async function getStreak() {

@@ -92,9 +92,13 @@ export default function UserProfile() {
           <div className="text-center">
             <h2 className="text-xl font-bold text-white">{profile.full_name}</h2>
             {profile.bio && <p className="text-sm text-zinc-500 mt-1">{profile.bio}</p>}
-            {profile.last_active_date && (
-              <p className="text-xs text-zinc-700 mt-1">
-                Last active: {new Date(profile.last_active_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+            {profile.last_online && (
+              <p className="text-xs text-zinc-700 mt-1 flex items-center gap-1.5 justify-center">
+                {Date.now() - new Date(profile.last_online).getTime() < 5 * 60 * 1000 ? (
+                  <><span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />Online now</>
+                ) : (
+                  <>Last seen {new Date(profile.last_online).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</>
+                )}
               </p>
             )}
           </div>
