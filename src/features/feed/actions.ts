@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { createNotification } from '@/features/notifications/actions';
 
 export async function getPosts(mode: 'all' | 'following' = 'all') {
   const supabase = await createClient();
@@ -66,6 +67,9 @@ export async function toggleLike(postId: string) {
     await supabase.from('likes').delete().eq('id', existing.id);
   } else {
     await supabase.from('likes').insert({ post_id: postId, user_id: user.id });
+
+    const { data: post } = await supabase.from('posts').select('author_id').eq('id', postId).single();
+    if (post) await createNotification(post.author_id, 'like', user.id, postId);
   }
 
   revalidatePath('/feed');

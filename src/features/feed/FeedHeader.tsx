@@ -1,13 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { User } from 'lucide-react';
+import { User, Bell } from 'lucide-react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { SearchBar } from './SearchBar';
+import { getUnreadCount } from '@/features/notifications/actions';
 
 export function FeedHeader() {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [unread, setUnread] = useState(0);
 
   useEffect(() => {
     const supabase = createClient();
@@ -22,6 +24,7 @@ export function FeedHeader() {
           if (data?.avatar_url) setAvatarUrl(data.avatar_url);
         });
     });
+    getUnreadCount().then(setUnread);
   }, []);
 
   return (
@@ -35,6 +38,14 @@ export function FeedHeader() {
         </h1>
         <div className="flex items-center gap-2">
           <SearchBar />
+          <Link href="/notifications" className="relative h-9 w-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-purple-600/50 transition-colors">
+            <Bell className="w-4 h-4 text-zinc-400" />
+            {unread > 0 && (
+              <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 rounded-full bg-purple-600 text-[10px] font-bold text-white flex items-center justify-center">
+                {unread > 9 ? '9+' : unread}
+              </span>
+            )}
+          </Link>
           <Link href="/profile" className="h-9 w-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-purple-600/50 transition-colors overflow-hidden">
             {avatarUrl ? (
               <img src={avatarUrl} alt="" className="w-full h-full object-cover" />

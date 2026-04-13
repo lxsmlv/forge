@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { createNotification } from '@/features/notifications/actions';
 
 export async function getComments(postId: string) {
   const supabase = await createClient();
@@ -33,6 +34,9 @@ export async function addComment(postId: string, text: string) {
     author_id: user.id,
     text: text.trim(),
   });
+
+  const { data: post } = await supabase.from('posts').select('author_id').eq('id', postId).single();
+  if (post) await createNotification(post.author_id, 'comment', user.id, postId);
 
   revalidatePath('/feed');
 }

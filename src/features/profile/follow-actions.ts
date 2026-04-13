@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { createNotification } from '@/features/notifications/actions';
 
 export async function getProfileByUsername(username: string) {
   const supabase = await createClient();
@@ -81,6 +82,7 @@ export async function toggleFollow(targetUserId: string) {
     await supabase.from('follows').delete().eq('id', existing.id);
   } else {
     await supabase.from('follows').insert({ follower_id: user.id, following_id: targetUserId });
+    await createNotification(targetUserId, 'follow', user.id);
   }
 
   revalidatePath('/profile');

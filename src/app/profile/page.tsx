@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { getMyProfile, updateProfile, uploadAvatar } from '@/features/profile/actions';
 import { PostCard } from '@/features/feed/PostCard';
-import { ArrowLeft, Settings, Car, Dumbbell, MapPin, Edit3, Check, LogOut } from 'lucide-react';
+import { ArrowLeft, Settings, Car, Dumbbell, MapPin, Edit3, Check } from 'lucide-react';
+import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -78,9 +79,9 @@ export default function Profile() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <span className="text-sm font-medium text-zinc-400">@{profile.username}</span>
-          <button onClick={handleLogout} className="text-zinc-400 hover:text-red-400 transition-colors">
-            <LogOut className="w-5 h-5" />
-          </button>
+          <Link href="/settings" className="text-zinc-400 hover:text-white transition-colors">
+            <Settings className="w-5 h-5" />
+          </Link>
         </div>
       </header>
 
