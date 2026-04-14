@@ -123,9 +123,14 @@ export default function Login() {
           </Button>
         </div>
 
-        <Link href="/" className="text-xs text-zinc-600 hover:text-purple-400 transition-colors">
-          Don't have an account? Enter with invite code
-        </Link>
+        <div className="flex flex-col items-center gap-2">
+          <Link href="/reset-password" className="text-xs text-zinc-600 hover:text-purple-400 transition-colors">
+            Forgot password?
+          </Link>
+          <Link href="/" className="text-xs text-zinc-600 hover:text-purple-400 transition-colors">
+            Don't have an account? Enter with invite code
+          </Link>
+        </div>
       </div>
     </div>
   );

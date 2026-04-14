@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, ImagePlus, X, Dumbbell, Car, Flame, Trophy, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { compressImage } from '@/lib/compress-image';
 
 const CATEGORIES = [
   { id: 'gym', label: 'Gym', icon: Dumbbell },
@@ -62,10 +63,11 @@ export default function CreatePost() {
     const uploadedUrls: string[] = [];
 
     for (const img of images) {
-      const ext = img.file.name.split('.').pop();
+      const compressed = await compressImage(img.file);
+      const ext = compressed.name.split('.').pop();
       const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
-      const { error: uploadError } = await supabase.storage.from('posts').upload(fileName, img.file);
+      const { error: uploadError } = await supabase.storage.from('posts').upload(fileName, compressed);
       if (uploadError) { setError(uploadError.message); setLoading(false); return; }
 
       const { data: { publicUrl } } = supabase.storage.from('posts').getPublicUrl(fileName);

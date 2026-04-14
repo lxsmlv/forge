@@ -212,7 +212,7 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
               onClick={(e) => e.stopPropagation()}
             />
           ) : (
-            <img src={allImages[currentImg]} alt={caption} className="w-full h-full object-cover" draggable={false} />
+            <img src={allImages[currentImg]} alt={caption} className="w-full h-full object-cover" draggable={false} loading="lazy" />
           )}
 
           {allImages.length > 1 && (
