@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { MessageCircle, Users, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useT } from '@/lib/useT';
+import { MessagesSkeleton } from '@/features/feed/Skeletons';
 import { getConversations } from '@/features/messages/actions';
 import { getGroups } from '@/features/groups/actions';
 
@@ -69,9 +70,7 @@ export default function Messages() {
 
       <main className="max-w-lg mx-auto px-4">
         {loading ? (
-          <div className="flex justify-center py-20">
-            <div className="h-8 w-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
-          </div>
+          <MessagesSkeleton />
         ) : activeTab === 'chats' ? (
           conversations.length === 0 ? (
             <div className="flex flex-col items-center py-20 text-zinc-600">

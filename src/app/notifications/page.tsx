@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft, Heart, MessageCircle, UserPlus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { NotificationsSkeleton } from '@/features/feed/Skeletons';
 import { getNotifications, markAllRead } from '@/features/notifications/actions';
 import { useT } from '@/lib/useT';
 
@@ -53,9 +54,7 @@ export default function Notifications() {
 
       <main className="max-w-lg mx-auto px-4 py-4">
         {loading ? (
-          <div className="flex justify-center py-20">
-            <div className="h-8 w-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
-          </div>
+          <NotificationsSkeleton />
         ) : notifications.length === 0 ? (
           <div className="flex flex-col items-center py-20 text-zinc-600">
             <p className="text-sm">{t('notifications.none')}</p>

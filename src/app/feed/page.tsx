@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { PostCard } from '@/features/feed/PostCard';
-import { FeedSkeleton } from '@/features/feed/PostSkeleton';
+import { FeedSkeleton } from '@/features/feed/Skeletons';
 import { Cabinet } from '@/features/cabinet/Cabinet';
 import { getPosts } from '@/features/feed/actions';
 import { updateStreak } from '@/features/feed/streak-actions';

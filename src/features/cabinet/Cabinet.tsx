@@ -3,6 +3,7 @@
 import { useState, useEffect, useTransition } from 'react';
 import { NoteCard } from './NoteCard';
 import { WorkoutCard } from './WorkoutCard';
+import { CabinetSkeleton } from '@/features/feed/Skeletons';
 import { getNotes, createNote, toggleNote, deleteNote, getWorkouts, createWorkout } from './actions';
 import { Plus, StickyNote, Dumbbell } from 'lucide-react';
 import { useT } from '@/lib/useT';
@@ -93,9 +94,7 @@ export function Cabinet() {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-20">
-        <div className="h-8 w-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
-      </div>
+      <CabinetSkeleton />
     );
   }
 

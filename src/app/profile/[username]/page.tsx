@@ -6,6 +6,7 @@ import { getProfileByUsername, toggleFollow } from '@/features/profile/follow-ac
 import { getUserAchievements } from '@/features/achievements/actions';
 import { ACHIEVEMENTS } from '@/lib/achievements';
 import { ActivityGrid } from '@/features/profile/ActivityGrid';
+import { ProfileSkeleton } from '@/features/feed/Skeletons';
 import { PostCard } from '@/features/feed/PostCard';
 import { ArrowLeft, Car, Dumbbell, MapPin, UserPlus, UserCheck, MessageCircle, Ban } from 'lucide-react';
 import { toggleBlock, isBlocked } from '@/features/profile/block-actions';
@@ -55,9 +56,7 @@ export default function UserProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="h-8 w-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
-      </div>
+      <div className="min-h-screen bg-black pb-20"><ProfileSkeleton /></div>
     );
   }
 

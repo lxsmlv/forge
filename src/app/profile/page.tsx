@@ -7,6 +7,7 @@ import { ACHIEVEMENTS } from '@/lib/achievements';
 import { useT } from '@/lib/useT';
 import { ActivityGrid } from '@/features/profile/ActivityGrid';
 import { ProfileQR } from '@/features/profile/QRCode';
+import { ProfileSkeleton } from '@/features/feed/Skeletons';
 import { PostCard } from '@/features/feed/PostCard';
 import { ArrowLeft, Settings, Car, Dumbbell, MapPin, Edit3, Check } from 'lucide-react';
 import Link from 'next/link';
@@ -69,9 +70,7 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="h-8 w-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
-      </div>
+      <div className="min-h-screen bg-black pb-20"><ProfileSkeleton /></div>
     );
   }
 
