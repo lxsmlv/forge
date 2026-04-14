@@ -15,12 +15,13 @@ export function FeedHeader() {
   return (
     <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800/50">
       <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
-        <h1
+        <button
+          onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); window.location.href = '/feed'; }}
           className="text-2xl tracking-[0.15em] text-white drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]"
           style={{ fontFamily: 'var(--font-display)' }}
         >
           FORGE
-        </h1>
+        </button>
         <div className="flex items-center gap-2">
           {streak > 0 && (
             <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-500/10 border border-orange-500/20">
