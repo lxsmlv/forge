@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowLeft } from 'lucide-react';
+import { useT } from '@/lib/useT';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 
@@ -12,6 +13,7 @@ export default function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
+  const t = useT();
 
   const handleReset = async () => {
     if (!email) { setError('Enter your email'); return; }
@@ -45,12 +47,12 @@ export default function ResetPassword() {
 
         {sent ? (
           <div className="flex flex-col items-center gap-4 text-center">
-            <p className="text-zinc-400 text-sm">Check your email for a password reset link.</p>
-            <Link href="/login" className="text-purple-400 hover:text-purple-300 text-sm">Back to login</Link>
+            <p className="text-zinc-400 text-sm">{t('reset.check_email')}</p>
+            <Link href="/login" className="text-purple-400 hover:text-purple-300 text-sm">{t('reset.back')}</Link>
           </div>
         ) : (
           <>
-            <p className="text-zinc-500 text-sm">Enter your email to reset password.</p>
+            <p className="text-zinc-500 text-sm">{t('reset.enter_email')}</p>
             <div className="flex flex-col gap-4 w-full">
               <Input
                 type="email"
@@ -63,7 +65,7 @@ export default function ResetPassword() {
               {error && <p className="text-red-500 text-sm text-center">{error}</p>}
               <Button onClick={handleReset} disabled={loading}
                 className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold shadow-[0_0_25px_rgba(147,51,234,0.4)] disabled:opacity-50">
-                {loading ? 'Sending...' : 'Send reset link'}
+                {loading ? t('reset.sending') : t('reset.send')}
               </Button>
             </div>
             <Link href="/login" className="text-xs text-zinc-600 hover:text-purple-400 transition-colors">

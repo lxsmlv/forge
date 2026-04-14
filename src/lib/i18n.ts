@@ -103,6 +103,14 @@ const translations: Record<Locale, Record<string, string>> = {
     'notifications.commented': 'commented on your post',
     'notifications.followed': 'started following you',
 
+    // Reset password
+    'reset.forgot': 'Forgot password?',
+    'reset.enter_email': 'Enter your email to reset password.',
+    'reset.send': 'Send reset link',
+    'reset.sending': 'Sending...',
+    'reset.check_email': 'Check your email for a password reset link.',
+    'reset.back': 'Back to login',
+
     // Messages
     'messages.title': 'Messages',
     'messages.chats': 'Chats',
@@ -236,6 +244,13 @@ const translations: Record<Locale, Record<string, string>> = {
     'notifications.liked': 'лайкнул(а) твой пост',
     'notifications.commented': 'прокомментировал(а) пост',
     'notifications.followed': 'подписался(-лась) на тебя',
+
+    'reset.forgot': 'Забыли пароль?',
+    'reset.enter_email': 'Введите email для сброса пароля.',
+    'reset.send': 'Отправить ссылку',
+    'reset.sending': 'Отправляем...',
+    'reset.check_email': 'Проверьте почту — ссылка для сброса отправлена.',
+    'reset.back': 'Назад к входу',
 
     'messages.title': 'Сообщения',
     'messages.chats': 'Чаты',
