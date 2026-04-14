@@ -94,7 +94,7 @@ export default function Settings() {
         <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex flex-col gap-4">
           <div className="flex items-center gap-2 text-sm font-medium text-zinc-300">
             <Lock className="w-4 h-4 text-purple-400" />
-            Change password
+            {t('settings.change_password')}
           </div>
           <Input
             type="password"
@@ -132,9 +132,9 @@ export default function Settings() {
         >
           <div className="flex items-center gap-3 text-sm text-zinc-400">
             {theme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-            {theme === 'dark' ? 'Dark mode' : 'Light mode'}
+            {t('settings.theme')}
           </div>
-          <span className="text-xs text-zinc-600">Tap to switch</span>
+          <span className="text-xs text-zinc-600">{t('settings.theme_switch')}</span>
         </button>
 
         {/* Push Notifications */}
@@ -148,10 +148,10 @@ export default function Settings() {
         >
           <div className="flex items-center gap-3 text-sm text-zinc-400">
             <Bell className="w-4 h-4" />
-            Push notifications
+            Push
           </div>
           <span className="text-xs text-zinc-600">
-            {permission === 'granted' ? 'Enabled ✓' : permission === 'denied' ? 'Blocked by browser' : 'Tap to enable'}
+            {permission === 'granted' ? '✓' : permission === 'denied' ? '✕' : t('settings.theme_switch')}
           </span>
         </button>
 
@@ -169,7 +169,7 @@ export default function Settings() {
             <Globe className="w-4 h-4" />
             {locale === 'en' ? 'English' : 'Русский'}
           </div>
-          <span className="text-xs text-zinc-600">Tap to switch</span>
+          <span className="text-xs text-zinc-600">{t('settings.theme_switch')}</span>
         </button>
 
         {/* Admin */}
@@ -200,7 +200,7 @@ export default function Settings() {
           className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex items-center gap-3 text-sm text-zinc-400 hover:text-white hover:border-zinc-700 transition-colors"
         >
           <Download className="w-4 h-4" />
-          Export my data
+          {t('settings.export')}
         </button>
 
         {/* Logout */}
@@ -209,14 +209,14 @@ export default function Settings() {
           className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex items-center gap-3 text-sm text-zinc-400 hover:text-white hover:border-zinc-700 transition-colors"
         >
           <LogOut className="w-4 h-4" />
-          Sign out
+          {t('settings.signout')}
         </button>
 
         {/* Delete account */}
         <div className="bg-zinc-950 border border-red-900/30 rounded-xl p-4 flex flex-col gap-4">
           <div className="flex items-center gap-2 text-sm font-medium text-red-400">
             <Trash2 className="w-4 h-4" />
-            Danger zone
+            {t('settings.danger')}
           </div>
           {!deleteConfirm ? (
             <Button
@@ -224,7 +224,7 @@ export default function Settings() {
               variant="ghost"
               className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
             >
-              Delete my account
+              {t('settings.delete_account')}
             </Button>
           ) : (
             <div className="flex flex-col gap-3">
@@ -235,10 +235,10 @@ export default function Settings() {
                   disabled={deleteLoading}
                   className="bg-red-600 hover:bg-red-500 text-white font-bold disabled:opacity-50"
                 >
-                  {deleteLoading ? 'Deleting...' : t('settings.delete_yes')}
+                  {deleteLoading ? '...' : t('settings.delete_yes')}
                 </Button>
                 <Button onClick={() => setDeleteConfirm(false)} variant="ghost" className="text-zinc-500 hover:text-white">
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
               </div>
             </div>

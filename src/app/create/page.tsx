@@ -7,6 +7,7 @@ import { ArrowLeft, ImagePlus, X, Dumbbell, Car, Flame, Trophy, ChevronLeft, Che
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { compressImage } from '@/lib/compress-image';
+import { useT } from '@/lib/useT';
 
 const CATEGORIES = [
   { id: 'gym', label: 'Gym', icon: Dumbbell },
@@ -46,6 +47,7 @@ export default function CreatePost() {
   }, [caption, category, location]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const t = useT();
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -121,14 +123,14 @@ export default function CreatePost() {
           <button onClick={() => router.back()} className="text-zinc-400 hover:text-white transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm font-medium text-zinc-400">New Post</span>
+          <span className="text-sm font-medium text-zinc-400">{t('create.new_post')}</span>
           <Button
             onClick={handlePublish}
             disabled={images.length === 0 || loading}
             size="sm"
             className="bg-purple-600 hover:bg-purple-500 text-white font-bold shadow-[0_0_15px_rgba(147,51,234,0.3)] disabled:opacity-30 disabled:shadow-none transition-all"
           >
-            {loading ? '...' : 'Publish'}
+            {loading ? '...' : t('create.publish')}
           </Button>
         </div>
       </header>
@@ -140,7 +142,7 @@ export default function CreatePost() {
             className="aspect-[4/3] rounded-xl border-2 border-dashed border-zinc-800 hover:border-purple-600/50 flex flex-col items-center justify-center gap-3 transition-colors bg-zinc-950"
           >
             <ImagePlus className="w-10 h-10 text-zinc-700" />
-            <span className="text-sm text-zinc-600">Tap to add photos or videos (up to 10)</span>
+            <span className="text-sm text-zinc-600">{t('create.add_photos')}</span>
           </button>
         ) : (
           <div className="relative aspect-[4/3] rounded-xl overflow-hidden">
@@ -188,7 +190,7 @@ export default function CreatePost() {
         <input ref={fileInputRef} type="file" accept="image/*,video/*" multiple onChange={handleImageSelect} className="hidden" />
 
         <Textarea
-          placeholder="What's the story?"
+          placeholder={t('create.whats_story')}
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
           rows={3}
@@ -199,7 +201,7 @@ export default function CreatePost() {
           <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
           <input
             type="text"
-            placeholder="Add location (optional)"
+            placeholder={t('create.add_location')}
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             className="w-full h-10 pl-10 pr-4 bg-zinc-950 border border-zinc-800 rounded-lg text-white text-sm placeholder:text-zinc-600 focus:border-purple-600 focus:ring-1 focus:ring-purple-600/30 outline-none"
@@ -207,7 +209,7 @@ export default function CreatePost() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className="text-xs text-zinc-600 uppercase tracking-wider">Category</span>
+          <span className="text-xs text-zinc-600 uppercase tracking-wider">{t('create.category')}</span>
           <div className="flex gap-2">
             {CATEGORIES.map((cat) => {
               const Icon = cat.icon;

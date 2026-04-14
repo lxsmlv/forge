@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { getMyProfile, updateProfile, uploadAvatar } from '@/features/profile/actions';
 import { getUserAchievements } from '@/features/achievements/actions';
 import { ACHIEVEMENTS } from '@/lib/achievements';
+import { useT } from '@/lib/useT';
 import { ActivityGrid } from '@/features/profile/ActivityGrid';
 import { ProfileQR } from '@/features/profile/QRCode';
 import { PostCard } from '@/features/feed/PostCard';
@@ -24,6 +25,7 @@ export default function Profile() {
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState({ bio: '', city: '', car: '', sports: [] as string[] });
   const [activeTab, setActiveTab] = useState<'posts' | 'stats'>('posts');
+  const t = useT();
   const [achievements, setAchievements] = useState<any[]>([]);
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
@@ -153,7 +155,7 @@ export default function Profile() {
               )}
 
               <button onClick={() => setEditing(true)} className="flex items-center gap-1.5 text-xs text-purple-400 hover:text-purple-300 transition-colors">
-                <Edit3 className="w-3 h-3" /> Edit profile
+                <Edit3 className="w-3 h-3" /> {t('profile.edit')}
               </button>
             </>
           ) : (
@@ -188,19 +190,19 @@ export default function Profile() {
           <div className="flex gap-8 mt-2">
             <div className="flex flex-col items-center">
               <span className="text-lg font-bold text-white">{profile.posts_count}</span>
-              <span className="text-xs text-zinc-600">Posts</span>
+              <span className="text-xs text-zinc-600">{t('profile.posts')}</span>
             </div>
             <Link href={`/profile/${profile.username}/followers`} className="flex flex-col items-center hover:opacity-80 transition-opacity">
               <span className="text-lg font-bold text-white">{profile.followers_count}</span>
-              <span className="text-xs text-zinc-600">Followers</span>
+              <span className="text-xs text-zinc-600">{t('profile.followers')}</span>
             </Link>
             <Link href={`/profile/${profile.username}/following`} className="flex flex-col items-center hover:opacity-80 transition-opacity">
               <span className="text-lg font-bold text-white">{profile.following_count}</span>
-              <span className="text-xs text-zinc-600">Following</span>
+              <span className="text-xs text-zinc-600">{t('profile.following_tab')}</span>
             </Link>
             <div className="flex flex-col items-center">
               <span className="text-lg font-bold text-white">{profile.workouts_count}</span>
-              <span className="text-xs text-zinc-600">Workouts</span>
+              <span className="text-xs text-zinc-600">{t('profile.workouts')}</span>
             </div>
           </div>
         </div>
@@ -209,11 +211,11 @@ export default function Profile() {
           <button onClick={() => setActiveTab('posts')}
             className={`flex-1 py-2 rounded-md text-sm font-medium transition-all ${
               activeTab === 'posts' ? 'bg-purple-600/20 text-purple-400 border border-purple-600/30' : 'text-zinc-500 hover:text-zinc-300 border border-transparent'
-            }`}>Posts</button>
+            }`}>{t('profile.posts')}</button>
           <button onClick={() => setActiveTab('stats')}
             className={`flex-1 py-2 rounded-md text-sm font-medium transition-all ${
               activeTab === 'stats' ? 'bg-purple-600/20 text-purple-400 border border-purple-600/30' : 'text-zinc-500 hover:text-zinc-300 border border-transparent'
-            }`}>Activity</button>
+            }`}>{t('profile.activity')}</button>
         </div>
 
         {activeTab === 'posts' ? (
@@ -225,7 +227,7 @@ export default function Profile() {
             </div>
           ) : (
             <div className="flex flex-col items-center py-16 text-zinc-600">
-              <p className="text-sm">No posts yet</p>
+              <p className="text-sm">{t('profile.no_posts')}</p>
             </div>
           )
         ) : (
@@ -234,12 +236,12 @@ export default function Profile() {
               <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex flex-col items-center gap-1">
                 <Dumbbell className="w-5 h-5 text-purple-400 mb-1" />
                 <span className="text-2xl font-bold text-white">{profile.workouts_count}</span>
-                <span className="text-xs text-zinc-600">Workouts</span>
+                <span className="text-xs text-zinc-600">{t('profile.workouts')}</span>
               </div>
               <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex flex-col items-center gap-1">
                 <Car className="w-5 h-5 text-purple-400 mb-1" />
                 <span className="text-2xl font-bold text-white">{profile.posts_count}</span>
-                <span className="text-xs text-zinc-600">Posts</span>
+                <span className="text-xs text-zinc-600">{t('profile.posts')}</span>
               </div>
             </div>
 
@@ -247,7 +249,7 @@ export default function Profile() {
 
             {achievements.length > 0 && (
               <div className="mt-4">
-                <h3 className="text-sm font-medium text-zinc-400 mb-3">Achievements</h3>
+                <h3 className="text-sm font-medium text-zinc-400 mb-3">{t('profile.achievements')}</h3>
                 <div className="grid grid-cols-2 gap-2">
                   {achievements.map((a) => {
                     const info = ACHIEVEMENTS[a.type];
