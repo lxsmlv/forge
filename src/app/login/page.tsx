@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
 import { generateKeyPair, savePrivateKey, getStoredPrivateKey, decryptPrivateKeyWithPassword, encryptPrivateKeyWithPassword } from '@/lib/crypto';
 import { useT } from '@/lib/useT';
+import { GoogleButton } from '@/features/auth/GoogleButton';
 import Link from 'next/link';
 
 export default function Login() {
@@ -135,6 +136,14 @@ export default function Login() {
           >
             {loading ? t('auth.signing_in') : t('auth.signin')}
           </Button>
+
+          <div className="flex items-center gap-3 w-full">
+            <div className="flex-1 h-px bg-zinc-800" />
+            <span className="text-xs text-zinc-600">or</span>
+            <div className="flex-1 h-px bg-zinc-800" />
+          </div>
+
+          <GoogleButton mode="login" />
         </div>
 
         <div className="flex flex-col items-center gap-2">
