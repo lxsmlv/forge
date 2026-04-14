@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
 import { generateKeyPair, savePrivateKey, getStoredPrivateKey } from '@/lib/crypto';
+import { useT } from '@/lib/useT';
 import Link from 'next/link';
 
 export default function Login() {
@@ -12,6 +13,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const t = useT();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -94,19 +96,19 @@ export default function Login() {
           FORGE
         </h1>
 
-        <p className="text-zinc-500 text-sm">Welcome back.</p>
+        <p className="text-zinc-500 text-sm">{t('auth.welcome_back')}</p>
 
         <div className="flex flex-col gap-4 w-full" onKeyDown={handleKeyDown}>
           <Input
             type="text"
-            placeholder="Username or email"
+            placeholder={t('auth.username') + ' / ' + t('auth.email')}
             value={email}
             onChange={(e) => { setEmail(e.target.value); setError(''); }}
             className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30"
           />
           <Input
             type="password"
-            placeholder="Password"
+            placeholder={t('auth.password')}
             value={password}
             onChange={(e) => { setPassword(e.target.value); setError(''); }}
             className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30"
@@ -119,7 +121,7 @@ export default function Login() {
             disabled={loading}
             className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold shadow-[0_0_25px_rgba(147,51,234,0.4)] hover:shadow-[0_0_40px_rgba(147,51,234,0.6)] transition-all duration-300 disabled:opacity-50"
           >
-            {loading ? 'Signing in...' : 'Sign in'}
+            {loading ? t('auth.signing_in') : t('auth.signin')}
           </Button>
         </div>
 
@@ -128,7 +130,7 @@ export default function Login() {
             Forgot password?
           </Link>
           <Link href="/" className="text-xs text-zinc-600 hover:text-purple-400 transition-colors">
-            Don't have an account? Enter with invite code
+            {t('auth.no_account')}
           </Link>
         </div>
       </div>

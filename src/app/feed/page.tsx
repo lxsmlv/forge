@@ -8,6 +8,7 @@ import { getPosts } from '@/features/feed/actions';
 import { updateStreak } from '@/features/feed/streak-actions';
 import { checkAndAwardAchievements } from '@/features/achievements/actions';
 import { FeedHeader } from '@/features/feed/FeedHeader';
+import { useT } from '@/lib/useT';
 import { StoriesBar } from '@/features/stories/StoriesBar';
 import { Home, PenSquare, Users, Globe, RefreshCw, Dumbbell, Car, Flame, Trophy, Bookmark } from 'lucide-react';
 
@@ -20,6 +21,7 @@ export default function Feed() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const observerRef = useRef<HTMLDivElement>(null);
+  const t = useT();
 
   const loadPosts = (mode: 'all' | 'following' | 'bookmarks' | 'trending') => {
     setLoading(true);
@@ -114,7 +116,7 @@ export default function Feed() {
                 }`}
               >
                 <Globe className="w-3 h-3" />
-                All
+                {t('feed.all')}
               </button>
               <button
                 onClick={() => setFeedMode('following')}
@@ -125,7 +127,7 @@ export default function Feed() {
                 }`}
               >
                 <Users className="w-3 h-3" />
-                Following
+                {t('feed.following')}
               </button>
               <button
                 onClick={() => setFeedMode('bookmarks')}
@@ -136,7 +138,7 @@ export default function Feed() {
                 }`}
               >
                 <Bookmark className="w-3 h-3" />
-                Saved
+                {t('feed.saved')}
               </button>
               <button
                 onClick={() => setFeedMode('trending')}
@@ -147,7 +149,7 @@ export default function Feed() {
                 }`}
               >
                 <Flame className="w-3 h-3" />
-                Trending
+                {t('feed.trending')}
               </button>
 
               <div className="w-px h-5 bg-zinc-800 shrink-0" />
@@ -198,10 +200,10 @@ export default function Feed() {
             ) : (
               <div className="flex flex-col items-center py-20 text-zinc-600">
                 <p className="text-lg font-medium text-zinc-500">
-                  {feedMode === 'following' ? 'Follow someone to see their posts' : 'No posts yet'}
+                  {feedMode === 'following' ? t('feed.follow_someone') : t('feed.no_posts')}
                 </p>
                 <p className="text-sm text-zinc-700 mt-1">
-                  {feedMode === 'following' ? 'Switch to All to discover people' : 'Be the first to share something'}
+                  {feedMode === 'following' ? t('feed.switch_all') : t('feed.be_first')}
                 </p>
               </div>
             )}
