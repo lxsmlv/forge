@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Dumbbell, Car, Users, Shield, StickyNote, Trophy, Flame, MessageCircle } from 'lucide-react';
 
 const FEATURES = [
-  { icon: Users, title: 'Private Club', desc: 'Invite-only community. No random people, no noise.' },
+  { icon: Users, title: 'Friends Club', desc: 'A place for you and your friends. No random people, no noise.' },
   { icon: Dumbbell, title: 'Track Your Grind', desc: 'Log workouts, set goals, build streaks.' },
   { icon: Car, title: 'Show Your Ride', desc: 'Share your car, detailing sessions, builds.' },
   { icon: StickyNote, title: 'Private Cabinet', desc: 'Personal notes, plans, and reminders. Only you see them.' },
@@ -26,10 +26,10 @@ export default function About() {
             FORGE
           </h1>
           <p className="text-lg sm:text-xl text-zinc-400 max-w-md">
-            A private club for those who lift, drive, and live well.
+            A friends club for those who lift, drive, and live well.
           </p>
           <p className="text-sm text-zinc-600 max-w-sm">
-            Not another social network. A place where driven people share their journey,
+            Not another social network. A place where friends share their journey,
             track their progress, and push each other forward.
           </p>
           <Link

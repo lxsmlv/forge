@@ -1,7 +1,7 @@
 {
   "name": "FORGE",
   "short_name": "Forge",
-  "description": "Private club for those who lift, drive, and live well.",
+  "description": "Friends club for those who lift, drive, and live well.",
   "start_url": "/feed",
   "display": "standalone",
   "background_color": "#000000",
