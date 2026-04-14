@@ -2,10 +2,12 @@
 
 import { useState, useEffect, useTransition } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Users, UserPlus, UserMinus, Share2 } from 'lucide-react';
+import { ArrowLeft, Users, UserPlus, UserMinus, Share2, MessageCircle, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { PostCard } from '@/features/feed/PostCard';
 import { getGroupById, joinGroup, leaveGroup, getGroupPosts } from '@/features/groups/actions';
+import { getGroupMessages, sendGroupMessage } from '@/features/groups/chat-actions';
 import { toast } from 'sonner';
 
 export default function GroupPage() {
@@ -15,15 +17,19 @@ export default function GroupPage() {
 
   const [group, setGroup] = useState<any>(null);
   const [posts, setPosts] = useState<any[]>([]);
+  const [messages, setMessages] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<'posts' | 'chat'>('posts');
+  const [chatText, setChatText] = useState('');
   const [loading, setLoading] = useState(true);
   const [isMember, setIsMember] = useState(false);
   const [membersCount, setMembersCount] = useState(0);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    Promise.all([getGroupById(groupId), getGroupPosts(groupId)]).then(([g, p]) => {
+    Promise.all([getGroupById(groupId), getGroupPosts(groupId), getGroupMessages(groupId)]).then(([g, p, m]) => {
       setGroup(g);
       setPosts(p);
+      setMessages(m);
       setIsMember(g?.is_member || false);
       setMembersCount(g?.members_count || 0);
       setLoading(false);
@@ -104,7 +110,76 @@ export default function GroupPage() {
           </Button>
         </div>
 
-        {posts.length > 0 ? (
+        {/* Tabs */}
+        <div className="flex gap-1 bg-zinc-950 rounded-lg p-1 border border-zinc-800/50 mb-4">
+          <button onClick={() => setActiveTab('posts')}
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-sm font-medium transition-all ${
+              activeTab === 'posts' ? 'bg-purple-600/20 text-purple-400 border border-purple-600/30' : 'text-zinc-500 border border-transparent'
+            }`}>
+            Posts
+          </button>
+          <button onClick={() => setActiveTab('chat')}
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-sm font-medium transition-all ${
+              activeTab === 'chat' ? 'bg-purple-600/20 text-purple-400 border border-purple-600/30' : 'text-zinc-500 border border-transparent'
+            }`}>
+            <MessageCircle className="w-3.5 h-3.5" /> Chat
+          </button>
+        </div>
+
+        {activeTab === 'chat' ? (
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2 max-h-[60vh] overflow-y-auto">
+              {messages.length === 0 ? (
+                <p className="text-center text-sm text-zinc-600 py-8">No messages yet. Start chatting!</p>
+              ) : messages.map((msg) => {
+                const initials = msg.sender?.full_name?.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2) || '?';
+                return (
+                  <div key={msg.id} className={`flex ${msg.is_mine ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm ${
+                      msg.is_mine ? 'bg-purple-600 text-white rounded-br-md' : 'bg-zinc-900 text-zinc-200 rounded-bl-md'
+                    }`}>
+                      {!msg.is_mine && <p className="text-xs text-purple-400 font-medium mb-0.5">@{msg.sender?.username}</p>}
+                      <p>{msg.text}</p>
+                      <p className={`text-[10px] mt-1 ${msg.is_mine ? 'text-purple-300' : 'text-zinc-600'}`}>{msg.time}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            {isMember && (
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Message..."
+                  value={chatText}
+                  onChange={(e) => setChatText(e.target.value)}
+                  onKeyDown={async (e) => {
+                    if (e.key === 'Enter' && chatText.trim()) {
+                      const txt = chatText;
+                      setChatText('');
+                      await sendGroupMessage(groupId, txt);
+                      const updated = await getGroupMessages(groupId);
+                      setMessages(updated);
+                    }
+                  }}
+                  className="flex-1 bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30"
+                />
+                <button
+                  onClick={async () => {
+                    if (!chatText.trim()) return;
+                    const txt = chatText;
+                    setChatText('');
+                    await sendGroupMessage(groupId, txt);
+                    const updated = await getGroupMessages(groupId);
+                    setMessages(updated);
+                  }}
+                  className="h-9 w-9 rounded-lg bg-purple-600 hover:bg-purple-500 flex items-center justify-center"
+                >
+                  <Send className="w-4 h-4 text-white" />
+                </button>
+              </div>
+            )}
+          </div>
+        ) : posts.length > 0 ? (
           <div className="flex flex-col gap-4">
             {posts.map((post) => (
               <PostCard key={post.id} post={post} />

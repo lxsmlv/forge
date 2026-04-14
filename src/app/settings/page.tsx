@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Lock, Trash2, LogOut, Shield, Sun, Moon, Download } from 'lucide-react';
+import { ArrowLeft, Lock, Trash2, LogOut, Shield, Sun, Moon, Download, Globe } from 'lucide-react';
+import { getLocale, setLocale, type Locale } from '@/lib/i18n';
 import { exportUserData } from '@/features/profile/block-actions';
 import { useTheme } from '@/features/theme/ThemeProvider';
 import Link from 'next/link';
@@ -22,6 +23,9 @@ export default function Settings() {
   const [showAdmin, setShowAdmin] = useState(false);
 
   const { theme, toggleTheme } = useTheme();
+  const [locale, setLocaleState] = useState<Locale>('en');
+
+  useEffect(() => { setLocaleState(getLocale()); }, []);
 
   useEffect(() => { isAdmin().then(setShowAdmin); }, []);
 
@@ -125,6 +129,23 @@ export default function Settings() {
           <div className="flex items-center gap-3 text-sm text-zinc-400">
             {theme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
             {theme === 'dark' ? 'Dark mode' : 'Light mode'}
+          </div>
+          <span className="text-xs text-zinc-600">Tap to switch</span>
+        </button>
+
+        {/* Language */}
+        <button
+          onClick={() => {
+            const next: Locale = locale === 'en' ? 'ru' : 'en';
+            setLocale(next);
+            setLocaleState(next);
+            window.location.reload();
+          }}
+          className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex items-center justify-between hover:border-zinc-700 transition-colors"
+        >
+          <div className="flex items-center gap-3 text-sm text-zinc-400">
+            <Globe className="w-4 h-4" />
+            {locale === 'en' ? 'English' : 'Русский'}
           </div>
           <span className="text-xs text-zinc-600">Tap to switch</span>
         </button>
