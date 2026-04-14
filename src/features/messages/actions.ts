@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { sendPush } from '@/lib/send-push';
 
 export async function getConversations() {
   const supabase = await createClient();
@@ -81,6 +82,9 @@ export async function sendEncryptedMessage(receiverId: string, text: string, enc
     encrypted_key: encryptedKey || null,
     iv: iv || null,
   });
+
+  const { data: profile } = await supabase.from('profiles').select('username').eq('id', user.id).single();
+  sendPush(receiverId, 'FORGE', `New message from @${profile?.username || 'Someone'}`, `/messages/${user.id}`);
 
   revalidatePath('/messages');
 }

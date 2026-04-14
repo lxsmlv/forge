@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { createNotification } from '@/features/notifications/actions';
+import { sendPush } from '@/lib/send-push';
 
 export async function getProfileByUsername(username: string) {
   const supabase = await createClient();
@@ -83,6 +84,8 @@ export async function toggleFollow(targetUserId: string) {
   } else {
     await supabase.from('follows').insert({ follower_id: user.id, following_id: targetUserId });
     await createNotification(targetUserId, 'follow', user.id);
+    const { data: profile } = await supabase.from('profiles').select('username').eq('id', user.id).single();
+    sendPush(targetUserId, 'FORGE', `@${profile?.username || 'Someone'} started following you`, `/profile/${profile?.username}`);
   }
 
   revalidatePath('/profile');

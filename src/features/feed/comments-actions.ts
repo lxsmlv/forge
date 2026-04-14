@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { createNotification } from '@/features/notifications/actions';
 import { containsBannedWords } from '@/lib/moderation';
+import { sendPush } from '@/lib/send-push';
 
 export async function getComments(postId: string) {
   const supabase = await createClient();
@@ -62,7 +63,11 @@ export async function addComment(postId: string, text: string, parentId?: string
   });
 
   const { data: post } = await supabase.from('posts').select('author_id').eq('id', postId).single();
-  if (post) await createNotification(post.author_id, 'comment', user.id, postId);
+  if (post && post.author_id !== user.id) {
+    await createNotification(post.author_id, 'comment', user.id, postId);
+    const { data: profile } = await supabase.from('profiles').select('username').eq('id', user.id).single();
+    sendPush(post.author_id, 'FORGE', `@${profile?.username || 'Someone'} commented on your post`, `/post/${postId}`);
+  }
 
   revalidatePath('/feed');
 }

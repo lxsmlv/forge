@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { createNotification } from '@/features/notifications/actions';
 import { containsBannedWords } from '@/lib/moderation';
+import { sendPush } from '@/lib/send-push';
 import { extractHashtags } from '@/lib/hashtags';
 
 export async function getPosts(mode: 'all' | 'following' | 'bookmarks' | 'trending' = 'all', offset: number = 0, limit: number = 20) {
@@ -91,7 +92,11 @@ export async function toggleLike(postId: string) {
     await supabase.from('likes').insert({ post_id: postId, user_id: user.id });
 
     const { data: post } = await supabase.from('posts').select('author_id').eq('id', postId).single();
-    if (post) await createNotification(post.author_id, 'like', user.id, postId);
+    if (post && post.author_id !== user.id) {
+      await createNotification(post.author_id, 'like', user.id, postId);
+      const { data: profile } = await supabase.from('profiles').select('username').eq('id', user.id).single();
+      sendPush(post.author_id, 'FORGE', `@${profile?.username || 'Someone'} liked your post`, `/post/${postId}`);
+    }
   }
 
   revalidatePath('/feed');
