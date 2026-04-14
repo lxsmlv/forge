@@ -41,19 +41,40 @@ export default function Chat() {
     // Regenerate keys if missing
     if (!getStoredPrivateKey()) {
       (async () => {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const sb = createClient();
+        const { data: { user } } = await sb.auth.getUser();
         if (user) {
           const keyPair = await generateKeyPair();
           savePrivateKey(keyPair.privateKey);
-          await supabase.from('profiles').update({ public_key: keyPair.publicKey }).eq('id', user.id);
+          await sb.from('profiles').update({ public_key: keyPair.publicKey }).eq('id', user.id);
         }
       })();
     }
 
-    // Poll for new messages every 5 seconds
-    const interval = setInterval(loadMessages, 5000);
-    return () => clearInterval(interval);
+    // Realtime subscription for new messages
+    const channel = supabase
+      .channel(`chat-${otherUserId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+        },
+        (payload) => {
+          const msg = payload.new as any;
+          // Only react to messages in this conversation
+          if (
+            (msg.sender_id === otherUserId) ||
+            (msg.receiver_id === otherUserId)
+          ) {
+            loadMessages();
+          }
+        },
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, [otherUserId, loadMessages]);
 
   useEffect(() => {

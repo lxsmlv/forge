@@ -10,6 +10,7 @@ import { checkAndAwardAchievements } from '@/features/achievements/actions';
 import { FeedHeader } from '@/features/feed/FeedHeader';
 import { useT } from '@/lib/useT';
 import { StoriesBar } from '@/features/stories/StoriesBar';
+import { useRealtime } from '@/lib/useRealtime';
 import { Home, PenSquare, Users, Globe, RefreshCw, Dumbbell, Car, Flame, Trophy, Bookmark } from 'lucide-react';
 
 export default function Feed() {
@@ -43,11 +44,18 @@ export default function Feed() {
     });
   }, [feedMode, posts.length, loadingMore, hasMore]);
 
+  const [newPostsAvailable, setNewPostsAvailable] = useState(false);
+
   useEffect(() => {
     loadPosts(feedMode);
     updateStreak();
     checkAndAwardAchievements();
   }, [feedMode]);
+
+  // Realtime — new posts appear
+  useRealtime('posts', 'INSERT', useCallback(() => {
+    setNewPostsAvailable(true);
+  }, []));
 
   useEffect(() => {
     const el = observerRef.current;
@@ -103,6 +111,15 @@ export default function Feed() {
       </div>
 
       <main className="max-w-lg mx-auto px-4 py-4">
+        {newPostsAvailable && activeTab === 'feed' && (
+          <button
+            onClick={() => { setNewPostsAvailable(false); loadPosts(feedMode); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            className="w-full mb-3 py-2 bg-purple-600/20 border border-purple-600/30 rounded-lg text-sm text-purple-400 hover:bg-purple-600/30 transition-colors"
+          >
+            ↑ New posts
+          </button>
+        )}
+
         {activeTab === 'feed' ? (
           <>
             {/* Feed mode + category filters */}

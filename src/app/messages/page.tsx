@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { useRealtime } from '@/lib/useRealtime';
 import { MessageCircle, Users, Plus, Search, User } from 'lucide-react';
 import Link from 'next/link';
 import { useT } from '@/lib/useT';
@@ -39,6 +40,12 @@ export default function Messages() {
     return decrypted;
   }, []);
 
+  const refreshConversations = useCallback(async () => {
+    const c = await getConversations();
+    const decrypted = await decryptPreviews(c);
+    setConversations(decrypted);
+  }, [decryptPreviews]);
+
   useEffect(() => {
     Promise.all([getConversations(), getGroups()]).then(async ([c, g]) => {
       const decrypted = await decryptPreviews(c);
@@ -47,6 +54,9 @@ export default function Messages() {
       setLoading(false);
     });
   }, [decryptPreviews]);
+
+  // Realtime — new messages refresh conversation list
+  useRealtime('messages', 'INSERT', refreshConversations);
 
   useEffect(() => {
     if (searchQuery.length < 2) { setSearchResults([]); return; }
