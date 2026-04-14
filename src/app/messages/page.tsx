@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { MessageCircle, Users, Plus, Search, PenSquare } from 'lucide-react';
+import { MessageCircle, Users, Plus, Search, User } from 'lucide-react';
 import Link from 'next/link';
 import { useT } from '@/lib/useT';
 import { MessagesSkeleton } from '@/features/feed/Skeletons';
@@ -135,23 +135,23 @@ export default function Messages() {
             ) : searchResults.length > 0 ? (
               <div className="flex flex-col gap-1">
                 <p className="text-xs text-zinc-600 mb-1">{t('search.people')}</p>
-                {searchResults.map((user) => {
-                  const initials = user.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
+                {searchResults.map((u) => {
+                  const initials = u.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
                   return (
-                    <Link
-                      key={user.username}
-                      href={`/profile/${user.username}`}
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg bg-zinc-950/50 hover:bg-zinc-900 transition-colors"
-                    >
-                      <div className="h-8 w-8 rounded-full bg-purple-600/20 border border-purple-600/30 flex items-center justify-center text-xs font-bold text-purple-400 overflow-hidden">
-                        {user.avatar_url ? <img src={user.avatar_url} alt="" className="w-full h-full object-cover" /> : initials}
-                      </div>
-                      <div>
-                        <p className="text-sm text-white">{user.full_name}</p>
-                        <p className="text-xs text-zinc-600">@{user.username}</p>
-                      </div>
-                      <PenSquare className="w-4 h-4 text-zinc-700 ml-auto" />
-                    </Link>
+                    <div key={u.username} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-zinc-950/50 hover:bg-zinc-900 transition-colors">
+                      <Link href={`/messages/${u.id || u.username}`} className="flex items-center gap-3 flex-1 min-w-0">
+                        <div className="h-8 w-8 rounded-full bg-purple-600/20 border border-purple-600/30 flex items-center justify-center text-xs font-bold text-purple-400 overflow-hidden shrink-0">
+                          {u.avatar_url ? <img src={u.avatar_url} alt="" className="w-full h-full object-cover" /> : initials}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm text-white">{u.full_name}</p>
+                          <p className="text-xs text-zinc-600">@{u.username}</p>
+                        </div>
+                      </Link>
+                      <Link href={`/profile/${u.username}`} className="shrink-0 h-8 w-8 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-purple-600/50 transition-colors">
+                        <User className="w-3.5 h-3.5 text-zinc-500" />
+                      </Link>
+                    </div>
                   );
                 })}
               </div>
