@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowLeft, Lock, Trash2, LogOut, Shield, Sun, Moon, Download, Globe } from 'lucide-react';
+import { ArrowLeft, Lock, Trash2, LogOut, Shield, Sun, Moon, Download, Globe, Bell } from 'lucide-react';
+import { usePushNotifications } from '@/features/push/usePushNotifications';
 import { getLocale, setLocale, type Locale } from '@/lib/i18n';
 import { exportUserData } from '@/features/profile/block-actions';
 import { useTheme } from '@/features/theme/ThemeProvider';
@@ -23,6 +24,7 @@ export default function Settings() {
   const [showAdmin, setShowAdmin] = useState(false);
 
   const { theme, toggleTheme } = useTheme();
+  const { permission, subscribe } = usePushNotifications();
   const [locale, setLocaleState] = useState<Locale>('en');
 
   useEffect(() => { setLocaleState(getLocale()); }, []);
@@ -131,6 +133,24 @@ export default function Settings() {
             {theme === 'dark' ? 'Dark mode' : 'Light mode'}
           </div>
           <span className="text-xs text-zinc-600">Tap to switch</span>
+        </button>
+
+        {/* Push Notifications */}
+        <button
+          onClick={async () => {
+            const ok = await subscribe();
+            if (ok) alert('Push notifications enabled!');
+          }}
+          disabled={permission === 'granted'}
+          className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex items-center justify-between hover:border-zinc-700 transition-colors disabled:opacity-50"
+        >
+          <div className="flex items-center gap-3 text-sm text-zinc-400">
+            <Bell className="w-4 h-4" />
+            Push notifications
+          </div>
+          <span className="text-xs text-zinc-600">
+            {permission === 'granted' ? 'Enabled ✓' : permission === 'denied' ? 'Blocked by browser' : 'Tap to enable'}
+          </span>
         </button>
 
         {/* Language */}
