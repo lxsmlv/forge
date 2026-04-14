@@ -5,6 +5,7 @@ import { getMyProfile, updateProfile, uploadAvatar } from '@/features/profile/ac
 import { getUserAchievements } from '@/features/achievements/actions';
 import { ACHIEVEMENTS } from '@/lib/achievements';
 import { ActivityGrid } from '@/features/profile/ActivityGrid';
+import { ProfileQR } from '@/features/profile/QRCode';
 import { PostCard } from '@/features/feed/PostCard';
 import { ArrowLeft, Settings, Car, Dumbbell, MapPin, Edit3, Check } from 'lucide-react';
 import Link from 'next/link';
@@ -84,9 +85,12 @@ export default function Profile() {
             <ArrowLeft className="w-5 h-5" />
           </button>
           <span className="text-sm font-medium text-zinc-400">@{profile.username}</span>
-          <Link href="/settings" className="text-zinc-400 hover:text-white transition-colors">
-            <Settings className="w-5 h-5" />
-          </Link>
+          <div className="flex items-center gap-2">
+            {profile && <ProfileQR username={profile.username} />}
+            <Link href="/settings" className="text-zinc-400 hover:text-white transition-colors">
+              <Settings className="w-5 h-5" />
+            </Link>
+          </div>
         </div>
       </header>
 

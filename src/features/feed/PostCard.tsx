@@ -5,6 +5,7 @@ import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame
 import { toggleLike, deletePost, updatePost, toggleBookmark, incrementViews, repostPost, reactToPost, pinPost } from './actions';
 import { CommentsSheet } from './CommentsSheet';
 import { PollView } from '@/features/polls/PollView';
+import { useImageZoom } from './ImageZoom';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
@@ -54,6 +55,7 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
   const [currentImg, setCurrentImg] = useState(0);
   const [extraImages, setExtraImages] = useState<string[]>([]);
   const lastTapRef = { current: 0 };
+  const { openZoom, ZoomOverlay } = useImageZoom();
 
   const allImages = [post.image_url, ...extraImages];
 
@@ -198,8 +200,15 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
               if (!liked) handleLike();
               setShowHeartAnim(true);
               setTimeout(() => setShowHeartAnim(false), 800);
+              lastTapRef.current = 0;
+            } else {
+              lastTapRef.current = now;
+              setTimeout(() => {
+                if (lastTapRef.current === now && !/\.(mp4|mov|webm)/i.test(allImages[currentImg])) {
+                  openZoom(allImages[currentImg]);
+                }
+              }, 300);
             }
-            lastTapRef.current = now;
           }}
         >
           {/\.(mp4|mov|webm)(\?|$)/i.test(allImages[currentImg]) ? (
@@ -361,6 +370,8 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
           </div>
         ) : null}
       </div>
+
+      <ZoomOverlay />
 
       {showComments && (
         <CommentsSheet postId={post.id} onClose={(newCount) => {

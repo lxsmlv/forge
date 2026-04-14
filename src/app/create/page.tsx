@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft, ImagePlus, X, Dumbbell, Car, Flame, Trophy, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
@@ -24,11 +24,26 @@ export default function CreatePost() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [caption, setCaption] = useState('');
-  const [category, setCategory] = useState<string>('lifestyle');
+  const [caption, setCaption] = useState(() => {
+    if (typeof window !== 'undefined') return localStorage.getItem('forge-draft-caption') || '';
+    return '';
+  });
+  const [category, setCategory] = useState<string>(() => {
+    if (typeof window !== 'undefined') return localStorage.getItem('forge-draft-category') || 'lifestyle';
+    return 'lifestyle';
+  });
   const [images, setImages] = useState<ImageItem[]>([]);
   const [currentImage, setCurrentImage] = useState(0);
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState(() => {
+    if (typeof window !== 'undefined') return localStorage.getItem('forge-draft-location') || '';
+    return '';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('forge-draft-caption', caption);
+    localStorage.setItem('forge-draft-category', category);
+    localStorage.setItem('forge-draft-location', location);
+  }, [caption, category, location]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -93,6 +108,9 @@ export default function CreatePost() {
       await supabase.from('post_images').insert(imageRows);
     }
 
+    localStorage.removeItem('forge-draft-caption');
+    localStorage.removeItem('forge-draft-category');
+    localStorage.removeItem('forge-draft-location');
     router.push('/feed');
   };
 
