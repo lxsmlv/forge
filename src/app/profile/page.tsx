@@ -116,7 +116,10 @@ export default function Profile() {
           }} />
 
           <div className="text-center">
-            <h2 className="text-xl font-bold text-white">{profile.full_name}</h2>
+            <h2 className="text-xl font-bold text-white flex items-center gap-1.5 justify-center">
+              {profile.full_name}
+              {profile.is_verified && <span className="text-purple-400">✓</span>}
+            </h2>
             {!editing && profile.bio && <p className="text-sm text-zinc-500 mt-1">{profile.bio}</p>}
           </div>
 

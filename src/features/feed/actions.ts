@@ -14,7 +14,7 @@ export async function getPosts(mode: 'all' | 'following' | 'bookmarks' | 'trendi
     .from('posts')
     .select(`
       id, image_url, caption, category, created_at, author_id,
-      author:profiles!author_id (username, full_name, avatar_url),
+      author:profiles!author_id (username, full_name, avatar_url, is_verified),
       likes (user_id),
       comments (id),
       bookmarks (user_id)
@@ -63,6 +63,7 @@ export async function getPosts(mode: 'all' | 'following' | 'bookmarks' | 'trendi
     comments_count: post.comments?.length || 0,
     is_liked: user ? post.likes?.some((l: any) => l.user_id === user.id) : false,
     is_bookmarked: user ? post.bookmarks?.some((b: any) => b.user_id === user.id) : false,
+    is_verified: post.author?.is_verified || false,
   }));
 
   if (mode === 'trending') {

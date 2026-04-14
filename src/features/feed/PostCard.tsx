@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useTransition, useEffect } from 'react';
-import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame, Trophy, Share2, Flag, Bookmark, Eye, ChevronLeft, ChevronRight, Repeat2, Pin } from 'lucide-react';
+import { Heart, MessageCircle, Trash2, MoreVertical, Edit3, Dumbbell, Car, Flame, Trophy, Share2, Flag, Bookmark, Eye, ChevronLeft, ChevronRight, Repeat2, Pin, BadgeCheck } from 'lucide-react';
 import { toggleLike, deletePost, updatePost, toggleBookmark, incrementViews, repostPost, reactToPost, pinPost } from './actions';
 import { CommentsSheet } from './CommentsSheet';
+import { PollView } from '@/features/polls/PollView';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
@@ -35,6 +36,7 @@ interface PostProps {
   views_count?: number;
   location?: string;
   is_pinned?: boolean;
+  is_verified?: boolean;
 }
 
 export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () => void }) {
@@ -109,7 +111,10 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
             )}
           </Link>
           <Link href={`/profile/${post.author.username}`} className="flex-1 hover:opacity-80 transition-opacity">
-            <p className="text-sm font-semibold text-white">{post.author.full_name}</p>
+            <p className="text-sm font-semibold text-white flex items-center gap-1">
+              {post.author.full_name}
+              {post.is_verified && <BadgeCheck className="w-4 h-4 text-purple-400 fill-purple-400/20" />}
+            </p>
             <p className="text-xs text-zinc-600">
               @{post.author.username} · {post.created_at}
               {post.location && <span className="ml-1">📍 {post.location}</span>}
@@ -236,6 +241,8 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
             </div>
           )}
         </div>
+
+        <PollView postId={post.id} />
 
         <div className="px-4 py-3 flex items-center gap-5">
           <div className="relative">
