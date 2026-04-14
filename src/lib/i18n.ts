@@ -103,6 +103,17 @@ const translations: Record<Locale, Record<string, string>> = {
     'notifications.commented': 'commented on your post',
     'notifications.followed': 'started following you',
 
+    // Onboarding
+    'onboarding.add_photo': 'Add your photo',
+    'onboarding.about_you': 'Write something about yourself...',
+    'onboarding.next': 'Next',
+    'onboarding.what_sports': 'What sports do you do?',
+    'onboarding.your_car': 'Your car (e.g. Land Cruiser 200)',
+    'onboarding.city': 'City',
+    'onboarding.enter': 'Enter Forge',
+    'onboarding.skip': 'Skip for now',
+    'onboarding.setting_up': 'Setting up...',
+
     // Reset password
     'reset.forgot': 'Forgot password?',
     'reset.enter_email': 'Enter your email to reset password.',
@@ -244,6 +255,16 @@ const translations: Record<Locale, Record<string, string>> = {
     'notifications.liked': 'лайкнул(а) твой пост',
     'notifications.commented': 'прокомментировал(а) пост',
     'notifications.followed': 'подписался(-лась) на тебя',
+
+    'onboarding.add_photo': 'Добавьте фото',
+    'onboarding.about_you': 'Напишите о себе...',
+    'onboarding.next': 'Далее',
+    'onboarding.what_sports': 'Какими видами спорта занимаетесь?',
+    'onboarding.your_car': 'Ваша машина (например Land Cruiser 200)',
+    'onboarding.city': 'Город',
+    'onboarding.enter': 'Войти в Forge',
+    'onboarding.skip': 'Пропустить',
+    'onboarding.setting_up': 'Настраиваем...',
 
     'reset.forgot': 'Забыли пароль?',
     'reset.enter_email': 'Введите email для сброса пароля.',

@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { ArrowRight, Camera, Dumbbell, Car } from 'lucide-react';
+import { useT } from '@/lib/useT';
 
 const ALL_SPORTS = ['gym', 'tennis', 'padel', 'running', 'other'];
 
@@ -22,6 +23,7 @@ export default function Onboarding() {
   const [car, setCar] = useState('');
   const [sports, setSports] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const t = useT();
 
   const toggleSport = (s: string) => {
     setSports(sports.includes(s) ? sports.filter((x) => x !== s) : [...sports, s]);
@@ -78,7 +80,7 @@ export default function Onboarding() {
 
         {step === 1 && (
           <div className="flex flex-col items-center gap-6 w-full animate-in fade-in duration-300">
-            <p className="text-zinc-400 text-sm">Add your photo</p>
+            <p className="text-zinc-400 text-sm">{t('onboarding.add_photo')}</p>
             <button onClick={() => avatarRef.current?.click()} className="relative group">
               <div className="h-28 w-28 rounded-full bg-zinc-900 border-2 border-zinc-800 flex items-center justify-center overflow-hidden">
                 {avatarPreview ? (
@@ -90,7 +92,7 @@ export default function Onboarding() {
             </button>
             <input ref={avatarRef} type="file" accept="image/*" className="hidden" onChange={handleAvatarSelect} />
             <Textarea
-              placeholder="Write something about yourself..."
+              placeholder={t('onboarding.about_you')}
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               rows={3}
@@ -104,7 +106,7 @@ export default function Onboarding() {
 
         {step === 2 && (
           <div className="flex flex-col items-center gap-6 w-full animate-in fade-in duration-300">
-            <p className="text-zinc-400 text-sm flex items-center gap-2"><Dumbbell className="w-4 h-4" /> What sports do you do?</p>
+            <p className="text-zinc-400 text-sm flex items-center gap-2"><Dumbbell className="w-4 h-4" /> {t('onboarding.what_sports')}</p>
             <div className="flex flex-wrap gap-2 justify-center">
               {ALL_SPORTS.map((s) => (
                 <button
@@ -128,15 +130,15 @@ export default function Onboarding() {
 
         {step === 3 && (
           <div className="flex flex-col items-center gap-6 w-full animate-in fade-in duration-300">
-            <p className="text-zinc-400 text-sm flex items-center gap-2"><Car className="w-4 h-4" /> Tell us about your ride</p>
+            <p className="text-zinc-400 text-sm flex items-center gap-2"><Car className="w-4 h-4" /> {t('onboarding.your_car')}</p>
             <Input
-              placeholder="Your car (e.g. Land Cruiser 200)"
+              placeholder={t('onboarding.your_car')}
               value={car}
               onChange={(e) => setCar(e.target.value)}
               className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30"
             />
             <Input
-              placeholder="City"
+              placeholder={t('onboarding.city')}
               value={city}
               onChange={(e) => setCity(e.target.value)}
               className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30"
@@ -146,7 +148,7 @@ export default function Onboarding() {
               disabled={loading}
               className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold shadow-[0_0_25px_rgba(147,51,234,0.4)] disabled:opacity-50"
             >
-              {loading ? 'Setting up...' : 'Enter Forge'}
+              {loading ? t('onboarding.setting_up') : t('onboarding.enter')}
             </Button>
             <button onClick={handleFinish} className="text-xs text-zinc-700 hover:text-zinc-500 transition-colors">
               Skip for now
