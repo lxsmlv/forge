@@ -12,7 +12,7 @@ export async function getConversations() {
   const { data, error } = await supabase
     .from('messages')
     .select(`
-      id, text, is_read, created_at, sender_id, receiver_id,
+      id, text, is_read, created_at, sender_id, receiver_id, encrypted_key, encrypted_key_sender, iv,
       sender:profiles!sender_id (username, full_name, avatar_url),
       receiver:profiles!receiver_id (username, full_name, avatar_url)
     `)
@@ -32,6 +32,10 @@ export async function getConversations() {
         full_name: (other as any).full_name,
         avatar_url: (other as any).avatar_url,
         last_message: msg.text,
+        last_encrypted_key: msg.encrypted_key,
+        last_encrypted_key_sender: msg.encrypted_key_sender,
+        last_iv: msg.iv,
+        is_encrypted: !!(msg.encrypted_key && msg.iv),
         last_time: formatTimeAgo(msg.created_at),
         unread: msg.receiver_id === user.id && !msg.is_read ? 1 : 0,
       });

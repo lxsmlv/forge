@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { MessageCircle, Users, Plus, Search, PenSquare } from 'lucide-react';
 import Link from 'next/link';
 import { useT } from '@/lib/useT';
@@ -8,6 +8,7 @@ import { MessagesSkeleton } from '@/features/feed/Skeletons';
 import { getConversations } from '@/features/messages/actions';
 import { getGroups } from '@/features/groups/actions';
 import { searchUsers } from '@/features/feed/search-actions';
+import { decryptMessageDual } from '@/lib/crypto';
 
 export default function Messages() {
   const [activeTab, setActiveTab] = useState<'chats' | 'groups'>('chats');
@@ -20,13 +21,32 @@ export default function Messages() {
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const t = useT();
 
+  const decryptPreviews = useCallback(async (convs: any[]) => {
+    const decrypted = await Promise.all(
+      convs.map(async (conv) => {
+        if (conv.is_encrypted && conv.last_encrypted_key && conv.last_iv) {
+          const text = await decryptMessageDual(
+            conv.last_message,
+            conv.last_encrypted_key,
+            conv.last_encrypted_key_sender || null,
+            conv.last_iv,
+          );
+          return { ...conv, last_message_decrypted: text };
+        }
+        return { ...conv, last_message_decrypted: conv.last_message };
+      }),
+    );
+    return decrypted;
+  }, []);
+
   useEffect(() => {
-    Promise.all([getConversations(), getGroups()]).then(([c, g]) => {
-      setConversations(c);
+    Promise.all([getConversations(), getGroups()]).then(async ([c, g]) => {
+      const decrypted = await decryptPreviews(c);
+      setConversations(decrypted);
       setGroups(g);
       setLoading(false);
     });
-  }, []);
+  }, [decryptPreviews]);
 
   useEffect(() => {
     if (searchQuery.length < 2) { setSearchResults([]); return; }
@@ -170,7 +190,7 @@ export default function Messages() {
                         <span className="text-xs text-zinc-600">{conv.last_time}</span>
                       </div>
                       <p className="text-xs text-zinc-500 truncate">
-                        {conv.last_message && conv.last_message.length > 100 ? '🔒 Encrypted message' : conv.last_message}
+                        {conv.last_message_decrypted || '🔒'}
                       </p>
                     </div>
                     {conv.unread > 0 && (
