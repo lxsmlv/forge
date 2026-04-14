@@ -105,6 +105,7 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Messages
     'messages.title': 'Messages',
+    'messages.chats': 'Chats',
     'messages.none': 'No messages yet',
     'messages.start': 'Start the conversation',
     'messages.encrypted': 'Messages are end-to-end encrypted',
@@ -236,6 +237,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'notifications.followed': 'подписался(-лась) на тебя',
 
     'messages.title': 'Сообщения',
+    'messages.chats': 'Чаты',
     'messages.none': 'Сообщений пока нет',
     'messages.start': 'Начни разговор',
     'messages.encrypted': 'Сообщения зашифрованы',

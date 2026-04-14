@@ -14,7 +14,7 @@ import { Home, PenSquare, Users, Globe, RefreshCw, Dumbbell, Car, Flame, Trophy,
 
 export default function Feed() {
   const [activeTab, setActiveTab] = useState<'feed' | 'cabinet'>('feed');
-  const [feedMode, setFeedMode] = useState<'all' | 'following' | 'bookmarks' | 'trending'>('all');
+  const [feedMode, setFeedMode] = useState<'all' | 'following' | 'bookmarks' | 'trending'>('following');
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

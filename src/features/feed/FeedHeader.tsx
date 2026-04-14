@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { MessageCircle, Flame, Users } from 'lucide-react';
+import { Flame, Search } from 'lucide-react';
 import Link from 'next/link';
 import { getStreak } from './streak-actions';
 
@@ -29,11 +29,8 @@ export function FeedHeader() {
               <span className="text-xs font-bold text-orange-400">{streak}</span>
             </div>
           )}
-          <Link href="/groups" className="h-9 w-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-purple-600/50 transition-colors">
-            <Users className="w-4 h-4 text-zinc-400" />
-          </Link>
-          <Link href="/messages" className="h-9 w-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-purple-600/50 transition-colors">
-            <MessageCircle className="w-4 h-4 text-zinc-400" />
+          <Link href="/search" className="h-9 w-9 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-purple-600/50 transition-colors">
+            <Search className="w-4 h-4 text-zinc-400" />
           </Link>
         </div>
       </div>

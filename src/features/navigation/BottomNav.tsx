@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Home, Search, Plus, Play, User } from 'lucide-react';
+import { Home, MessageCircle, Plus, Play, User } from 'lucide-react';
 import { useT } from '@/lib/useT';
 
 export function BottomNav() {
@@ -11,7 +11,7 @@ export function BottomNav() {
 
   const NAV_ITEMS = [
     { href: '/feed', icon: Home, label: t('nav.feed') },
-    { href: '/search', icon: Search, label: t('nav.search') },
+    { href: '/messages', icon: MessageCircle, label: t('messages.title') },
     { href: '/create', icon: Plus, label: t('nav.post'), isCreate: true },
     { href: '/reels', icon: Play, label: t('nav.reels') },
     { href: '/profile', icon: User, label: t('nav.profile') },
