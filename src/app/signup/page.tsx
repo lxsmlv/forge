@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
 import { generateKeyPair, savePrivateKey, encryptPrivateKeyWithPassword, generateRecoveryKey } from '@/lib/crypto';
+import { GoogleButton } from '@/features/auth/GoogleButton';
 
 function SignUpForm() {
   const searchParams = useSearchParams();
@@ -150,6 +151,14 @@ function SignUpForm() {
           >
             {loading ? 'Creating account...' : 'Join the club'}
           </Button>
+
+          <div className="flex items-center gap-3 w-full">
+            <div className="flex-1 h-px bg-zinc-800" />
+            <span className="text-xs text-zinc-600">or</span>
+            <div className="flex-1 h-px bg-zinc-800" />
+          </div>
+
+          <GoogleButton mode="signup" />
         </div>
 
         <p className="text-xs text-zinc-700">

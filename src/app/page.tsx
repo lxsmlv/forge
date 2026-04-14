@@ -53,6 +53,8 @@ export default function Home() {
       return;
     }
 
+    // Set cookie so Google OAuth callback knows invite was validated
+    document.cookie = 'forge_invited=true; path=/; max-age=3600';
     window.location.href = '/signup?code=' + encodeURIComponent(inviteCode.trim());
   };
 
