@@ -2,18 +2,20 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Home, Search, Plus, Bell, User, Play } from 'lucide-react';
-
-const NAV_ITEMS = [
-  { href: '/feed', icon: Home, label: 'Feed' },
-  { href: '/search', icon: Search, label: 'Search' },
-  { href: '/create', icon: Plus, label: 'Post', isCreate: true },
-  { href: '/reels', icon: Play, label: 'Reels' },
-  { href: '/profile', icon: User, label: 'Profile' },
-];
+import { Home, Search, Plus, Play, User } from 'lucide-react';
+import { useT } from '@/lib/useT';
 
 export function BottomNav() {
   const pathname = usePathname();
+  const t = useT();
+
+  const NAV_ITEMS = [
+    { href: '/feed', icon: Home, label: t('nav.feed') },
+    { href: '/search', icon: Search, label: t('nav.search') },
+    { href: '/create', icon: Plus, label: t('nav.post'), isCreate: true },
+    { href: '/reels', icon: Play, label: t('nav.reels') },
+    { href: '/profile', icon: User, label: t('nav.profile') },
+  ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-t border-zinc-800/50 safe-bottom">

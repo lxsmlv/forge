@@ -3,12 +3,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Plus, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { getStories, createStory } from './actions';
+import { useT } from '@/lib/useT';
 
 export function StoriesBar() {
   const [groups, setGroups] = useState<any[]>([]);
   const [viewing, setViewing] = useState<{ stories: any[]; user: any; index: number } | null>(null);
   const [currentStory, setCurrentStory] = useState(0);
   const fileRef = useRef<HTMLInputElement>(null);
+  const t = useT();
 
   useEffect(() => {
     getStories().then(setGroups);
@@ -60,7 +62,7 @@ export function StoriesBar() {
           <div className="h-16 w-16 rounded-full bg-zinc-900 border-2 border-dashed border-zinc-700 flex items-center justify-center hover:border-purple-600/50 transition-colors">
             <Plus className="w-5 h-5 text-zinc-500" />
           </div>
-          <span className="text-[10px] text-zinc-600">Your story</span>
+          <span className="text-[10px] text-zinc-600">{t('stories.your')}</span>
         </button>
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleAddStory} />
 

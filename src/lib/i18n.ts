@@ -26,10 +26,26 @@ const translations: Record<Locale, Record<string, string>> = {
     'auth.signing_in': 'Signing in...',
 
     // Feed
+    'feed.tab_feed': 'Feed',
+    'feed.tab_cabinet': 'Cabinet',
     'feed.all': 'All',
     'feed.following': 'Following',
     'feed.saved': 'Saved',
     'feed.trending': 'Trending',
+    'cat.gym': 'Gym',
+    'cat.cars': 'Cars',
+    'cat.lifestyle': 'Lifestyle',
+    'cat.sport': 'Sport',
+
+    // Stories
+    'stories.your': 'Your story',
+
+    // Nav
+    'nav.feed': 'Feed',
+    'nav.search': 'Search',
+    'nav.post': 'Post',
+    'nav.reels': 'Reels',
+    'nav.profile': 'Profile',
     'feed.no_posts': 'No posts yet',
     'feed.be_first': 'Be the first to share something',
     'feed.follow_someone': 'Follow someone to see their posts',
@@ -149,10 +165,24 @@ const translations: Record<Locale, Record<string, string>> = {
     'auth.creating': 'Создаём аккаунт...',
     'auth.signing_in': 'Входим...',
 
+    'feed.tab_feed': 'Лента',
+    'feed.tab_cabinet': 'Кабинет',
     'feed.all': 'Все',
     'feed.following': 'Подписки',
     'feed.saved': 'Сохранённые',
     'feed.trending': 'Популярное',
+    'cat.gym': 'Зал',
+    'cat.cars': 'Машины',
+    'cat.lifestyle': 'Лайфстайл',
+    'cat.sport': 'Спорт',
+
+    'stories.your': 'Ваша история',
+
+    'nav.feed': 'Лента',
+    'nav.search': 'Поиск',
+    'nav.post': 'Пост',
+    'nav.reels': 'Рилсы',
+    'nav.profile': 'Профиль',
     'feed.no_posts': 'Постов пока нет',
     'feed.be_first': 'Будь первым кто поделится',
     'feed.follow_someone': 'Подпишись на кого-нибудь',

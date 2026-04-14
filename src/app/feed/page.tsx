@@ -86,7 +86,7 @@ export default function Feed() {
             }`}
           >
             <Home className="w-4 h-4" />
-            Feed
+            {t('feed.tab_feed')}
           </button>
           <button
             onClick={() => setActiveTab('cabinet')}
@@ -97,7 +97,7 @@ export default function Feed() {
             }`}
           >
             <PenSquare className="w-4 h-4" />
-            Cabinet
+            {t('feed.tab_cabinet')}
           </button>
         </div>
       </div>
@@ -170,7 +170,7 @@ export default function Feed() {
                   }`}
                 >
                   <Icon className="w-3 h-3" />
-                  {id}
+                  {t(`cat.${id}`)}
                 </button>
               ))}
 
