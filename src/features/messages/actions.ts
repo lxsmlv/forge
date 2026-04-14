@@ -50,7 +50,7 @@ export async function getMessages(otherUserId: string) {
 
   const { data, error } = await supabase
     .from('messages')
-    .select('id, text, sender_id, created_at, encrypted_key, iv')
+    .select('id, text, sender_id, created_at, encrypted_key, encrypted_key_sender, iv')
     .or(`and(sender_id.eq.${user.id},receiver_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},receiver_id.eq.${user.id})`)
     .order('created_at', { ascending: true });
 
@@ -70,7 +70,7 @@ export async function getMessages(otherUserId: string) {
   }));
 }
 
-export async function sendEncryptedMessage(receiverId: string, text: string, encryptedKey: string, iv: string) {
+export async function sendEncryptedMessage(receiverId: string, text: string, encryptedKey: string, iv: string, encryptedKeySender?: string) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user || !text.trim()) return;
@@ -80,6 +80,7 @@ export async function sendEncryptedMessage(receiverId: string, text: string, enc
     receiver_id: receiverId,
     text: text.trim(),
     encrypted_key: encryptedKey || null,
+    encrypted_key_sender: encryptedKeySender || null,
     iv: iv || null,
   });
 

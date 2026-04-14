@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
-import { generateKeyPair, savePrivateKey, getStoredPrivateKey } from '@/lib/crypto';
+import { generateKeyPair, savePrivateKey, getStoredPrivateKey, decryptPrivateKeyWithPassword, encryptPrivateKeyWithPassword } from '@/lib/crypto';
 import { useT } from '@/lib/useT';
 import Link from 'next/link';
 
@@ -70,11 +70,23 @@ export default function Login() {
       const supabase2 = createClient();
       const { data: { user } } = await supabase2.auth.getUser();
       if (user) {
-        const { data: profile } = await supabase2.from('profiles').select('public_key').eq('id', user.id).single();
-        if (!profile?.public_key) {
+        const { data: profile } = await supabase2.from('profiles').select('encrypted_private_key, public_key').eq('id', user.id).single();
+
+        if (profile?.encrypted_private_key) {
+          // Decrypt private key with password
+          const privateKey = await decryptPrivateKeyWithPassword(profile.encrypted_private_key, password);
+          if (privateKey) {
+            savePrivateKey(privateKey);
+          }
+        } else if (!profile?.public_key) {
+          // No keys at all — generate new ones
           const keyPair = await generateKeyPair();
           savePrivateKey(keyPair.privateKey);
-          await supabase2.from('profiles').update({ public_key: keyPair.publicKey }).eq('id', user.id);
+          const encryptedByPassword = await encryptPrivateKeyWithPassword(keyPair.privateKey, password);
+          await supabase2.from('profiles').update({
+            public_key: keyPair.publicKey,
+            encrypted_private_key: encryptedByPassword,
+          }).eq('id', user.id);
         }
       }
     }

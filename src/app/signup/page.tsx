@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
-import { generateKeyPair, savePrivateKey } from '@/lib/crypto';
+import { generateKeyPair, savePrivateKey, encryptPrivateKeyWithPassword, generateRecoveryKey } from '@/lib/crypto';
 
 function SignUpForm() {
   const searchParams = useSearchParams();
@@ -76,9 +76,19 @@ function SignUpForm() {
 
     const keyPair = await generateKeyPair();
     savePrivateKey(keyPair.privateKey);
-    await supabase.from('profiles').update({ public_key: keyPair.publicKey }).eq('id', data.user_id);
 
-    window.location.href = '/onboarding';
+    const encryptedByPassword = await encryptPrivateKeyWithPassword(keyPair.privateKey, form.password);
+    const recoveryKey = generateRecoveryKey();
+    const encryptedByRecovery = await encryptPrivateKeyWithPassword(keyPair.privateKey, recoveryKey);
+
+    await supabase.from('profiles').update({
+      public_key: keyPair.publicKey,
+      encrypted_private_key: encryptedByPassword,
+      recovery_encrypted_key: encryptedByRecovery,
+    }).eq('id', data.user_id);
+
+    localStorage.setItem('forge_recovery_key', recoveryKey);
+    window.location.href = `/onboarding?recovery=${encodeURIComponent(recoveryKey)}`;
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
