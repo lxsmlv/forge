@@ -5,6 +5,7 @@ import { NoteCard } from './NoteCard';
 import { WorkoutCard } from './WorkoutCard';
 import { getNotes, createNote, toggleNote, deleteNote, getWorkouts, createWorkout } from './actions';
 import { Plus, StickyNote, Dumbbell } from 'lucide-react';
+import { useT } from '@/lib/useT';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,6 +18,7 @@ export function Cabinet() {
   const [notes, setNotes] = useState<any[]>([]);
   const [workouts, setWorkouts] = useState<any[]>([]);
   const [noteFilter, setNoteFilter] = useState<string | null>(null);
+  const t = useT();
   const [loading, setLoading] = useState(true);
   const [isPending, startTransition] = useTransition();
 
@@ -132,12 +134,12 @@ export function Cabinet() {
               className="flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition-colors py-2"
             >
               <Plus className="w-4 h-4" />
-              Add note
+              {t('cabinet.add_note')}
             </button>
           ) : (
             <div className="bg-zinc-950 border border-purple-600/30 rounded-xl p-4 flex flex-col gap-3">
               <Input
-                placeholder="What needs to be done?"
+                placeholder={t('cabinet.what_done')}
                 value={newNote.title}
                 onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
                 autoFocus
@@ -145,7 +147,7 @@ export function Cabinet() {
                 className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30"
               />
               <Textarea
-                placeholder="Details (optional)"
+                placeholder={t('cabinet.details')}
                 value={newNote.text}
                 onChange={(e) => setNewNote({ ...newNote, text: e.target.value })}
                 rows={2}
@@ -196,7 +198,7 @@ export function Cabinet() {
           {(noteFilter ? notes.filter((n) => n.category === noteFilter) : notes).length === 0 ? (
             <div className="flex flex-col items-center py-12 text-zinc-600">
               <StickyNote className="w-8 h-8 mb-2 text-zinc-700" />
-              <p className="text-sm">No notes yet</p>
+              <p className="text-sm">{t('cabinet.no_notes')}</p>
             </div>
           ) : (
             (noteFilter ? notes.filter((n) => n.category === noteFilter) : notes).map((note) => (
@@ -234,7 +236,7 @@ export function Cabinet() {
               <Input
                 type="text"
                 inputMode="numeric"
-                placeholder="Duration (minutes)"
+                placeholder={t('cabinet.duration')}
                 value={newWorkout.duration}
                 onChange={(e) => setNewWorkout({ ...newWorkout, duration: e.target.value.replace(/\D/g, '') })}
                 onKeyDown={(e) => e.key === 'Enter' && handleAddWorkout()}
@@ -261,7 +263,7 @@ export function Cabinet() {
           {workouts.length === 0 ? (
             <div className="flex flex-col items-center py-12 text-zinc-600">
               <Dumbbell className="w-8 h-8 mb-2 text-zinc-700" />
-              <p className="text-sm">No workouts logged yet</p>
+              <p className="text-sm">{t('cabinet.no_workouts')}</p>
             </div>
           ) : (
             workouts.map((w) => (

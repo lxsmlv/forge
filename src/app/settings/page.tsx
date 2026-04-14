@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ArrowLeft, Lock, Trash2, LogOut, Shield, Sun, Moon, Download, Globe, Bell } from 'lucide-react';
+import { useT } from '@/lib/useT';
 import { usePushNotifications } from '@/features/push/usePushNotifications';
 import { getLocale, setLocale, type Locale } from '@/lib/i18n';
 import { exportUserData } from '@/features/profile/block-actions';
@@ -25,6 +26,7 @@ export default function Settings() {
 
   const { theme, toggleTheme } = useTheme();
   const { permission, subscribe } = usePushNotifications();
+  const t = useT();
   const [locale, setLocaleState] = useState<Locale>('en');
 
   useEffect(() => { setLocaleState(getLocale()); }, []);
@@ -82,7 +84,7 @@ export default function Settings() {
           <button onClick={() => router.back()} className="text-zinc-400 hover:text-white transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm font-medium text-zinc-400">Settings</span>
+          <span className="text-sm font-medium text-zinc-400">{t('settings.title')}</span>
           <div className="w-5" />
         </div>
       </header>
@@ -96,14 +98,14 @@ export default function Settings() {
           </div>
           <Input
             type="password"
-            placeholder="New password"
+            placeholder={t('settings.new_password')}
             value={newPassword}
             onChange={(e) => { setNewPassword(e.target.value); setPasswordMsg(''); }}
             className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30"
           />
           <Input
             type="password"
-            placeholder="Confirm new password"
+            placeholder={t('settings.confirm_password')}
             value={confirmPassword}
             onChange={(e) => { setConfirmPassword(e.target.value); setPasswordMsg(''); }}
             onKeyDown={(e) => e.key === 'Enter' && handleChangePassword()}
@@ -119,7 +121,7 @@ export default function Settings() {
             disabled={passwordLoading}
             className="bg-purple-600 hover:bg-purple-500 text-white font-bold disabled:opacity-50"
           >
-            {passwordLoading ? '...' : 'Update password'}
+            {passwordLoading ? '...' : t('settings.update_password')}
           </Button>
         </div>
 
@@ -226,14 +228,14 @@ export default function Settings() {
             </Button>
           ) : (
             <div className="flex flex-col gap-3">
-              <p className="text-sm text-zinc-500">This will permanently delete your account, posts, notes, and all data. This cannot be undone.</p>
+              <p className="text-sm text-zinc-500">{t('settings.delete_confirm')}</p>
               <div className="flex gap-2">
                 <Button
                   onClick={handleDeleteAccount}
                   disabled={deleteLoading}
                   className="bg-red-600 hover:bg-red-500 text-white font-bold disabled:opacity-50"
                 >
-                  {deleteLoading ? 'Deleting...' : 'Yes, delete everything'}
+                  {deleteLoading ? 'Deleting...' : t('settings.delete_yes')}
                 </Button>
                 <Button onClick={() => setDeleteConfirm(false)} variant="ghost" className="text-zinc-500 hover:text-white">
                   Cancel

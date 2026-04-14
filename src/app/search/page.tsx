@@ -6,6 +6,7 @@ import { searchUsers, searchPosts } from '@/features/feed/search-actions';
 import { getDiscoverProfiles } from '@/features/feed/discover-actions';
 import { getTrendingHashtags } from '@/features/feed/hashtag-actions';
 import { PostCard } from '@/features/feed/PostCard';
+import { useT } from '@/lib/useT';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 
@@ -17,6 +18,7 @@ export default function SearchPage() {
   const [discover, setDiscover] = useState<any[]>([]);
   const [trendingTags, setTrendingTags] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const t = useT();
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
@@ -78,7 +80,7 @@ export default function SearchPage() {
           <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
           <input
             type="text"
-            placeholder="Search people or posts..."
+            placeholder={t('search.placeholder')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             className="w-full h-10 pl-10 pr-4 bg-zinc-900 border border-zinc-800 rounded-lg text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-1 focus:ring-purple-600/30 outline-none text-sm"
@@ -93,7 +95,7 @@ export default function SearchPage() {
                 searchTab === 'people' ? 'bg-purple-600/20 text-purple-400 border border-purple-600/30' : 'text-zinc-500 border border-transparent'
               }`}
             >
-              <Users className="w-3.5 h-3.5" />People ({userResults.length})
+              <Users className="w-3.5 h-3.5" />{t('search.people')} ({userResults.length})
             </button>
             <button
               onClick={() => setSearchTab('posts')}
@@ -101,7 +103,7 @@ export default function SearchPage() {
                 searchTab === 'posts' ? 'bg-purple-600/20 text-purple-400 border border-purple-600/30' : 'text-zinc-500 border border-transparent'
               }`}
             >
-              <FileText className="w-3.5 h-3.5" />Posts ({postResults.length})
+              <FileText className="w-3.5 h-3.5" />{t('search.posts_tab')} ({postResults.length})
             </button>
           </div>
         )}
@@ -115,13 +117,13 @@ export default function SearchPage() {
         {!loading && hasResults && searchTab === 'people' && (
           userResults.length > 0
             ? <div className="flex flex-col gap-2">{userResults.map(renderUser)}</div>
-            : <p className="text-center text-sm text-zinc-600 py-8">No people found</p>
+            : <p className="text-center text-sm text-zinc-600 py-8">{t('search.no_people')}</p>
         )}
 
         {!loading && hasResults && searchTab === 'posts' && (
           postResults.length > 0
             ? <div className="flex flex-col gap-4">{postResults.map((p) => <PostCard key={p.id} post={p} />)}</div>
-            : <p className="text-center text-sm text-zinc-600 py-8">No posts found</p>
+            : <p className="text-center text-sm text-zinc-600 py-8">{t('search.no_posts')}</p>
         )}
 
         {!hasResults && trendingTags.length > 0 && (
@@ -143,7 +145,7 @@ export default function SearchPage() {
 
         {!hasResults && discover.length > 0 && (
           <div className="flex flex-col gap-3">
-            <h2 className="text-sm font-medium text-zinc-400">Discover people</h2>
+            <h2 className="text-sm font-medium text-zinc-400">{t('search.discover')}</h2>
             <div className="flex flex-col gap-2">{discover.map(renderUser)}</div>
           </div>
         )}

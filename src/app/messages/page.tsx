@@ -4,12 +4,14 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useT } from '@/lib/useT';
 import { getConversations } from '@/features/messages/actions';
 
 export default function Messages() {
   const router = useRouter();
   const [conversations, setConversations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const t = useT();
 
   useEffect(() => {
     getConversations().then((data) => {
@@ -25,7 +27,7 @@ export default function Messages() {
           <button onClick={() => router.back()} className="text-zinc-400 hover:text-white transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm font-medium text-zinc-400">Messages</span>
+          <span className="text-sm font-medium text-zinc-400">{t('messages.title')}</span>
           <div className="w-5" />
         </div>
       </header>
@@ -37,7 +39,7 @@ export default function Messages() {
           </div>
         ) : conversations.length === 0 ? (
           <div className="flex flex-col items-center py-20 text-zinc-600">
-            <p className="text-sm">No messages yet</p>
+            <p className="text-sm">{t('messages.none')}</p>
             <p className="text-xs text-zinc-700 mt-1">Visit someone's profile to start a conversation</p>
           </div>
         ) : (

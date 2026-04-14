@@ -5,6 +5,7 @@ import { ArrowLeft, Heart, MessageCircle, UserPlus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getNotifications, markAllRead } from '@/features/notifications/actions';
+import { useT } from '@/lib/useT';
 
 const ICONS = {
   like: Heart,
@@ -12,16 +13,23 @@ const ICONS = {
   follow: UserPlus,
 };
 
-const MESSAGES = {
+const MESSAGES_EN = {
   like: 'liked your post',
   comment: 'commented on your post',
   follow: 'started following you',
+};
+
+const MESSAGES_RU = {
+  like: 'notifications.liked',
+  comment: 'notifications.commented',
+  follow: 'notifications.followed',
 };
 
 export default function Notifications() {
   const router = useRouter();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const t = useT();
 
   useEffect(() => {
     getNotifications().then((data) => {
@@ -38,7 +46,7 @@ export default function Notifications() {
           <button onClick={() => router.back()} className="text-zinc-400 hover:text-white transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm font-medium text-zinc-400">Notifications</span>
+          <span className="text-sm font-medium text-zinc-400">{t('notifications.title')}</span>
           <div className="w-5" />
         </div>
       </header>
@@ -50,13 +58,13 @@ export default function Notifications() {
           </div>
         ) : notifications.length === 0 ? (
           <div className="flex flex-col items-center py-20 text-zinc-600">
-            <p className="text-sm">No notifications yet</p>
+            <p className="text-sm">{t('notifications.none')}</p>
           </div>
         ) : (
           <div className="flex flex-col gap-2">
             {notifications.map((n) => {
               const Icon = ICONS[n.type as keyof typeof ICONS];
-              const message = MESSAGES[n.type as keyof typeof MESSAGES];
+              const message = t(`notifications.${n.type === 'like' ? 'liked' : n.type === 'comment' ? 'commented' : 'followed'}`);
               const initials = n.actor.full_name.split(' ').map((s: string) => s[0]).join('').toUpperCase().slice(0, 2);
 
               return (
