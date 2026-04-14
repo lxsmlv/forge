@@ -111,7 +111,7 @@ export function Cabinet() {
           }`}
         >
           <StickyNote className="w-4 h-4" />
-          Notes
+          {t('cabinet.notes')}
         </button>
         <button
           onClick={() => setActiveSection('workouts')}
@@ -122,7 +122,7 @@ export function Cabinet() {
           }`}
         >
           <Dumbbell className="w-4 h-4" />
-          Workouts
+          {t('cabinet.workouts')}
         </button>
       </div>
 
@@ -170,29 +170,32 @@ export function Cabinet() {
               </div>
               <div className="flex gap-2">
                 <Button onClick={handleAddNote} disabled={isPending} size="sm" className="bg-purple-600 hover:bg-purple-500 text-white font-bold">
-                  {isPending ? '...' : 'Add'}
+                  {isPending ? '...' : t('common.add')}
                 </Button>
                 <Button onClick={() => setShowAddNote(false)} size="sm" variant="ghost" className="text-zinc-500 hover:text-white">
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
               </div>
             </div>
           )}
 
           <div className="flex gap-1.5 mb-2">
-            {['all', ...NOTE_CATEGORIES].map((cat) => (
+            {['all', ...NOTE_CATEGORIES].map((cat) => {
+              const labels: Record<string, string> = { all: t('feed.all'), general: t('feed.all'), gym: t('cat.gym'), car: t('cat.cars'), personal: 'Personal' };
+              return (
               <button
                 key={cat}
                 onClick={() => setNoteFilter(cat === 'all' ? null : cat)}
-                className={`text-xs px-2.5 py-1 rounded-full border transition-all capitalize ${
+                className={`text-xs px-2.5 py-1 rounded-full border transition-all ${
                   (cat === 'all' && !noteFilter) || noteFilter === cat
                     ? 'bg-purple-600/20 border-purple-600/40 text-purple-400'
                     : 'border-zinc-800 text-zinc-600 hover:border-zinc-700'
                 }`}
               >
-                {cat}
+                {labels[cat] || cat}
               </button>
-            ))}
+            );
+            })}
           </div>
 
           {(noteFilter ? notes.filter((n) => n.category === noteFilter) : notes).length === 0 ? (
@@ -214,7 +217,7 @@ export function Cabinet() {
               className="flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition-colors py-2"
             >
               <Plus className="w-4 h-4" />
-              Log workout
+              {t('cabinet.log_workout')}
             </button>
           ) : (
             <div className="bg-zinc-950 border border-purple-600/30 rounded-xl p-4 flex flex-col gap-3">
@@ -243,7 +246,7 @@ export function Cabinet() {
                 className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30"
               />
               <Input
-                placeholder="Notes (optional)"
+                placeholder={t('cabinet.details')}
                 value={newWorkout.notes}
                 onChange={(e) => setNewWorkout({ ...newWorkout, notes: e.target.value })}
                 onKeyDown={(e) => e.key === 'Enter' && handleAddWorkout()}
@@ -251,10 +254,10 @@ export function Cabinet() {
               />
               <div className="flex gap-2">
                 <Button onClick={handleAddWorkout} disabled={isPending} size="sm" className="bg-purple-600 hover:bg-purple-500 text-white font-bold">
-                  {isPending ? '...' : 'Log'}
+                  {isPending ? '...' : t('cabinet.log_workout')}
                 </Button>
                 <Button onClick={() => setShowAddWorkout(false)} size="sm" variant="ghost" className="text-zinc-500 hover:text-white">
-                  Cancel
+                  {t('common.cancel')}
                 </Button>
               </div>
             </div>
