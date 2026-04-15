@@ -75,6 +75,20 @@ export async function getMessages(otherUserId: string) {
   }));
 }
 
+export async function getUnreadMessagesCount() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return 0;
+
+  const { count } = await supabase
+    .from('messages')
+    .select('*', { count: 'exact', head: true })
+    .eq('receiver_id', user.id)
+    .eq('is_read', false);
+
+  return count || 0;
+}
+
 export async function sendEncryptedMessage(receiverId: string, text: string, encryptedKey: string, iv: string, encryptedKeySender?: string) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();

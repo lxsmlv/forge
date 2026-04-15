@@ -7,6 +7,7 @@ import { Home, MessageCircle, Plus, BookOpen, User } from 'lucide-react';
 import { useT } from '@/lib/useT';
 import { useRealtime } from '@/lib/useRealtime';
 import { getUnreadCount } from '@/features/notifications/actions';
+import { getUnreadMessagesCount } from '@/features/messages/actions';
 import { PlusSheet } from './PlusSheet';
 
 export function BottomNav() {
@@ -16,21 +17,34 @@ export function BottomNav() {
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [plusOpen, setPlusOpen] = useState(false);
 
-  const refreshCounts = useCallback(async () => {
+  const refreshNotifications = useCallback(async () => {
     const count = await getUnreadCount();
     setUnreadNotifications(count);
   }, []);
 
-  useEffect(() => { refreshCounts(); }, [refreshCounts]);
-
-  useRealtime('notifications', 'INSERT', refreshCounts);
-  useRealtime('messages', 'INSERT', useCallback(() => {
-    setUnreadMessages((prev) => prev + 1);
-  }, []));
+  const refreshMessages = useCallback(async () => {
+    const count = await getUnreadMessagesCount();
+    setUnreadMessages(count);
+  }, []);
 
   useEffect(() => {
-    if (pathname.startsWith('/messages')) setUnreadMessages(0);
-  }, [pathname]);
+    refreshNotifications();
+    refreshMessages();
+  }, [refreshNotifications, refreshMessages]);
+
+  useRealtime('notifications', 'INSERT', refreshNotifications);
+  useRealtime('messages', 'INSERT', refreshMessages);
+
+  useEffect(() => {
+    if (pathname.startsWith('/messages')) {
+      setUnreadMessages(0);
+      setTimeout(refreshMessages, 500);
+    }
+    if (pathname.startsWith('/notifications') || pathname === '/profile') {
+      setUnreadNotifications(0);
+      setTimeout(refreshNotifications, 500);
+    }
+  }, [pathname, refreshMessages, refreshNotifications]);
 
   const LEFT_ITEMS = [
     { href: '/feed', icon: Home, label: t('nav.feed'), badge: 0 },
@@ -39,7 +53,7 @@ export function BottomNav() {
 
   const RIGHT_ITEMS = [
     { href: '/cabinet', icon: BookOpen, label: t('feed.tab_cabinet'), badge: 0 },
-    { href: '/profile', icon: User, label: t('nav.profile'), badge: unreadNotifications },
+    { href: '/profile', icon: User, label: t('nav.profile'), badge: 0 },
   ];
 
   const renderItem = ({ href, icon: Icon, label, badge }: { href: string; icon: typeof Home; label: string; badge: number }) => {

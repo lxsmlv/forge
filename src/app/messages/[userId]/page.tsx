@@ -20,6 +20,7 @@ export default function Chat() {
   const [loading, setLoading] = useState(true);
   const [isPending, startTransition] = useTransition();
   const bottomRef = useRef<HTMLDivElement>(null);
+  const currentUserIdRef = useRef<string | null>(null);
 
   const loadMessages = useCallback(async () => {
     const data = await getMessages(otherUserId);
@@ -29,6 +30,12 @@ export default function Chat() {
 
   useEffect(() => {
     const supabase = createClient();
+
+    // Cache current user id once — avoids HTTP calls in realtime callback
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      currentUserIdRef.current = user?.id || null;
+    });
+
     supabase
       .from('profiles')
       .select('username, full_name, avatar_url, public_key')
@@ -53,12 +60,12 @@ export default function Chat() {
           schema: 'public',
           table: 'messages',
         },
-        async (payload) => {
+        (payload) => {
           const msg = payload.new as any;
           if (msg.sender_id !== otherUserId && msg.receiver_id !== otherUserId) return;
 
-          const { data: { user } } = await supabase.auth.getUser();
-          if (!user) return;
+          const userId = currentUserIdRef.current;
+          if (!userId) return;
 
           setMessages((prev) => {
             if (prev.some((m) => m.id === msg.id)) return prev;
@@ -71,14 +78,14 @@ export default function Chat() {
                 encrypted_key_sender: msg.encrypted_key_sender,
                 iv: msg.iv,
                 sender_id: msg.sender_id,
-                is_mine: msg.sender_id === user.id,
+                is_mine: msg.sender_id === userId,
                 time: new Date(msg.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
               },
             ];
           });
 
-          // Mark incoming as read
-          if (msg.receiver_id === user.id) {
+          // Mark incoming as read (fire-and-forget)
+          if (msg.receiver_id === userId) {
             supabase.from('messages').update({ is_read: true }).eq('id', msg.id).then(() => {});
           }
         },
