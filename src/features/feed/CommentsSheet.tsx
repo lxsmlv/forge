@@ -165,7 +165,7 @@ export function CommentsSheet({ postId, onClose }: Props) {
               disabled={!text.trim() || isPending}
               className="h-9 w-9 rounded-lg bg-purple-600 hover:bg-purple-500 flex items-center justify-center transition-all disabled:opacity-30"
             >
-              <Send className="w-4 h-4 text-white" />
+              <Send className="w-4 h-4" style={{ color: '#ffffff' }} />
             </button>
           </div>
         </div>

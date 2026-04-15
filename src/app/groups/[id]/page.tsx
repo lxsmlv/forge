@@ -179,7 +179,7 @@ export default function GroupPage() {
                   className="forge-press h-10 w-10 rounded-[var(--forge-radius-md)] flex items-center justify-center shadow-[var(--forge-shadow-glow)] hover:shadow-[var(--forge-shadow-glow-strong)] transition-all"
                   style={{ background: 'var(--forge-gradient)' }}
                 >
-                  <Send className="w-4 h-4 text-white" />
+                  <Send className="w-4 h-4" style={{ color: '#ffffff' }} />
                 </button>
               </div>
             )}

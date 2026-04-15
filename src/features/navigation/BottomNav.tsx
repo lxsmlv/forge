@@ -89,7 +89,7 @@ export function BottomNav() {
             onClick={() => setPlusOpen(true)}
             className="forge-nav-create h-11 w-11 rounded-full flex items-center justify-center"
           >
-            <Plus className="w-5 h-5 text-white" strokeWidth={2.5} />
+            <Plus className="w-5 h-5" strokeWidth={2.5} style={{ color: '#ffffff' }} />
           </button>
 
           {RIGHT_ITEMS.map(renderItem)}

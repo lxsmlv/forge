@@ -217,7 +217,7 @@ export default function GradientsPreview() {
                 className={`h-20 w-20 rounded-full flex items-center justify-center ${v.animate ? 'breathe-animation' : ''}`}
                 style={{ background: v.background, boxShadow: theme === 'light' ? v.shadowLight : v.shadowDark }}
               >
-                <Plus className="w-9 h-9 text-white" strokeWidth={2.5} />
+                <Plus className="w-9 h-9" strokeWidth={2.5} style={{ color: '#ffffff' }} />
               </button>
             </div>
 
@@ -231,7 +231,7 @@ export default function GradientsPreview() {
                   className={`h-11 w-11 rounded-full flex items-center justify-center ${v.animate ? 'breathe-animation' : ''}`}
                   style={{ background: v.background, boxShadow: theme === 'light' ? v.shadowLight : v.shadowDark }}
                 >
-                  <Plus className="w-5 h-5 text-white" strokeWidth={2.5} />
+                  <Plus className="w-5 h-5" strokeWidth={2.5} style={{ color: '#ffffff' }} />
                 </button>
                 <NavIcon Icon={BookOpen} label="Cabinet" />
                 <NavIcon Icon={User} label="Profile" />

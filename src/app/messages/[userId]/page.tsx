@@ -232,7 +232,7 @@ export default function Chat() {
             className="forge-press h-10 w-10 rounded-[var(--forge-radius-md)] bg-[var(--forge-gradient)] shadow-[var(--forge-shadow-glow)] flex items-center justify-center transition-all disabled:opacity-30 disabled:shadow-none hover:shadow-[var(--forge-shadow-glow-strong)]"
             style={{ background: 'var(--forge-gradient)' }}
           >
-            <Send className="w-4 h-4 text-white" />
+            <Send className="w-4 h-4" style={{ color: '#ffffff' }} />
           </button>
         </div>
       </div>
