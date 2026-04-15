@@ -21,13 +21,11 @@ export function BottomNav() {
 
   useEffect(() => { refreshCounts(); }, [refreshCounts]);
 
-  // Realtime badges
   useRealtime('notifications', 'INSERT', refreshCounts);
   useRealtime('messages', 'INSERT', useCallback(() => {
     setUnreadMessages((prev) => prev + 1);
   }, []));
 
-  // Reset message badge when visiting messages
   useEffect(() => {
     if (pathname.startsWith('/messages')) setUnreadMessages(0);
   }, [pathname]);
@@ -35,14 +33,14 @@ export function BottomNav() {
   const NAV_ITEMS = [
     { href: '/feed', icon: Home, label: t('nav.feed'), badge: 0 },
     { href: '/messages', icon: MessageCircle, label: t('messages.title'), badge: unreadMessages },
-    { href: '/create', icon: Plus, label: t('nav.post'), isCreate: true, badge: 0 },
+    { href: '/create', icon: Plus, label: '', isCreate: true, badge: 0 },
     { href: '/reels', icon: Play, label: t('nav.reels'), badge: 0 },
     { href: '/profile', icon: User, label: t('nav.profile'), badge: unreadNotifications },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-t border-zinc-800/50 safe-bottom">
-      <div className="max-w-lg mx-auto flex items-center justify-around px-2 py-2">
+    <nav className="forge-bottom-nav fixed bottom-0 left-0 right-0 z-50 safe-bottom">
+      <div className="max-w-lg mx-auto flex items-center justify-around px-4 py-1.5">
         {NAV_ITEMS.map(({ href, icon: Icon, label, isCreate, badge }) => {
           const active = pathname === href || (href !== '/feed' && pathname.startsWith(href));
 
@@ -51,9 +49,9 @@ export function BottomNav() {
               <Link
                 key={href}
                 href={href}
-                className="h-10 w-10 rounded-full bg-purple-600 hover:bg-purple-500 shadow-[0_0_20px_rgba(147,51,234,0.4)] flex items-center justify-center transition-all active:scale-95"
+                className="forge-nav-create h-11 w-11 rounded-full flex items-center justify-center"
               >
-                <Icon className="w-5 h-5 text-white" />
+                <Plus className="w-5 h-5 text-white" strokeWidth={2.5} />
               </Link>
             );
           }
@@ -62,14 +60,14 @@ export function BottomNav() {
             <Link
               key={href}
               href={href}
-              className={`relative flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors ${
-                active ? 'text-purple-400' : 'text-zinc-600 hover:text-zinc-400'
+              className={`relative flex flex-col items-center gap-0.5 py-1.5 px-4 rounded-xl transition-all ${
+                active ? 'forge-nav-item-active' : 'forge-nav-item'
               }`}
             >
-              <Icon className="w-5 h-5" />
-              <span className="text-[10px]">{label}</span>
+              <Icon className="w-[22px] h-[22px]" strokeWidth={active ? 2.2 : 1.8} />
+              <span className="text-[10px] font-medium tracking-wide">{label}</span>
               {badge > 0 && (
-                <span className="absolute -top-1 right-0 h-4 min-w-4 px-1 rounded-full bg-purple-600 text-[10px] font-bold text-white flex items-center justify-center">
+                <span className="absolute -top-0.5 right-1 h-[18px] min-w-[18px] px-1 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 text-[9px] font-bold text-white flex items-center justify-center shadow-lg shadow-purple-500/30">
                   {badge > 9 ? '9+' : badge}
                 </span>
               )}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Bebas_Neue } from "next/font/google";
 import "./globals.css";
+import "./design-system.css";
 import { AppShell } from "@/features/navigation/AppShell";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/features/theme/ThemeProvider";

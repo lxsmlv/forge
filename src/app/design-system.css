@@ -1,0 +1,467 @@
+/* ================================================
+   FORGE DESIGN SYSTEM — Forged Steel & Purple Fire
+   ================================================ */
+
+/* Color Tokens */
+:root {
+  --forge-black: #08080a;
+  --forge-surface: #0f0f12;
+  --forge-card: #141418;
+  --forge-card-hover: #1a1a20;
+  --forge-border: rgba(255, 255, 255, 0.06);
+  --forge-border-hover: rgba(255, 255, 255, 0.12);
+
+  --forge-text-primary: #f0f0f2;
+  --forge-text-secondary: #8e8e9a;
+  --forge-text-tertiary: #4a4a56;
+  --forge-text-muted: #2a2a34;
+
+  --forge-purple: #8b5cf6;
+  --forge-purple-bright: #a78bfa;
+  --forge-purple-dim: #6d28d9;
+  --forge-purple-glow: rgba(139, 92, 246, 0.15);
+  --forge-purple-glow-strong: rgba(139, 92, 246, 0.3);
+
+  --forge-gradient: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%);
+  --forge-gradient-subtle: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(168, 85, 247, 0.05) 100%);
+  --forge-gradient-card: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 100%);
+
+  --forge-success: #34d399;
+  --forge-error: #f87171;
+  --forge-warning: #fbbf24;
+
+  --forge-radius-sm: 8px;
+  --forge-radius-md: 12px;
+  --forge-radius-lg: 16px;
+  --forge-radius-xl: 20px;
+  --forge-radius-full: 9999px;
+
+  --forge-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --forge-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --forge-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --forge-shadow-glow: 0 0 20px rgba(139, 92, 246, 0.2);
+  --forge-shadow-glow-strong: 0 0 40px rgba(139, 92, 246, 0.3);
+
+  --forge-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --forge-transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --forge-transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  --forge-transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ================================================
+   Global Resets & Base
+   ================================================ */
+
+body {
+  background: var(--forge-black) !important;
+  color: var(--forge-text-primary) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Smooth scrolling everywhere */
+* { scroll-behavior: smooth; }
+
+/* Better touch targets */
+button, a, [role="button"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* ================================================
+   Card System — Glass Steel
+   ================================================ */
+
+.forge-card {
+  background: var(--forge-card);
+  background-image: var(--forge-gradient-card);
+  border: 1px solid var(--forge-border);
+  border-radius: var(--forge-radius-lg);
+  transition: all var(--forge-transition-normal);
+  overflow: hidden;
+}
+
+.forge-card:hover {
+  background: var(--forge-card-hover);
+  border-color: var(--forge-border-hover);
+  box-shadow: var(--forge-shadow-md);
+}
+
+.forge-card-interactive {
+  cursor: pointer;
+  transition: all var(--forge-transition-fast);
+}
+
+.forge-card-interactive:active {
+  transform: scale(0.98);
+  transition: transform 100ms ease;
+}
+
+/* ================================================
+   Button System
+   ================================================ */
+
+.forge-btn-primary {
+  background: var(--forge-gradient);
+  color: white;
+  font-weight: 600;
+  border-radius: var(--forge-radius-md);
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  transition: all var(--forge-transition-fast);
+  box-shadow: var(--forge-shadow-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.forge-btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity var(--forge-transition-fast);
+}
+
+.forge-btn-primary:hover {
+  box-shadow: var(--forge-shadow-glow-strong);
+  transform: translateY(-1px);
+}
+
+.forge-btn-primary:hover::before {
+  opacity: 1;
+}
+
+.forge-btn-primary:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: var(--forge-shadow-glow);
+}
+
+.forge-btn-secondary {
+  background: var(--forge-surface);
+  color: var(--forge-text-secondary);
+  border: 1px solid var(--forge-border);
+  border-radius: var(--forge-radius-md);
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: all var(--forge-transition-fast);
+}
+
+.forge-btn-secondary:hover {
+  background: var(--forge-card);
+  border-color: var(--forge-border-hover);
+  color: var(--forge-text-primary);
+}
+
+.forge-btn-secondary:active {
+  transform: scale(0.98);
+}
+
+/* ================================================
+   Input System — Refined
+   ================================================ */
+
+.forge-input {
+  background: var(--forge-surface) !important;
+  border: 1px solid var(--forge-border) !important;
+  border-radius: var(--forge-radius-md) !important;
+  color: var(--forge-text-primary) !important;
+  padding: 12px 16px !important;
+  font-size: 14px !important;
+  transition: all var(--forge-transition-fast) !important;
+  outline: none !important;
+}
+
+.forge-input:focus {
+  border-color: var(--forge-purple) !important;
+  box-shadow: 0 0 0 3px var(--forge-purple-glow) !important;
+  background: var(--forge-card) !important;
+}
+
+.forge-input::placeholder {
+  color: var(--forge-text-tertiary) !important;
+}
+
+/* ================================================
+   Tab System — Glowing Active State
+   ================================================ */
+
+.forge-tab {
+  position: relative;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--forge-text-tertiary);
+  border-radius: var(--forge-radius-sm);
+  transition: all var(--forge-transition-fast);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.forge-tab:hover {
+  color: var(--forge-text-secondary);
+}
+
+.forge-tab-active {
+  color: var(--forge-purple-bright) !important;
+  background: var(--forge-purple-glow) !important;
+  border-color: rgba(139, 92, 246, 0.2) !important;
+}
+
+/* ================================================
+   Bottom Navigation — Solid Anvil Base
+   ================================================ */
+
+.forge-bottom-nav {
+  background: rgba(8, 8, 10, 0.95) !important;
+  backdrop-filter: saturate(180%) blur(20px) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+  border-top: 1px solid var(--forge-border) !important;
+}
+
+.forge-nav-item {
+  transition: all var(--forge-transition-fast);
+  opacity: 0.5;
+}
+
+.forge-nav-item:hover {
+  opacity: 0.7;
+}
+
+.forge-nav-item-active {
+  opacity: 1 !important;
+  color: var(--forge-purple-bright) !important;
+}
+
+.forge-nav-create {
+  background: var(--forge-gradient) !important;
+  box-shadow: var(--forge-shadow-glow) !important;
+  transition: all var(--forge-transition-fast) !important;
+}
+
+.forge-nav-create:hover {
+  box-shadow: var(--forge-shadow-glow-strong) !important;
+  transform: scale(1.05);
+}
+
+.forge-nav-create:active {
+  transform: scale(0.95) !important;
+}
+
+/* ================================================
+   Header — Floating Glass
+   ================================================ */
+
+.forge-header {
+  background: rgba(8, 8, 10, 0.8) !important;
+  backdrop-filter: saturate(180%) blur(20px) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+  border-bottom: 1px solid var(--forge-border) !important;
+}
+
+/* ================================================
+   Avatar System
+   ================================================ */
+
+.forge-avatar {
+  border: 2px solid var(--forge-border);
+  transition: all var(--forge-transition-fast);
+}
+
+.forge-avatar:hover {
+  border-color: var(--forge-purple);
+  box-shadow: var(--forge-shadow-glow);
+}
+
+.forge-avatar-ring {
+  background: var(--forge-gradient);
+  padding: 2px;
+  border-radius: var(--forge-radius-full);
+}
+
+/* ================================================
+   Shimmer Loading — Premium Feel
+   ================================================ */
+
+@keyframes forge-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.forge-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--forge-surface) 0%,
+    var(--forge-card) 25%,
+    var(--forge-card-hover) 50%,
+    var(--forge-card) 75%,
+    var(--forge-surface) 100%
+  );
+  background-size: 200% 100%;
+  animation: forge-shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--forge-radius-sm);
+}
+
+/* ================================================
+   Badge / Chip System
+   ================================================ */
+
+.forge-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  border-radius: var(--forge-radius-full);
+  border: 1px solid var(--forge-border);
+  background: var(--forge-surface);
+  color: var(--forge-text-secondary);
+  transition: all var(--forge-transition-fast);
+}
+
+.forge-badge-purple {
+  background: var(--forge-purple-glow);
+  border-color: rgba(139, 92, 246, 0.2);
+  color: var(--forge-purple-bright);
+}
+
+.forge-badge-interactive {
+  cursor: pointer;
+}
+
+.forge-badge-interactive:hover {
+  border-color: var(--forge-border-hover);
+  background: var(--forge-card);
+}
+
+.forge-badge-interactive:active {
+  transform: scale(0.95);
+}
+
+/* ================================================
+   Floating Action Button
+   ================================================ */
+
+.forge-fab {
+  background: var(--forge-gradient);
+  box-shadow: var(--forge-shadow-glow-strong);
+  transition: all var(--forge-transition-spring);
+}
+
+.forge-fab:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 50px rgba(139, 92, 246, 0.4);
+}
+
+.forge-fab:active {
+  transform: scale(0.92);
+}
+
+/* ================================================
+   Micro-interactions
+   ================================================ */
+
+/* Heart like animation */
+@keyframes forge-heart-pop {
+  0% { transform: scale(1); }
+  15% { transform: scale(1.3); }
+  30% { transform: scale(0.9); }
+  45% { transform: scale(1.1); }
+  60% { transform: scale(1); }
+}
+
+.forge-heart-pop {
+  animation: forge-heart-pop 0.5s ease;
+}
+
+/* Gentle float for elements */
+@keyframes forge-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* Press feedback for all interactive elements */
+.forge-press:active {
+  transform: scale(0.97);
+  transition: transform 80ms ease;
+}
+
+/* Smooth page transitions */
+.forge-page-enter {
+  animation: fadeInUp 0.3s ease forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================================
+   Scrollbar — Minimal
+   ================================================ */
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--forge-text-muted);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--forge-text-tertiary);
+}
+
+/* ================================================
+   Glass Morphism — For Overlays
+   ================================================ */
+
+.forge-glass {
+  background: rgba(14, 14, 18, 0.85);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border: 1px solid var(--forge-border);
+}
+
+/* ================================================
+   Gradient Text
+   ================================================ */
+
+.forge-gradient-text {
+  background: var(--forge-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ================================================
+   Glow Effects
+   ================================================ */
+
+.forge-glow-purple {
+  box-shadow: var(--forge-shadow-glow);
+}
+
+.forge-glow-purple-strong {
+  box-shadow: var(--forge-shadow-glow-strong);
+}
+
+.forge-text-glow {
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+}
