@@ -8,78 +8,141 @@ import Link from 'next/link';
 const AB_LINEAR = 'linear-gradient(135deg, #4c1d95 0%, #9333ea 50%, #c084fc 100%)';
 const AB_LINEAR_TOP = 'linear-gradient(180deg, #c084fc 0%, #9333ea 50%, #4c1d95 100%)'; // lit from above
 
-// Planet-inspired neon variants
+// Atmospheric glow shadows look stunning on dark, muddy on light.
+// Each variant defines a DARK shadow (atmospheric) + LIGHT shadow (clean, crisp technique).
+const ATMOSPHERE_DARK =
+  '0 0 0 1px rgba(192,132,252,0.5), ' +
+  '0 0 12px rgba(192,132,252,0.7), ' +
+  '0 0 28px rgba(168,85,247,0.5), ' +
+  '0 0 56px rgba(147,51,234,0.35), ' +
+  '0 0 96px rgba(124,58,237,0.18)';
+
+// Planet-inspired neon variants. All start from the Atmosphere dark glow.
+// The variant is defined by the LIGHT-MODE treatment technique.
 const NEON_VARIANTS = [
   {
     id: 1,
     name: '1. Standard Neon (baseline)',
-    desc: 'Линейный fill + ровное outer glow',
+    desc: 'Линейный fill + ровное glow',
     background: AB_LINEAR,
-    boxShadow:
+    shadowDark:
       '0 0 0 1px rgba(192,132,252,0.3), ' +
       '0 0 20px rgba(168,85,247,0.55), ' +
       '0 0 40px rgba(192,132,252,0.35)',
+    shadowLight:
+      '0 0 0 1px rgba(124,58,237,0.25), ' +
+      '0 4px 12px rgba(124,58,237,0.2)',
     animate: false,
   },
   {
     id: 2,
     name: '2. Halo Ring',
-    desc: 'Тонкое яркое кольцо по краю (surface detail) + умеренное glow',
+    desc: 'Тонкое яркое кольцо по краю',
     background: AB_LINEAR,
-    boxShadow:
+    shadowDark:
       '0 0 0 1.5px rgba(216,180,254,0.8), ' +
       '0 0 0 2.5px rgba(147,51,234,0.4), ' +
       '0 0 18px rgba(168,85,247,0.5), ' +
       '0 0 36px rgba(192,132,252,0.28)',
+    shadowLight:
+      '0 0 0 1.5px rgba(124,58,237,0.5), ' +
+      '0 0 0 3px rgba(124,58,237,0.15), ' +
+      '0 2px 8px rgba(124,58,237,0.2)',
     animate: false,
   },
   {
     id: 3,
-    name: '3. Atmosphere (многослойное свечение, планета)',
-    desc: 'Плотная аура у поверхности → widely spread soft halo',
+    name: '3. Atmosphere — Planet (любимый на dark)',
+    desc: 'Dark: многослойное glow. Light: плавный сливающийся soft-halo (осторожно, может быть серый)',
     background: AB_LINEAR,
-    boxShadow:
-      '0 0 0 1px rgba(192,132,252,0.5), ' +
-      '0 0 12px rgba(192,132,252,0.7), ' +
-      '0 0 28px rgba(168,85,247,0.5), ' +
-      '0 0 56px rgba(147,51,234,0.35), ' +
-      '0 0 96px rgba(124,58,237,0.18)',
+    shadowDark: ATMOSPHERE_DARK,
+    shadowLight:
+      '0 0 0 1px rgba(147,51,234,0.3), ' +
+      '0 0 20px rgba(147,51,234,0.18), ' +
+      '0 4px 24px rgba(124,58,237,0.25)',
+    animate: false,
+  },
+  {
+    id: '3a',
+    name: '3a. Atmosphere (dark) + Elevation (light)',
+    desc: 'Dark: atmosphere. Light: iOS-стиль чистая тень + purple rim — нет grey mud',
+    background: AB_LINEAR,
+    shadowDark: ATMOSPHERE_DARK,
+    shadowLight:
+      '0 0 0 1px rgba(124,58,237,0.35), ' +
+      '0 2px 4px rgba(76,29,149,0.15), ' +
+      '0 8px 18px rgba(76,29,149,0.22), ' +
+      '0 16px 36px rgba(76,29,149,0.12)',
+    animate: false,
+  },
+  {
+    id: '3b',
+    name: '3b. Atmosphere (dark) + Concentric Rings (light)',
+    desc: 'Dark: atmosphere. Light: 3 чётких purple кольца без blur — читается как ripple, не муть',
+    background: AB_LINEAR,
+    shadowDark: ATMOSPHERE_DARK,
+    shadowLight:
+      '0 0 0 1.5px rgba(124,58,237,0.6), ' +
+      '0 0 0 4px rgba(124,58,237,0.15), ' +
+      '0 0 0 7px rgba(124,58,237,0.08), ' +
+      '0 2px 6px rgba(76,29,149,0.12)',
+    animate: false,
+  },
+  {
+    id: '3c',
+    name: '3c. Atmosphere (dark) + Thick Gradient Ring (light)',
+    desc: 'Dark: atmosphere. Light: толстый градиентный ring вместо glow — печатный знак, без helosa',
+    background: AB_LINEAR,
+    shadowDark: ATMOSPHERE_DARK,
+    shadowLight:
+      '0 0 0 2.5px rgba(147,51,234,0.85), ' +
+      '0 0 0 3.5px rgba(255,255,255,0.95), ' +
+      '0 0 0 5px rgba(124,58,237,0.3), ' +
+      '0 4px 12px rgba(76,29,149,0.18)',
     animate: false,
   },
   {
     id: 4,
     name: '4. Lit from above (солнце сверху)',
-    desc: 'Градиент вертикальный — как планета освещённая сверху. Glow сильнее сверху',
+    desc: 'Вертикальный градиент — как планета освещённая сверху',
     background: AB_LINEAR_TOP,
-    boxShadow:
+    shadowDark:
       '0 -6px 24px rgba(192,132,252,0.55), ' +
       '0 2px 20px rgba(76,29,149,0.5), ' +
       '0 0 0 1px rgba(192,132,252,0.25), ' +
       '0 0 40px rgba(168,85,247,0.3)',
+    shadowLight:
+      '0 -2px 8px rgba(192,132,252,0.3), ' +
+      '0 6px 14px rgba(76,29,149,0.28), ' +
+      '0 0 0 1px rgba(124,58,237,0.3)',
     animate: false,
   },
   {
     id: 5,
-    name: '5. Cosmic (dual-tone с magenta внешней аурой)',
-    desc: 'Violet ядро + magenta-pink внешнее свечение. Космический вайб',
+    name: '5. Cosmic (magenta outer)',
+    desc: 'Violet ядро + magenta-pink внешка',
     background: AB_LINEAR,
-    boxShadow:
+    shadowDark:
       '0 0 0 1px rgba(192,132,252,0.4), ' +
       '0 0 16px rgba(168,85,247,0.6), ' +
       '0 0 32px rgba(217,70,239,0.45), ' +
       '0 0 64px rgba(244,114,182,0.25)',
+    shadowLight:
+      '0 0 0 1px rgba(168,85,247,0.4), ' +
+      '0 0 0 3px rgba(217,70,239,0.1), ' +
+      '0 4px 12px rgba(168,85,247,0.2)',
     animate: false,
   },
   {
     id: 6,
     name: '6. Breathing Planet (3 + пульс)',
-    desc: 'Atmosphere + плавная анимация — "дыхание" атмосферы',
+    desc: 'Atmosphere + анимация на dark. Light использует 3a elevation',
     background: AB_LINEAR,
-    boxShadow:
-      '0 0 0 1px rgba(192,132,252,0.5), ' +
-      '0 0 12px rgba(192,132,252,0.7), ' +
-      '0 0 28px rgba(168,85,247,0.5), ' +
-      '0 0 56px rgba(147,51,234,0.35)',
+    shadowDark: ATMOSPHERE_DARK,
+    shadowLight:
+      '0 0 0 1px rgba(124,58,237,0.35), ' +
+      '0 2px 4px rgba(76,29,149,0.15), ' +
+      '0 8px 18px rgba(76,29,149,0.22)',
     animate: true,
   },
 ];
@@ -152,7 +215,7 @@ export default function GradientsPreview() {
               <button
                 type="button"
                 className={`h-20 w-20 rounded-full flex items-center justify-center ${v.animate ? 'breathe-animation' : ''}`}
-                style={{ background: v.background, boxShadow: v.boxShadow }}
+                style={{ background: v.background, boxShadow: theme === 'light' ? v.shadowLight : v.shadowDark }}
               >
                 <Plus className="w-9 h-9 text-white" strokeWidth={2.5} />
               </button>
@@ -166,7 +229,7 @@ export default function GradientsPreview() {
                 <button
                   type="button"
                   className={`h-11 w-11 rounded-full flex items-center justify-center ${v.animate ? 'breathe-animation' : ''}`}
-                  style={{ background: v.background, boxShadow: v.boxShadow }}
+                  style={{ background: v.background, boxShadow: theme === 'light' ? v.shadowLight : v.shadowDark }}
                 >
                   <Plus className="w-5 h-5 text-white" strokeWidth={2.5} />
                 </button>
