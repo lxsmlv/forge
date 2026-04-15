@@ -49,10 +49,10 @@ export default function Chat() {
     // and make all existing encrypted messages unreadable.
     // If private key is missing, the user needs to recover via recovery key in settings.
 
-    // Realtime subscription for new messages — append directly from payload,
-    // no extra server round-trip.
+    // Realtime subscription for new messages — unique channel name per mount to avoid collisions.
+    const channelName = `chat-${otherUserId}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const channel = supabase
-      .channel(`chat-${otherUserId}`)
+      .channel(channelName)
       .on(
         'postgres_changes',
         {
@@ -65,7 +65,6 @@ export default function Chat() {
           if (msg.sender_id !== otherUserId && msg.receiver_id !== otherUserId) return;
 
           const userId = currentUserIdRef.current;
-          if (!userId) return;
 
           setMessages((prev) => {
             if (prev.some((m) => m.id === msg.id)) return prev;
@@ -78,22 +77,22 @@ export default function Chat() {
                 encrypted_key_sender: msg.encrypted_key_sender,
                 iv: msg.iv,
                 sender_id: msg.sender_id,
-                is_mine: msg.sender_id === userId,
+                is_mine: userId ? msg.sender_id === userId : false,
                 time: new Date(msg.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
               },
             ];
           });
 
           // Mark incoming as read (fire-and-forget)
-          if (msg.receiver_id === userId) {
+          if (userId && msg.receiver_id === userId) {
             supabase.from('messages').update({ is_read: true }).eq('id', msg.id).then(() => {});
           }
         },
       )
       .subscribe();
 
-    // Polling fallback — only if realtime drops (less aggressive now)
-    const pollId = setInterval(() => { loadMessages(); }, 20000);
+    // Polling fallback — only if realtime drops
+    const pollId = setInterval(() => { loadMessages(); }, 15000);
 
     return () => {
       supabase.removeChannel(channel);
@@ -103,13 +102,15 @@ export default function Chat() {
 
   useEffect(() => {
     async function decrypt() {
+      const userId = currentUserIdRef.current;
       const results = await Promise.all(
         messages.map(async (msg) => {
+          const is_mine = userId ? msg.sender_id === userId : (msg.is_mine ?? false);
           if (msg.encrypted_key && msg.iv) {
             const decrypted = await decryptMessageDual(msg.text, msg.encrypted_key, msg.encrypted_key_sender || null, msg.iv);
-            return { ...msg, text: decrypted };
+            return { ...msg, text: decrypted, is_mine };
           }
-          return msg;
+          return { ...msg, is_mine };
         }),
       );
       setDecryptedMessages(results);
