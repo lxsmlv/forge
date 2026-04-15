@@ -3,81 +3,83 @@
 import { Home, MessageCircle, Plus, BookOpen, User } from 'lucide-react';
 import Link from 'next/link';
 
-const OPTIONS = [
-  {
-    id: 'A',
-    name: 'A — Deep Violet Fire',
-    linear: 'linear-gradient(135deg, #4c1d95 0%, #8b5cf6 45%, #c084fc 100%)',
-    radial: 'radial-gradient(circle at 30% 30%, #c084fc 0%, #8b5cf6 45%, #4c1d95 100%)',
-    desc: 'Глубокий старт #4c1d95 → яркая вершина #c084fc. Максимальная драма',
-  },
-  {
-    id: 'AB',
-    name: 'AB — Hybrid (моя новая рекомендация)',
-    linear: 'linear-gradient(135deg, #4c1d95 0%, #9333ea 50%, #c084fc 100%)',
-    radial: 'radial-gradient(circle at 30% 30%, #c084fc 0%, #9333ea 50%, #4c1d95 100%)',
-    desc: 'A-глубина старта + B-благородная середина (purple-600). Менее one-note',
-  },
-  {
-    id: 'B',
-    name: 'B — Twilight Forge',
-    linear: 'linear-gradient(135deg, #5b21b6 0%, #9333ea 50%, #c084fc 100%)',
-    radial: 'radial-gradient(circle at 30% 30%, #c084fc 0%, #9333ea 50%, #5b21b6 100%)',
-    desc: 'Старт чуть светлее, ближе к благородному. Спокойнее A',
-  },
-];
+// AB gradient — locked choice
+const AB_LINEAR = 'linear-gradient(135deg, #4c1d95 0%, #9333ea 50%, #c084fc 100%)';
+const AB_LINEAR_TOP = 'linear-gradient(180deg, #c084fc 0%, #9333ea 50%, #4c1d95 100%)'; // lit from above
 
-// Plus-button styles — from minimalist to dramatic
-const PLUS_STYLES = [
+// Planet-inspired neon variants
+const NEON_VARIANTS = [
   {
-    name: '1. Flat (минимал, никакой 3D)',
-    getStyle: (_linear: string, radial: string) => ({
-      background: radial,
-      boxShadow: '0 0 24px rgba(139,92,246,0.4)',
-    }),
+    id: 1,
+    name: '1. Standard Neon (baseline)',
+    desc: 'Линейный fill + ровное outer glow',
+    background: AB_LINEAR,
+    boxShadow:
+      '0 0 0 1px rgba(192,132,252,0.3), ' +
+      '0 0 20px rgba(168,85,247,0.55), ' +
+      '0 0 40px rgba(192,132,252,0.35)',
+    animate: false,
   },
   {
-    name: '2. Bevel (лёгкая выпуклость)',
-    getStyle: (_linear: string, radial: string) => ({
-      background: radial,
-      boxShadow:
-        '0 0 24px rgba(139,92,246,0.4), ' +
-        'inset 0 1px 0 rgba(255,255,255,0.4), ' +
-        'inset 0 -2px 4px rgba(0,0,0,0.25)',
-    }),
+    id: 2,
+    name: '2. Halo Ring',
+    desc: 'Тонкое яркое кольцо по краю (surface detail) + умеренное glow',
+    background: AB_LINEAR,
+    boxShadow:
+      '0 0 0 1.5px rgba(216,180,254,0.8), ' +
+      '0 0 0 2.5px rgba(147,51,234,0.4), ' +
+      '0 0 18px rgba(168,85,247,0.5), ' +
+      '0 0 36px rgba(192,132,252,0.28)',
+    animate: false,
   },
   {
-    name: '3. Molten orb (шар-пламя, макс. глубина)',
-    getStyle: (_linear: string, radial: string) => ({
-      background: radial,
-      boxShadow:
-        '0 6px 20px rgba(76,29,149,0.5), ' +
-        '0 0 30px rgba(192,132,252,0.3), ' +
-        'inset 0 1px 2px rgba(255,255,255,0.5), ' +
-        'inset 0 -3px 6px rgba(76,29,149,0.4)',
-    }),
+    id: 3,
+    name: '3. Atmosphere (многослойное свечение, планета)',
+    desc: 'Плотная аура у поверхности → widely spread soft halo',
+    background: AB_LINEAR,
+    boxShadow:
+      '0 0 0 1px rgba(192,132,252,0.5), ' +
+      '0 0 12px rgba(192,132,252,0.7), ' +
+      '0 0 28px rgba(168,85,247,0.5), ' +
+      '0 0 56px rgba(147,51,234,0.35), ' +
+      '0 0 96px rgba(124,58,237,0.18)',
+    animate: false,
   },
   {
-    name: '4. Neon (плоский + сильное свечение)',
-    getStyle: (linear: string, _radial: string) => ({
-      background: linear,
-      boxShadow:
-        '0 0 0 1px rgba(192,132,252,0.3), ' +
-        '0 0 20px rgba(168,85,247,0.55), ' +
-        '0 0 40px rgba(192,132,252,0.35)',
-    }),
+    id: 4,
+    name: '4. Lit from above (солнце сверху)',
+    desc: 'Градиент вертикальный — как планета освещённая сверху. Glow сильнее сверху',
+    background: AB_LINEAR_TOP,
+    boxShadow:
+      '0 -6px 24px rgba(192,132,252,0.55), ' +
+      '0 2px 20px rgba(76,29,149,0.5), ' +
+      '0 0 0 1px rgba(192,132,252,0.25), ' +
+      '0 0 40px rgba(168,85,247,0.3)',
+    animate: false,
   },
   {
-    name: '5. Stamp ring (полая обводка, прозрачный центр)',
-    getStyle: (linear: string, _radial: string) => ({
-      background: 'transparent',
-      border: '2px solid',
-      borderImage: `${linear} 1`,
-      borderImageSlice: 1,
-      boxShadow:
-        '0 0 20px rgba(139,92,246,0.4), ' +
-        'inset 0 0 12px rgba(139,92,246,0.25)',
-    }),
+    id: 5,
+    name: '5. Cosmic (dual-tone с magenta внешней аурой)',
+    desc: 'Violet ядро + magenta-pink внешнее свечение. Космический вайб',
+    background: AB_LINEAR,
+    boxShadow:
+      '0 0 0 1px rgba(192,132,252,0.4), ' +
+      '0 0 16px rgba(168,85,247,0.6), ' +
+      '0 0 32px rgba(217,70,239,0.45), ' +
+      '0 0 64px rgba(244,114,182,0.25)',
+    animate: false,
+  },
+  {
+    id: 6,
+    name: '6. Breathing Planet (3 + пульс)',
+    desc: 'Atmosphere + плавная анимация — "дыхание" атмосферы',
+    background: AB_LINEAR,
+    boxShadow:
+      '0 0 0 1px rgba(192,132,252,0.5), ' +
+      '0 0 12px rgba(192,132,252,0.7), ' +
+      '0 0 28px rgba(168,85,247,0.5), ' +
+      '0 0 56px rgba(147,51,234,0.35)',
+    animate: true,
   },
 ];
 
@@ -87,90 +89,86 @@ export default function GradientsPreview() {
       <header className="forge-header sticky top-0 z-50">
         <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3.5">
           <Link href="/feed" className="text-sm text-[var(--forge-text-secondary)]">← Back</Link>
-          <span className="text-sm font-semibold">Gradient Preview</span>
+          <span className="text-sm font-semibold">Neon Plus — Planet Edition</span>
           <div className="w-10" />
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 py-6 flex flex-col gap-10">
+      <style>{`
+        @keyframes planet-breathe {
+          0%, 100% {
+            box-shadow:
+              0 0 0 1px rgba(192,132,252,0.5),
+              0 0 12px rgba(192,132,252,0.7),
+              0 0 28px rgba(168,85,247,0.5),
+              0 0 56px rgba(147,51,234,0.35);
+          }
+          50% {
+            box-shadow:
+              0 0 0 1.5px rgba(192,132,252,0.7),
+              0 0 16px rgba(192,132,252,0.9),
+              0 0 40px rgba(168,85,247,0.7),
+              0 0 80px rgba(147,51,234,0.5);
+          }
+        }
+        .breathe-animation {
+          animation: planet-breathe 2.8s ease-in-out infinite;
+        }
+      `}</style>
+
+      <main className="max-w-lg mx-auto px-4 py-6 flex flex-col gap-8">
         <div className="text-center">
           <p className="text-[13px] text-[var(--forge-text-secondary)]">
-            Каждый вариант — на swatch, CTA-кнопке, чат-пузыре и <b>в реальной bottom-nav</b> с тремя стилями плюса.
+            Гradient = <b>AB</b> (locked). 6 вариантов plus-кнопки с «planet»-ощущением.
+          </p>
+          <p className="text-[12px] text-[var(--forge-text-tertiary)] mt-2">
+            Каждый вариант показан <b>крупно</b> (чтобы видеть детали glow) и <b>в реальной bottom-nav</b>.
           </p>
         </div>
 
-        {OPTIONS.map((opt) => (
-          <section key={opt.id} className="flex flex-col gap-4 pb-6 border-b border-[var(--forge-border)]">
+        {NEON_VARIANTS.map((v) => (
+          <section key={v.id} className="flex flex-col gap-4 pb-6 border-b border-[var(--forge-border)]">
             <div>
               <h2 className="text-[16px] font-bold text-[var(--forge-text-primary)]">
-                {opt.name}
+                {v.name}
               </h2>
               <p className="text-[12px] text-[var(--forge-text-tertiary)] mt-0.5">
-                {opt.desc}
+                {v.desc}
               </p>
             </div>
 
-            {/* Big swatch */}
-            <div
-              className="h-16 rounded-[var(--forge-radius-lg)]"
-              style={{ background: opt.linear }}
-            />
-
-            {/* CTA button */}
-            <button
-              className="forge-press w-full py-3 rounded-[var(--forge-radius-md)] font-semibold text-[13px] uppercase text-white shadow-[0_0_20px_rgba(139,92,246,0.25)]"
-              style={{
-                background: opt.linear,
-                letterSpacing: '0.08em',
-              }}
-            >
-              Join The Club
-            </button>
-
-            {/* Chat bubble */}
-            <div className="flex justify-end">
-              <div
-                className="max-w-[75%] px-3.5 py-2 rounded-[18px] rounded-br-[6px] text-[14px] text-white shadow-[0_2px_12px_rgba(139,92,246,0.28)]"
-                style={{ background: opt.linear }}
+            {/* Big plus button to show glow details */}
+            <div className="flex justify-center py-8 bg-[var(--forge-surface)] rounded-[var(--forge-radius-lg)] border border-[var(--forge-border)]">
+              <button
+                type="button"
+                className={`h-20 w-20 rounded-full flex items-center justify-center ${v.animate ? 'breathe-animation' : ''}`}
+                style={{ background: v.background, boxShadow: v.boxShadow }}
               >
-                Сегодня был в зале, бицуха в огне 💪
-                <div className="text-[10px] mt-1" style={{ color: 'rgba(255,255,255,0.75)' }}>
-                  12:34
-                </div>
-              </div>
+                <Plus className="w-9 h-9 text-white" strokeWidth={2.5} />
+              </button>
             </div>
 
-            {/* Bottom nav mockup × 5 plus styles */}
-            <div className="flex flex-col gap-2 mt-2">
-              <p className="text-[11px] uppercase tracking-wider text-[var(--forge-text-tertiary)]">
-                Plus в bottom-nav (5 вариантов глубины/стиля):
-              </p>
-              {PLUS_STYLES.map((ps) => (
-                <div key={ps.name} className="flex flex-col gap-1">
-                  <p className="text-[11px] text-[var(--forge-text-tertiary)] pl-1">{ps.name}</p>
-                  <div className="forge-bottom-nav relative rounded-[var(--forge-radius-lg)] overflow-hidden">
-                    <div className="flex items-center justify-around px-4 py-1.5">
-                      <NavIcon Icon={Home} label="Feed" />
-                      <NavIcon Icon={MessageCircle} label="Msgs" />
-                      <button
-                        type="button"
-                        className="h-11 w-11 rounded-full flex items-center justify-center"
-                        style={ps.getStyle(opt.linear, opt.radial)}
-                      >
-                        <Plus className="w-5 h-5 text-white" strokeWidth={2.5} />
-                      </button>
-                      <NavIcon Icon={BookOpen} label="Cabinet" />
-                      <NavIcon Icon={User} label="Profile" />
-                    </div>
-                  </div>
-                </div>
-              ))}
+            {/* In real bottom-nav context at actual size */}
+            <div className="forge-bottom-nav relative rounded-[var(--forge-radius-lg)] overflow-hidden">
+              <div className="flex items-center justify-around px-4 py-1.5">
+                <NavIcon Icon={Home} label="Feed" />
+                <NavIcon Icon={MessageCircle} label="Msgs" />
+                <button
+                  type="button"
+                  className={`h-11 w-11 rounded-full flex items-center justify-center ${v.animate ? 'breathe-animation' : ''}`}
+                  style={{ background: v.background, boxShadow: v.boxShadow }}
+                >
+                  <Plus className="w-5 h-5 text-white" strokeWidth={2.5} />
+                </button>
+                <NavIcon Icon={BookOpen} label="Cabinet" />
+                <NavIcon Icon={User} label="Profile" />
+              </div>
             </div>
           </section>
         ))}
 
         <p className="text-center text-[12px] text-[var(--forge-text-tertiary)] pt-4">
-          Скажи в чате формата <b>«AB 3»</b> (gradient AB + plus style 3 molten). Или два разных: «AB для кнопок, AB 1 для плюса».
+          Напиши <b>«1»</b>, <b>«2»</b>, … или <b>«3+6»</b> (Atmosphere + breathe) — применю в проде.
         </p>
       </main>
     </div>
