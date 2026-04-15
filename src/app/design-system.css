@@ -25,14 +25,14 @@
   --forge-purple-glow: rgba(139, 92, 246, 0.18);
   --forge-purple-glow-strong: rgba(139, 92, 246, 0.32);
 
-  --forge-gradient: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%);
+  --forge-gradient: linear-gradient(135deg, #4c1d95 0%, #9333ea 50%, #c084fc 100%);
   --forge-gradient-subtle: linear-gradient(135deg, rgba(139, 92, 246, 0.16) 0%, rgba(168, 85, 247, 0.04) 100%);
   --forge-gradient-card: linear-gradient(180deg, rgba(167, 139, 250, 0.04) 0%, rgba(167, 139, 250, 0) 100%);
 
-  /* Brand gradients — same in both themes so the brand color is instantly recognisable.
-     "Purple Fire" — saturated violet → lavender, punchy not muddy. */
-  --forge-gradient-action: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%);
-  --forge-gradient-chat: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+  /* AB brand gradient — deep violet → purple → lavender. Same in both themes for brand recognition.
+     "Purple Fire": coal-depth start, bright blooming tip. */
+  --forge-gradient-action: linear-gradient(135deg, #4c1d95 0%, #9333ea 50%, #c084fc 100%);
+  --forge-gradient-chat: linear-gradient(135deg, #9333ea 0%, #5b21b6 100%);
 
   --forge-success: #34d399;
   --forge-error: #f87171;
@@ -297,14 +297,39 @@ button, a, [role="button"] {
   color: var(--forge-purple-bright) !important;
 }
 
+/* Plus FAB — "Atmosphere Planet": multi-layered glow on dark, mellowed ripple on light */
 .forge-nav-create {
   background: var(--forge-gradient-action) !important;
-  box-shadow: var(--forge-shadow-glow) !important;
+  box-shadow:
+    0 0 0 1px rgba(192, 132, 252, 0.5),
+    0 0 12px rgba(192, 132, 252, 0.7),
+    0 0 28px rgba(168, 85, 247, 0.5),
+    0 0 56px rgba(147, 51, 234, 0.35),
+    0 0 96px rgba(124, 58, 237, 0.18) !important;
   transition: all var(--forge-transition-fast) !important;
 }
 
+.light .forge-nav-create {
+  box-shadow:
+    0 0 0 1px rgba(147, 51, 234, 0.3),
+    0 0 20px rgba(147, 51, 234, 0.18),
+    0 4px 24px rgba(124, 58, 237, 0.25) !important;
+}
+
 .forge-nav-create:hover {
-  box-shadow: var(--forge-shadow-glow-strong) !important;
+  box-shadow:
+    0 0 0 1.5px rgba(216, 180, 254, 0.7),
+    0 0 16px rgba(192, 132, 252, 0.9),
+    0 0 40px rgba(168, 85, 247, 0.7),
+    0 0 80px rgba(147, 51, 234, 0.5) !important;
+  transform: scale(1.05);
+}
+
+.light .forge-nav-create:hover {
+  box-shadow:
+    0 0 0 1.5px rgba(124, 58, 237, 0.5),
+    0 0 24px rgba(147, 51, 234, 0.3),
+    0 6px 32px rgba(124, 58, 237, 0.35) !important;
   transform: scale(1.05);
 }
 
