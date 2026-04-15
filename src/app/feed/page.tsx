@@ -206,7 +206,7 @@ export default function Feed() {
                   {feedMode === 'following' ? t('feed.follow_someone') : t('feed.no_posts')}
                 </p>
                 <p className="text-[13px] text-[var(--forge-text-tertiary)] mt-1.5 max-w-xs">
-                  {feedMode === 'following' ? t('feed.switch_all') : t('feed.be_first')}
+                  {t('feed.be_first')}
                 </p>
               </div>
             )}

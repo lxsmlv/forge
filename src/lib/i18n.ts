@@ -26,7 +26,6 @@ const translations: Record<Locale, Record<string, string>> = {
     // Feed
     'feed.tab_feed': 'Feed',
     'feed.tab_cabinet': 'Cabinet',
-    'feed.all': 'All',
     'feed.following': 'Following',
     'feed.saved': 'Saved',
     'feed.trending': 'Trending',
@@ -47,7 +46,8 @@ const translations: Record<Locale, Record<string, string>> = {
     'feed.no_posts': 'No posts yet',
     'feed.be_first': 'Be the first to share something',
     'feed.follow_someone': 'Follow someone to see their posts',
-    'feed.switch_all': 'Switch to All to discover people',
+    'feed.empty_start_following': 'Start following to fill your feed',
+    'feed.empty_find_more': 'Find more people',
 
     // Create
     'create.new_post': 'New Post',
@@ -184,7 +184,6 @@ const translations: Record<Locale, Record<string, string>> = {
 
     'feed.tab_feed': 'Лента',
     'feed.tab_cabinet': 'Кабинет',
-    'feed.all': 'Все',
     'feed.following': 'Подписки',
     'feed.saved': 'Сохранённые',
     'feed.trending': 'Популярное',
@@ -203,7 +202,8 @@ const translations: Record<Locale, Record<string, string>> = {
     'feed.no_posts': 'Постов пока нет',
     'feed.be_first': 'Будь первым кто поделится',
     'feed.follow_someone': 'Подпишись на кого-нибудь',
-    'feed.switch_all': 'Переключись на Все чтобы найти людей',
+    'feed.empty_start_following': 'Подпишись чтобы заполнить ленту',
+    'feed.empty_find_more': 'Найти ещё людей',
 
     'create.new_post': 'Новый пост',
     'create.publish': 'Опубликовать',

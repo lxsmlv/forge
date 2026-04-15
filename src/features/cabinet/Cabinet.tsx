@@ -180,7 +180,7 @@ export function Cabinet() {
 
           <div className="flex gap-1.5 mb-2">
             {['all', ...NOTE_CATEGORIES].map((cat) => {
-              const labels: Record<string, string> = { all: t('feed.all'), general: t('feed.all'), gym: t('cat.gym'), car: t('cat.cars'), personal: 'Personal' };
+              const labels: Record<string, string> = { all: 'All', general: 'All', gym: t('cat.gym'), car: t('cat.cars'), personal: 'Personal' };
               return (
               <button
                 key={cat}
