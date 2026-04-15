@@ -35,7 +35,7 @@ export default function Home() {
           <div className={hit ? '' : 'animate-anvil-drop'} onAnimationEnd={handleAnimationEnd}>
             <h1
               className={`text-[14vw] leading-none tracking-[0.2em] transition-all duration-150 ${
-                hit ? 'forge-gradient-text drop-shadow-[0_0_60px_rgba(168,85,247,0.4)]' : 'text-[var(--forge-text-secondary)]'
+                hit ? 'drop-shadow-[0_0_60px_rgba(168,85,247,0.4)]' : 'text-[var(--forge-text-secondary)]'
               }`}
               style={{ fontFamily: 'var(--font-display)' }}
             >

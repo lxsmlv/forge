@@ -27,7 +27,7 @@ export default function About() {
 
         <div className="relative z-10 flex flex-col items-center gap-8 max-w-2xl">
           <h1
-            className="text-[15vw] sm:text-[10vw] leading-none tracking-[0.2em] forge-gradient-text drop-shadow-[0_0_60px_rgba(168,85,247,0.4)]"
+            className="text-[15vw] sm:text-[10vw] leading-none tracking-[0.2em] drop-shadow-[0_0_60px_rgba(168,85,247,0.4)]"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             FORGE

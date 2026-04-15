@@ -102,7 +102,7 @@ function SignUpForm() {
       </div>
       <div className="relative flex flex-col items-center gap-8 px-6 w-full max-w-md py-12">
         <h1
-          className="text-5xl tracking-[0.2em] forge-gradient-text drop-shadow-[0_0_40px_rgba(168,85,247,0.35)]"
+          className="text-5xl tracking-[0.2em] drop-shadow-[0_0_40px_rgba(168,85,247,0.35)]"
           style={{ fontFamily: 'var(--font-display)' }}
         >
           FORGE

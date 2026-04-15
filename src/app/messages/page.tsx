@@ -77,7 +77,7 @@ export default function Messages() {
         <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
           <button
             onClick={() => { window.location.href = '/feed'; }}
-            className="text-2xl tracking-[0.15em] forge-gradient-text drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]"
+            className="text-2xl tracking-[0.15em] drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             FORGE

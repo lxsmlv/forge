@@ -69,7 +69,7 @@ export default function Onboarding() {
       </div>
       <div className="relative w-full max-w-md flex flex-col items-center gap-8">
         <h1
-          className="text-3xl tracking-[0.15em] forge-gradient-text drop-shadow-[0_0_20px_rgba(168,85,247,0.3)]"
+          className="text-3xl tracking-[0.15em] drop-shadow-[0_0_20px_rgba(168,85,247,0.3)]"
           style={{ fontFamily: 'var(--font-display)' }}
         >
           FORGE
