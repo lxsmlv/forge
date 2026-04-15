@@ -252,17 +252,21 @@ button, a, [role="button"] {
   border-top: 1px solid var(--forge-border) !important;
 }
 
+.light .forge-bottom-nav {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border-top: 1px solid var(--forge-border) !important;
+}
+
 .forge-nav-item {
   transition: all var(--forge-transition-fast);
-  opacity: 0.5;
+  color: var(--forge-text-tertiary);
 }
 
 .forge-nav-item:hover {
-  opacity: 0.7;
+  color: var(--forge-text-secondary);
 }
 
 .forge-nav-item-active {
-  opacity: 1 !important;
   color: var(--forge-purple-bright) !important;
 }
 
@@ -289,6 +293,11 @@ button, a, [role="button"] {
   background: rgba(8, 8, 10, 0.8) !important;
   backdrop-filter: saturate(180%) blur(20px) !important;
   -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+  border-bottom: 1px solid var(--forge-border) !important;
+}
+
+.light .forge-header {
+  background: rgba(255, 255, 255, 0.85) !important;
   border-bottom: 1px solid var(--forge-border) !important;
 }
 
@@ -500,4 +509,13 @@ button, a, [role="button"] {
 
 .forge-text-glow {
   text-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+}
+
+/* On light theme, wordmark reads as a purple gradient fill — drama without white-on-white */
+.light .forge-text-glow {
+  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
 }
