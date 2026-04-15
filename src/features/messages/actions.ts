@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { sendPush } from '@/lib/send-push';
+import { createNotification } from '@/features/notifications/actions';
 
 export async function getConversations() {
   const supabase = await createClient();
@@ -89,6 +90,7 @@ export async function sendEncryptedMessage(receiverId: string, text: string, enc
   });
 
   const { data: profile } = await supabase.from('profiles').select('username').eq('id', user.id).single();
+  await createNotification(receiverId, 'message', user.id);
   sendPush(receiverId, 'FORGE', `New message from @${profile?.username || 'Someone'}`, `/messages/${user.id}`);
 
   revalidatePath('/messages');

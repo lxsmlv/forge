@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useTransition, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Send, Shield } from 'lucide-react';
 import { getMessages, sendEncryptedMessage } from '@/features/messages/actions';
-import { decryptMessageDual, encryptMessageDual, getStoredPrivateKey, generateKeyPair, savePrivateKey, encryptPrivateKeyWithPassword, decryptPrivateKeyWithPassword } from '@/lib/crypto';
+import { decryptMessageDual, encryptMessageDual, getStoredPrivateKey } from '@/lib/crypto';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
 
@@ -38,18 +38,9 @@ export default function Chat() {
 
     loadMessages();
 
-    // Regenerate keys if missing
-    if (!getStoredPrivateKey()) {
-      (async () => {
-        const sb = createClient();
-        const { data: { user } } = await sb.auth.getUser();
-        if (user) {
-          const keyPair = await generateKeyPair();
-          savePrivateKey(keyPair.privateKey);
-          await sb.from('profiles').update({ public_key: keyPair.publicKey }).eq('id', user.id);
-        }
-      })();
-    }
+    // DO NOT auto-regenerate keys here — that would overwrite public_key in DB
+    // and make all existing encrypted messages unreadable.
+    // If private key is missing, the user needs to recover via recovery key in settings.
 
     // Realtime subscription for new messages
     const channel = supabase
@@ -74,7 +65,13 @@ export default function Chat() {
       )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    // Polling fallback — in case realtime drops
+    const pollId = setInterval(() => { loadMessages(); }, 5000);
+
+    return () => {
+      supabase.removeChannel(channel);
+      clearInterval(pollId);
+    };
   }, [otherUserId, loadMessages]);
 
   useEffect(() => {

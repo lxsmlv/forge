@@ -58,6 +58,12 @@ export default function Messages() {
   // Realtime — new messages refresh conversation list
   useRealtime('messages', 'INSERT', refreshConversations);
 
+  // Polling fallback — in case realtime drops
+  useEffect(() => {
+    const id = setInterval(() => { refreshConversations(); }, 8000);
+    return () => clearInterval(id);
+  }, [refreshConversations]);
+
   useEffect(() => {
     if (searchQuery.length < 2) { setSearchResults([]); return; }
     clearTimeout(timerRef.current);
