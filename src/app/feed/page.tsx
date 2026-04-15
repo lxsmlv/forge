@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { PostCard } from '@/features/feed/PostCard';
 import { FeedSkeleton } from '@/features/feed/Skeletons';
-import { Cabinet } from '@/features/cabinet/Cabinet';
 import { getPosts } from '@/features/feed/actions';
 import { updateStreak } from '@/features/feed/streak-actions';
 import { checkAndAwardAchievements } from '@/features/achievements/actions';
@@ -11,12 +10,11 @@ import { FeedHeader } from '@/features/feed/FeedHeader';
 import { useT } from '@/lib/useT';
 import { StoriesBar } from '@/features/stories/StoriesBar';
 import { useRealtime } from '@/lib/useRealtime';
-import { Home, PenSquare, Users, RefreshCw, Dumbbell, Car, Flame, Trophy, Bookmark } from 'lucide-react';
+import { Users, RefreshCw, Dumbbell, Car, Flame, Trophy, Bookmark } from 'lucide-react';
 import { FeedEmptyState } from '@/features/feed/FeedEmptyState';
 import { getMyProfile } from '@/features/profile/actions';
 
 export default function Feed() {
-  const [activeTab, setActiveTab] = useState<'feed' | 'cabinet'>('feed');
   const [feedMode, setFeedMode] = useState<'following' | 'bookmarks' | 'trending'>('following');
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [posts, setPosts] = useState<any[]>([]);
@@ -87,35 +85,8 @@ export default function Feed() {
         <StoriesBar />
       </div>
 
-      <div className="max-w-lg mx-auto px-4 pt-4">
-        <div className="flex gap-1 bg-[var(--forge-surface)] rounded-[var(--forge-radius-md)] p-1 border border-[var(--forge-border)]">
-          <button
-            onClick={() => setActiveTab('feed')}
-            className={`forge-press flex-1 flex items-center justify-center gap-2 py-2 rounded-[var(--forge-radius-sm)] text-[13px] font-medium transition-all ${
-              activeTab === 'feed'
-                ? 'bg-[var(--forge-purple-glow)] text-[var(--forge-purple-bright)] border border-[rgba(139,92,246,0.2)]'
-                : 'text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] border border-transparent'
-            }`}
-          >
-            <Home className="w-4 h-4" />
-            {t('feed.tab_feed')}
-          </button>
-          <button
-            onClick={() => setActiveTab('cabinet')}
-            className={`forge-press flex-1 flex items-center justify-center gap-2 py-2 rounded-[var(--forge-radius-sm)] text-[13px] font-medium transition-all ${
-              activeTab === 'cabinet'
-                ? 'bg-[var(--forge-purple-glow)] text-[var(--forge-purple-bright)] border border-[rgba(139,92,246,0.2)]'
-                : 'text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] border border-transparent'
-            }`}
-          >
-            <PenSquare className="w-4 h-4" />
-            {t('feed.tab_cabinet')}
-          </button>
-        </div>
-      </div>
-
       <main className="max-w-lg mx-auto px-4 py-4">
-        {newPostsAvailable && activeTab === 'feed' && (
+        {newPostsAvailable && (
           <button
             onClick={() => { setNewPostsAvailable(false); loadPosts(feedMode); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
             className="forge-press w-full mb-3 py-2.5 bg-[var(--forge-purple-glow)] border border-[rgba(139,92,246,0.25)] rounded-[var(--forge-radius-md)] text-[13px] font-medium text-[var(--forge-purple-bright)] hover:bg-[var(--forge-purple-glow-strong)] transition-all"
@@ -124,8 +95,7 @@ export default function Feed() {
           </button>
         )}
 
-        {activeTab === 'feed' ? (
-          <>
+        <>
             {/* Feed mode + category filters */}
             <div className="flex items-center gap-1.5 mb-4 overflow-x-auto pb-1 scrollbar-hide">
               {([
@@ -210,10 +180,7 @@ export default function Feed() {
                 </p>
               </div>
             )}
-          </>
-        ) : (
-          <Cabinet />
-        )}
+        </>
       </main>
 
     </div>
