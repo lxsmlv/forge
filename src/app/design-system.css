@@ -2,29 +2,32 @@
    FORGE DESIGN SYSTEM — Forged Steel & Purple Fire
    ================================================ */
 
-/* Color Tokens */
+/* Dark theme tokens — "forged steel at midnight" — cool indigo blacks + saturated violet */
 :root {
-  --forge-black: #08080a;
-  --forge-surface: #0f0f12;
-  --forge-card: #141418;
-  --forge-card-hover: #1a1a20;
-  --forge-border: rgba(255, 255, 255, 0.06);
-  --forge-border-hover: rgba(255, 255, 255, 0.12);
+  /* Cool blue-black undertone — not pure black, not warm grey */
+  --forge-black: #060609;
+  --forge-surface: #0e0e14;
+  --forge-card: #15151d;
+  --forge-card-hover: #1d1d27;
+  --forge-border: rgba(167, 139, 250, 0.07);
+  --forge-border-hover: rgba(167, 139, 250, 0.16);
 
-  --forge-text-primary: #f0f0f2;
-  --forge-text-secondary: #8e8e9a;
-  --forge-text-tertiary: #4a4a56;
-  --forge-text-muted: #2a2a34;
+  /* Crisp near-white, warm mid-greys, deep inactive tones */
+  --forge-text-primary: #f4f3f7;
+  --forge-text-secondary: #9892a8;
+  --forge-text-tertiary: #5d566b;
+  --forge-text-muted: #332e40;
 
+  /* Saturated violet family — readable on near-black, drama-ready */
   --forge-purple: #8b5cf6;
   --forge-purple-bright: #a78bfa;
   --forge-purple-dim: #6d28d9;
-  --forge-purple-glow: rgba(139, 92, 246, 0.15);
-  --forge-purple-glow-strong: rgba(139, 92, 246, 0.3);
+  --forge-purple-glow: rgba(139, 92, 246, 0.18);
+  --forge-purple-glow-strong: rgba(139, 92, 246, 0.32);
 
-  --forge-gradient: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%);
-  --forge-gradient-subtle: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(168, 85, 247, 0.05) 100%);
-  --forge-gradient-card: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 100%);
+  --forge-gradient: linear-gradient(135deg, #7c3aed 0%, #9333ea 50%, #a855f7 100%);
+  --forge-gradient-subtle: linear-gradient(135deg, rgba(139, 92, 246, 0.16) 0%, rgba(168, 85, 247, 0.04) 100%);
+  --forge-gradient-card: linear-gradient(180deg, rgba(167, 139, 250, 0.04) 0%, rgba(167, 139, 250, 0) 100%);
 
   --forge-success: #34d399;
   --forge-error: #f87171;
@@ -36,11 +39,12 @@
   --forge-radius-xl: 20px;
   --forge-radius-full: 9999px;
 
-  --forge-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --forge-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --forge-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --forge-shadow-glow: 0 0 20px rgba(139, 92, 246, 0.2);
-  --forge-shadow-glow-strong: 0 0 40px rgba(139, 92, 246, 0.3);
+  /* Dark shadows need depth, not just opacity */
+  --forge-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(167, 139, 250, 0.02);
+  --forge-shadow-md: 0 2px 4px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --forge-shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.5), 0 16px 40px rgba(0, 0, 0, 0.5);
+  --forge-shadow-glow: 0 0 24px rgba(139, 92, 246, 0.28);
+  --forge-shadow-glow-strong: 0 0 48px rgba(139, 92, 246, 0.4), 0 0 20px rgba(167, 139, 250, 0.3);
 
   --forge-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --forge-transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -48,36 +52,54 @@
   --forge-transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-/* Light theme — overrides for .light class on <html> */
+/* Light theme — "iron workshop at dawn" — warm parchment bg, deep violet accent, crisp typography */
 .light {
-  --forge-black: #fafaf9;
-  --forge-surface: #f4f4f5;
+  /* Warm off-white with subtle cream — not IG-generic white */
+  --forge-black: #f6f5f1;
+  --forge-surface: #efece6;
   --forge-card: #ffffff;
-  --forge-card-hover: #f4f4f5;
-  --forge-border: rgba(0, 0, 0, 0.08);
-  --forge-border-hover: rgba(0, 0, 0, 0.16);
+  --forge-card-hover: #faf9f6;
+  --forge-border: rgba(20, 14, 30, 0.09);
+  --forge-border-hover: rgba(20, 14, 30, 0.16);
 
-  --forge-text-primary: #09090b;
-  --forge-text-secondary: #52525b;
-  --forge-text-tertiary: #71717a;
-  --forge-text-muted: #a1a1aa;
+  /* Deep confident typography — graphite, not grey */
+  --forge-text-primary: #171221;
+  --forge-text-secondary: #48405a;
+  --forge-text-tertiary: #78708a;
+  --forge-text-muted: #a8a1b3;
 
-  --forge-purple: #7c3aed;
+  /* Deep violet — sovereign on white. Used sparingly, high saturation */
+  --forge-purple: #5b21b6;
   --forge-purple-bright: #6d28d9;
-  --forge-purple-dim: #5b21b6;
-  --forge-purple-glow: rgba(124, 58, 237, 0.08);
-  --forge-purple-glow-strong: rgba(124, 58, 237, 0.18);
+  --forge-purple-dim: #4c1d95;
+  --forge-purple-glow: rgba(91, 33, 182, 0.10);
+  --forge-purple-glow-strong: rgba(91, 33, 182, 0.22);
 
-  --forge-gradient: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #a78bfa 100%);
-  --forge-gradient-subtle: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(139, 92, 246, 0.03) 100%);
-  --forge-gradient-card: linear-gradient(180deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0) 100%);
+  --forge-gradient: linear-gradient(135deg, #4c1d95 0%, #6d28d9 50%, #7c3aed 100%);
+  --forge-gradient-subtle: linear-gradient(135deg, rgba(91, 33, 182, 0.08) 0%, rgba(124, 58, 237, 0.03) 100%);
+  --forge-gradient-card: linear-gradient(180deg, rgba(20, 14, 30, 0.012) 0%, rgba(20, 14, 30, 0) 100%);
 
-  --forge-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --forge-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --forge-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
-  --forge-shadow-glow: 0 0 20px rgba(124, 58, 237, 0.15);
-  --forge-shadow-glow-strong: 0 0 40px rgba(124, 58, 237, 0.25);
+  /* Layered shadows for depth — not flat */
+  --forge-shadow-sm: 0 1px 1px rgba(20, 14, 30, 0.04), 0 1px 2px rgba(20, 14, 30, 0.04);
+  --forge-shadow-md: 0 2px 4px rgba(20, 14, 30, 0.05), 0 6px 14px rgba(20, 14, 30, 0.06);
+  --forge-shadow-lg: 0 4px 8px rgba(20, 14, 30, 0.06), 0 14px 28px rgba(20, 14, 30, 0.10);
+  --forge-shadow-glow: 0 0 0 3px rgba(91, 33, 182, 0.08), 0 8px 24px rgba(91, 33, 182, 0.18);
+  --forge-shadow-glow-strong: 0 0 0 4px rgba(91, 33, 182, 0.10), 0 12px 36px rgba(91, 33, 182, 0.28);
 }
+
+/* Subtle paper-grain texture on light bg for depth (mirrors dark's grain overlay) */
+.light body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: radial-gradient(rgba(20, 14, 30, 0.025) 1px, transparent 1px);
+  background-size: 3px 3px;
+  mix-blend-mode: multiply;
+  opacity: 0.6;
+}
+.light body > * { position: relative; z-index: 1; }
 
 /* ================================================
    Global Resets & Base
@@ -452,25 +474,18 @@ button, a, [role="button"] {
 }
 
 /* ================================================
-   Scrollbar — Minimal
+   Scrollbar — Invisible (mobile-first, native feel)
    ================================================ */
 
-::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--forge-text-muted);
-  border-radius: 2px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--forge-text-tertiary);
+*::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 /* ================================================
@@ -507,15 +522,20 @@ button, a, [role="button"] {
   box-shadow: var(--forge-shadow-glow-strong);
 }
 
+/* Dark: white text with saturated purple halo — layered for presence */
 .forge-text-glow {
-  text-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+  text-shadow:
+    0 0 10px rgba(167, 139, 250, 0.6),
+    0 0 28px rgba(139, 92, 246, 0.45),
+    0 0 60px rgba(109, 40, 217, 0.25);
 }
 
-/* On light theme, wordmark reads as a purple gradient fill — drama without white-on-white */
+/* Light: deep violet gradient fill + soft paper-printed shadow for weight */
 .light .forge-text-glow {
-  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 55%, #7c3aed 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-shadow: none;
+  filter: drop-shadow(0 2px 6px rgba(91, 33, 182, 0.25));
 }
