@@ -9,7 +9,7 @@ import { ActivityGrid } from '@/features/profile/ActivityGrid';
 import { ProfileQR } from '@/features/profile/QRCode';
 import { ProfileSkeleton } from '@/features/feed/Skeletons';
 import { PostCard } from '@/features/feed/PostCard';
-import { ArrowLeft, Settings, Car, Dumbbell, MapPin, Edit3, Check } from 'lucide-react';
+import { ArrowLeft, Settings, Car, Dumbbell, MapPin, Edit3, Check, BadgeCheck } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -70,7 +70,20 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black pb-20"><ProfileSkeleton /></div>
+      <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] pb-20">
+        <header className="forge-header sticky top-0 z-50">
+          <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3.5 min-h-[56px]">
+            <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <span className="text-sm font-medium text-[var(--forge-text-tertiary)]">Profile</span>
+            <Link href="/settings" className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
+              <Settings className="w-5 h-5" />
+            </Link>
+          </div>
+        </header>
+        <ProfileSkeleton />
+      </div>
     );
   }
 
@@ -81,12 +94,11 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)]">
       <header className="forge-header sticky top-0 z-50">
-        <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
+        <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3.5 min-h-[56px]">
           <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm font-medium text-[var(--forge-text-secondary)]">@{profile.username}</span>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {profile && <ProfileQR username={profile.username} />}
             <Link href="/settings" className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
               <Settings className="w-5 h-5" />
@@ -125,9 +137,10 @@ export default function Profile() {
           <div className="text-center">
             <h2 className="text-xl font-bold text-[var(--forge-text-primary)] flex items-center gap-1.5 justify-center tracking-tight">
               {profile.full_name}
-              {profile.is_verified && <span className="text-[var(--forge-purple-bright)]">✓</span>}
+              {profile.is_verified && <BadgeCheck className="w-5 h-5 text-[var(--forge-purple-bright)] fill-[var(--forge-purple-glow)]" />}
             </h2>
-            {!editing && profile.bio && <p className="text-sm text-[var(--forge-text-secondary)] mt-1 leading-relaxed">{profile.bio}</p>}
+            <p className="text-[13px] text-[var(--forge-text-tertiary)] mt-0.5">@{profile.username}</p>
+            {!editing && profile.bio && <p className="text-sm text-[var(--forge-text-secondary)] mt-2 leading-relaxed">{profile.bio}</p>}
           </div>
 
           {!editing ? (

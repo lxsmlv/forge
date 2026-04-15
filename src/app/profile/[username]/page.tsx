@@ -8,7 +8,7 @@ import { ACHIEVEMENTS } from '@/lib/achievements';
 import { ActivityGrid } from '@/features/profile/ActivityGrid';
 import { ProfileSkeleton } from '@/features/feed/Skeletons';
 import { PostCard } from '@/features/feed/PostCard';
-import { ArrowLeft, Car, Dumbbell, MapPin, UserPlus, UserCheck, MessageCircle, Ban } from 'lucide-react';
+import { ArrowLeft, Car, Dumbbell, MapPin, UserPlus, UserCheck, MessageCircle, Ban, BadgeCheck } from 'lucide-react';
 import { toggleBlock, isBlocked } from '@/features/profile/block-actions';
 import { toast } from 'sonner';
 import Link from 'next/link';
@@ -56,7 +56,18 @@ export default function UserProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black pb-20"><ProfileSkeleton /></div>
+      <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] pb-20">
+        <header className="forge-header sticky top-0 z-50">
+          <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3.5 min-h-[56px]">
+            <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <span className="text-sm font-medium text-[var(--forge-text-tertiary)]">@{username}</span>
+            <div className="w-5" />
+          </div>
+        </header>
+        <ProfileSkeleton />
+      </div>
     );
   }
 
@@ -74,11 +85,11 @@ export default function UserProfile() {
   return (
     <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)]">
       <header className="forge-header sticky top-0 z-50">
-        <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
+        <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3.5 min-h-[56px]">
           <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm font-medium text-[var(--forge-text-secondary)]">@{profile.username}</span>
+          <span className="text-sm font-medium text-[var(--forge-text-tertiary)]">Profile</span>
           <div className="w-5" />
         </div>
       </header>
@@ -98,9 +109,10 @@ export default function UserProfile() {
           <div className="text-center">
             <h2 className="text-xl font-bold text-[var(--forge-text-primary)] flex items-center gap-1.5 justify-center tracking-tight">
               {profile.full_name}
-              {profile.is_verified && <span className="text-[var(--forge-purple-bright)]">✓</span>}
+              {profile.is_verified && <BadgeCheck className="w-5 h-5 text-[var(--forge-purple-bright)] fill-[var(--forge-purple-glow)]" />}
             </h2>
-            {profile.bio && <p className="text-sm text-[var(--forge-text-secondary)] mt-1 leading-relaxed">{profile.bio}</p>}
+            <p className="text-[13px] text-[var(--forge-text-tertiary)] mt-0.5">@{profile.username}</p>
+            {profile.bio && <p className="text-sm text-[var(--forge-text-secondary)] mt-2 leading-relaxed">{profile.bio}</p>}
             {profile.last_online && (
               <p className="text-[11px] text-[var(--forge-text-tertiary)] mt-1.5 flex items-center gap-1.5 justify-center">
                 {Date.now() - new Date(profile.last_online).getTime() < 5 * 60 * 1000 ? (

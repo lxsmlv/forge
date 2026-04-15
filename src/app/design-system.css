@@ -261,6 +261,11 @@ button, a, [role="button"] {
   border-bottom: 1px solid var(--forge-border) !important;
 }
 
+/* Unified header height — prevents layout shift between pages */
+.forge-header > div {
+  min-height: 56px;
+}
+
 /* ================================================
    Avatar System
    ================================================ */
