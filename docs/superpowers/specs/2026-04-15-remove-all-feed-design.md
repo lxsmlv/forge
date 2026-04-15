@@ -1,96 +1,94 @@
-# Remove "All" feed mode, add Discover empty-state
+# Убрать режим «All» в ленте, сделать Discover на пустом Following
 
-**Date:** 2026-04-15
-**Status:** Design approved
+**Дата:** 2026-04-15
+**Статус:** Дизайн согласован
 
-## Motivation
+## Мотивация
 
-The "All" feed mode is a chronological dump of every post. Three problems:
+Режим «All» — хронологическая свалка всех постов. Три проблемы:
 
-1. **UX:** Shows mostly noise or emptiness depending on activity. No algorithm, no ranking.
-2. **Brand:** Forge positions as a friends club. A firehose of strangers breaks the club feel.
-3. **Tech:** Smart ranking requires data volume we don't have and won't have for months.
+1. **UX:** либо шум, либо пустота. Нет алгоритма, нет ранжирования.
+2. **Бренд:** Forge позиционируется как клуб друзей. Поток постов от чужих разрушает камерность клуба.
+3. **Техника:** нормальный алгоритм требует объёма данных, которого сейчас нет и не будет ближайшие месяцы.
 
-Decision: remove "All" now, reintroduce a curated Discover mode later if needed. Following becomes the primary feed.
+Решение: убрать «All» сейчас, вернуть курируемый Discover позже если понадобится. Following становится основной лентой.
 
-## Scope
+## Скоуп
 
-In:
-- Remove `all` feed mode from feed page, actions, and i18n
-- Replace empty "Following" state with inline Discover (suggested profiles + Follow button)
-- Make `following` the default feed mode
+**Включено:**
+- Убрать режим `all` со страницы ленты, из actions и из i18n
+- Заменить пустое состояние Following на встроенный Discover (карточки рекомендованных профилей + кнопка Follow)
+- Сделать `following` дефолтным режимом
 
-Out:
-- Any changes to Trending, Saved (bookmarks) modes
-- Smart feed ranking (future work)
-- Discover as separate tab (it's only an empty-state treatment for now)
+**Не входит:**
+- Любые изменения Trending и Saved (bookmarks)
+- Умное ранжирование ленты (будущая задача)
+- Discover как отдельная вкладка (пока это только empty-state у Following)
 
-## Design
+## Дизайн
 
-### Feed modes after change
+### Режимы ленты после изменения
 
-| Mode | Purpose | Source |
-|------|---------|--------|
-| Following (default) | Friends you chose | `getPosts('following')` |
-| Trending | Discovery by signal | `getPosts('trending')` |
-| Saved | Bookmarked posts | `getPosts('bookmarks')` |
+| Режим | Назначение | Источник |
+|-------|-----------|----------|
+| Following (дефолт) | Кого ты подписал | `getPosts('following')` |
+| Trending | Discovery по сигналам | `getPosts('trending')` |
+| Saved | Сохранённые посты | `getPosts('bookmarks')` |
 
-### Empty Following state
+### Пустое состояние Following
 
-When the authenticated user has `following_count === 0`:
+Когда у авторизованного юзера `following_count === 0`:
 
-- Show suggested profiles from `getDiscoverProfiles()` in a card list
-- Card contains: avatar, full name, @username, city/car/sports (when present), inline **Follow** button
-- Clicking Follow:
-  - Calls existing `toggleFollow(userId)` server action
-  - Removes the card from the list with a short transition
-  - After the first successful follow the empty state unmounts and the regular Following feed takes over
-- Header above list: "Start following to fill your feed"
-- Copy under header: short hint pointing to `/search` for more discovery
+- Показываем рекомендованные профили из `getDiscoverProfiles()` в виде списка карточек
+- Карточка содержит: аватар, имя, @username, город/машина/виды спорта (если есть), инлайн-кнопку **Follow**
+- Клик по Follow:
+  - Вызывает существующий server action `toggleFollow(userId)`
+  - Убирает карточку из списка с плавным переходом
+  - После первого успешного фолоу empty-state размонтируется и начинает рендериться обычная лента Following
 
-When the user has ≥1 follow but none of them posted yet, keep the existing textual empty state with a link to search.
+Если у юзера уже есть ≥1 подписка, но никто из них не постил — оставляем текущее текстовое пустое состояние со ссылкой на поиск.
 
-### Files affected
+### Затрагиваемые файлы
 
 - `src/app/feed/page.tsx`
-  - Remove `'all'` from the `feedMode` union type
-  - Remove the "All" button from the filter row
-  - Set `useState<'following' | 'bookmarks' | 'trending'>('following')`
-  - Render `<FeedEmptyState />` when mode is `following`, posts are empty, and `following_count === 0`
+  - Убрать `'all'` из union-типа `feedMode`
+  - Убрать кнопку «All» из строки фильтров
+  - Поставить `useState<'following' | 'bookmarks' | 'trending'>('following')`
+  - Рендерить `<FeedEmptyState />` когда режим `following`, постов нет и `following_count === 0`
 - `src/features/feed/actions.ts`
-  - Update `getPosts` signature to drop `'all'` from its mode parameter
-  - Remove the branch that handled `mode === 'all'`
-  - TypeScript will flag other callsites; update them
-- `src/features/feed/FeedEmptyState.tsx` (new)
-  - Fetches `getDiscoverProfiles()` on mount
-  - Renders header + list of profile cards with Follow buttons
-  - On Follow, updates local list and triggers a feed refresh callback passed from the page
-- i18n (`src/lib/i18n/*` keys used via `useT`)
-  - Remove keys: `feed.all`, `feed.switch_all`
-  - Add keys: `feed.empty_start_following` (header), `feed.empty_find_more` (hint text pointing to `/search`)
+  - Обновить сигнатуру `getPosts` — убрать `'all'` из параметра mode
+  - Удалить ветку `mode === 'all'`
+  - TypeScript подсветит остальные callsites — обновить их
+- `src/features/feed/FeedEmptyState.tsx` (новый)
+  - На маунте вызывает `getDiscoverProfiles()`
+  - Рендерит заголовок + список профилей с кнопками Follow
+  - На Follow обновляет локальный список и дёргает колбэк refresh от родительской страницы
+- i18n (ключи через `useT`)
+  - Удалить: `feed.all`, `feed.switch_all`
+  - Добавить: `feed.empty_start_following` (заголовок), `feed.empty_find_more` (подсказка со ссылкой на `/search`)
 
-### Edge cases
+### Граничные случаи
 
-- **Deep link to `/feed?mode=all`** — if any exists in code or old shares, route to `following` silently. Audit first; likely not used.
-- **User at 0 followed, but suggestions endpoint returns 0 profiles** — fall back to the plain text empty state with a link to `/search`.
-- **Bookmarks/Trending empty** — existing empty states unchanged; they are not the hot path.
-- **Feed category filter** applies only inside the chosen mode; removing `all` does not interact with category filtering.
+- **Deep-link на `/feed?mode=all`** — если такие ссылки где-то есть в коде или в старых шарингах, молча редиректим на `following`. Сначала грепнуть; скорее всего нигде не используется.
+- **Подписок 0, но `getDiscoverProfiles()` вернул пусто** — фолбэк на текстовое пустое состояние со ссылкой на `/search`.
+- **Пустые Trending/Saved** — текущие пустые состояния не трогаем, не hot path.
+- **Фильтр категорий** применяется внутри выбранного режима — удаление `all` никак не пересекается с фильтром категорий.
 
-### What we explicitly do NOT do
+### Что явно НЕ делаем
 
-- Do not introduce smart ranking
-- Do not add a separate Discover tab
-- Do not change the Stories bar, header, or any other surface
-- Do not touch the Profile/Groups/Messages empty states
+- Не строим умный алгоритм ранжирования
+- Не вводим отдельную вкладку Discover
+- Не трогаем Stories-бар, хедер и другие поверхности
+- Не трогаем пустые состояния в Profile/Groups/Messages
 
-## Risks
+## Риски
 
-- Users who relied on "All" to stumble on posts lose that path. Mitigated by Trending still being available and by Discover as empty-state onboarding.
-- Follow counter badge math must remain correct after toggle; already handled by `toggleFollow` action.
+- Юзеры, которые залипали в «All» для рандомного дискавери, теряют этот путь. Митигация: Trending остаётся + Discover в пустом Following как онбординг.
+- Счётчик подписок должен оставаться корректным после toggle — уже работает в `toggleFollow`.
 
-## Success criteria
+## Критерии успеха
 
-- No "All" control visible anywhere in the UI
-- New user with zero follows lands on Following and sees the Discover empty state, not a blank area
-- One-click follow from the empty state works and smoothly transitions into the real feed
-- Build passes, no runtime errors on `/feed` for both zero-follow and existing-follow users
+- Нигде в UI нет контрола «All»
+- Новый юзер с 0 подписок заходит на Following и видит Discover empty-state, а не пустоту
+- Один клик Follow из empty-state работает и плавно переключает на реальную ленту
+- Билд проходит, на `/feed` нет рантайм-ошибок ни у нулевого юзера, ни у того кто уже кого-то подписал
