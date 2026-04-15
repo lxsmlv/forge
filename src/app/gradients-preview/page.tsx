@@ -1,6 +1,7 @@
 'use client';
 
-import { Home, MessageCircle, Plus, BookOpen, User } from 'lucide-react';
+import { useState } from 'react';
+import { Home, MessageCircle, Plus, BookOpen, User, Sun, Moon } from 'lucide-react';
 import Link from 'next/link';
 
 // AB gradient — locked choice
@@ -84,13 +85,22 @@ const NEON_VARIANTS = [
 ];
 
 export default function GradientsPreview() {
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
   return (
-    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] pb-32">
+    <div
+      className={`min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] pb-32 ${theme === 'light' ? 'light' : ''}`}
+    >
       <header className="forge-header sticky top-0 z-50">
         <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3.5">
           <Link href="/feed" className="text-sm text-[var(--forge-text-secondary)]">← Back</Link>
           <span className="text-sm font-semibold">Neon Plus — Planet Edition</span>
-          <div className="w-10" />
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="forge-press h-8 w-8 rounded-full bg-[var(--forge-surface)] border border-[var(--forge-border)] flex items-center justify-center"
+          >
+            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
         </div>
       </header>
 
@@ -119,10 +129,10 @@ export default function GradientsPreview() {
       <main className="max-w-lg mx-auto px-4 py-6 flex flex-col gap-8">
         <div className="text-center">
           <p className="text-[13px] text-[var(--forge-text-secondary)]">
-            Гradient = <b>AB</b> (locked). 6 вариантов plus-кнопки с «planet»-ощущением.
+            Гradient = <b>AB</b> (locked). 6 вариантов plus-кнопки.
           </p>
           <p className="text-[12px] text-[var(--forge-text-tertiary)] mt-2">
-            Каждый вариант показан <b>крупно</b> (чтобы видеть детали glow) и <b>в реальной bottom-nav</b>.
+            Переключи тему кнопкой справа вверху — проверь на обеих.
           </p>
         </div>
 
