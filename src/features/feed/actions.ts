@@ -7,7 +7,7 @@ import { containsBannedWords } from '@/lib/moderation';
 import { sendPush } from '@/lib/send-push';
 import { extractHashtags } from '@/lib/hashtags';
 
-export async function getPosts(mode: 'all' | 'following' | 'bookmarks' | 'trending' = 'all', offset: number = 0, limit: number = 20) {
+export async function getPosts(mode: 'following' | 'bookmarks' | 'trending' = 'following', offset: number = 0, limit: number = 20) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 

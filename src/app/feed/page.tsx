@@ -11,11 +11,11 @@ import { FeedHeader } from '@/features/feed/FeedHeader';
 import { useT } from '@/lib/useT';
 import { StoriesBar } from '@/features/stories/StoriesBar';
 import { useRealtime } from '@/lib/useRealtime';
-import { Home, PenSquare, Users, Globe, RefreshCw, Dumbbell, Car, Flame, Trophy, Bookmark } from 'lucide-react';
+import { Home, PenSquare, Users, RefreshCw, Dumbbell, Car, Flame, Trophy, Bookmark } from 'lucide-react';
 
 export default function Feed() {
   const [activeTab, setActiveTab] = useState<'feed' | 'cabinet'>('feed');
-  const [feedMode, setFeedMode] = useState<'all' | 'following' | 'bookmarks' | 'trending'>('following');
+  const [feedMode, setFeedMode] = useState<'following' | 'bookmarks' | 'trending'>('following');
   const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +24,7 @@ export default function Feed() {
   const observerRef = useRef<HTMLDivElement>(null);
   const t = useT();
 
-  const loadPosts = (mode: 'all' | 'following' | 'bookmarks' | 'trending') => {
+  const loadPosts = (mode: 'following' | 'bookmarks' | 'trending') => {
     setLoading(true);
     setHasMore(true);
     getPosts(mode, 0, 20).then((data) => {
@@ -125,7 +125,6 @@ export default function Feed() {
             {/* Feed mode + category filters */}
             <div className="flex items-center gap-1.5 mb-4 overflow-x-auto pb-1 scrollbar-hide">
               {([
-                { id: 'all', icon: Globe, label: t('feed.all') },
                 { id: 'following', icon: Users, label: t('feed.following') },
                 { id: 'bookmarks', icon: Bookmark, label: t('feed.saved') },
                 { id: 'trending', icon: Flame, label: t('feed.trending') },
