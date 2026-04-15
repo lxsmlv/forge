@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { publishToUser } from '@/lib/ably/server';
 
 export async function getNotifications() {
   const supabase = await createClient();
@@ -60,6 +61,12 @@ export async function createNotification(userId: string, type: string, actorId: 
 
   await supabase.from('notifications').insert({
     user_id: userId,
+    type,
+    actor_id: actorId,
+    post_id: postId || null,
+  });
+
+  await publishToUser(userId, 'notification:new', {
     type,
     actor_id: actorId,
     post_id: postId || null,

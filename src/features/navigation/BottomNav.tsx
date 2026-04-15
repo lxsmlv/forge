@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Home, MessageCircle, Plus, BookOpen, User } from 'lucide-react';
 import { useT } from '@/lib/useT';
-import { useRealtime } from '@/lib/useRealtime';
+import { useAblyEvent } from '@/lib/ably/client-provider';
 import { getUnreadCount } from '@/features/notifications/actions';
 import { getUnreadMessagesCount } from '@/features/messages/actions';
 import { PlusSheet } from './PlusSheet';
@@ -32,8 +32,9 @@ export function BottomNav() {
     refreshMessages();
   }, [refreshNotifications, refreshMessages]);
 
-  useRealtime('notifications', 'INSERT', refreshNotifications);
-  useRealtime('messages', 'INSERT', refreshMessages);
+  useAblyEvent('notification:new', refreshNotifications);
+  useAblyEvent('message:new', refreshMessages);
+  useAblyEvent('message:echo', refreshMessages);
 
   useEffect(() => {
     if (pathname.startsWith('/messages')) {

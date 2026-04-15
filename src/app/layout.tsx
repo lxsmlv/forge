@@ -6,6 +6,7 @@ import "./design-system.css";
 import { AppShell } from "@/features/navigation/AppShell";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/features/theme/ThemeProvider";
+import { AblyRootProvider } from "@/lib/ably/root-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -73,8 +74,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-black text-white safe-top safe-bottom">
         <ThemeProvider>
-          <AppShell>{children}</AppShell>
-          <Toaster theme="dark" position="top-center" />
+          <AblyRootProvider>
+            <AppShell>{children}</AppShell>
+            <Toaster theme="dark" position="top-center" />
+          </AblyRootProvider>
         </ThemeProvider>
       </body>
     </html>

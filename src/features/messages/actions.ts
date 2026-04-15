@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { sendPush } from '@/lib/send-push';
 import { createNotification } from '@/features/notifications/actions';
+import { publishToUser } from '@/lib/ably/server';
 
 export async function getConversations() {
   const supabase = await createClient();
@@ -94,18 +95,35 @@ export async function sendEncryptedMessage(receiverId: string, text: string, enc
   const { data: { user } } = await supabase.auth.getUser();
   if (!user || !text.trim()) return;
 
-  await supabase.from('messages').insert({
+  const { data: inserted } = await supabase.from('messages').insert({
     sender_id: user.id,
     receiver_id: receiverId,
     text: text.trim(),
     encrypted_key: encryptedKey || null,
     encrypted_key_sender: encryptedKeySender || null,
     iv: iv || null,
-  });
+  }).select('id, created_at, text, encrypted_key, encrypted_key_sender, iv, sender_id, receiver_id').single();
 
   const { data: profile } = await supabase.from('profiles').select('username').eq('id', user.id).single();
   await createNotification(receiverId, 'message', user.id);
   sendPush(receiverId, 'FORGE', `New message from @${profile?.username || 'Someone'}`, `/messages/${user.id}`);
+
+  if (inserted) {
+    const payload = {
+      id: inserted.id,
+      text: inserted.text,
+      encrypted_key: inserted.encrypted_key,
+      encrypted_key_sender: inserted.encrypted_key_sender,
+      iv: inserted.iv,
+      sender_id: inserted.sender_id,
+      receiver_id: inserted.receiver_id,
+      created_at: inserted.created_at,
+    };
+    await Promise.all([
+      publishToUser(receiverId, 'message:new', payload),
+      publishToUser(user.id, 'message:echo', payload),
+    ]);
+  }
 
   revalidatePath('/messages');
 }

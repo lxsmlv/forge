@@ -5,7 +5,7 @@ import { Flame, Search, Bell } from 'lucide-react';
 import Link from 'next/link';
 import { getStreak } from './streak-actions';
 import { getUnreadCount } from '@/features/notifications/actions';
-import { useRealtime } from '@/lib/useRealtime';
+import { useAblyEvent } from '@/lib/ably/client-provider';
 
 export function FeedHeader() {
   const [streak, setStreak] = useState(0);
@@ -21,7 +21,7 @@ export function FeedHeader() {
     refreshUnread();
   }, [refreshUnread]);
 
-  useRealtime('notifications', 'INSERT', refreshUnread);
+  useAblyEvent('notification:new', refreshUnread);
 
   return (
     <header className="forge-header sticky top-0 z-50">

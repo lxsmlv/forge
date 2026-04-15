@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useRealtime } from '@/lib/useRealtime';
+import { useAblyEvent } from '@/lib/ably/client-provider';
 import { MessageCircle, Users, Plus, Search, User } from 'lucide-react';
 import Link from 'next/link';
 import { useT } from '@/lib/useT';
@@ -55,14 +55,9 @@ export default function Messages() {
     });
   }, [decryptPreviews]);
 
-  // Realtime — new messages refresh conversation list
-  useRealtime('messages', 'INSERT', refreshConversations);
-
-  // Polling fallback — in case realtime drops
-  useEffect(() => {
-    const id = setInterval(() => { refreshConversations(); }, 8000);
-    return () => clearInterval(id);
-  }, [refreshConversations]);
+  // Ably — refresh conversation list on any incoming/outgoing message
+  useAblyEvent('message:new', refreshConversations);
+  useAblyEvent('message:echo', refreshConversations);
 
   useEffect(() => {
     if (searchQuery.length < 2) { setSearchResults([]); return; }

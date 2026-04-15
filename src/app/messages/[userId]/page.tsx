@@ -7,6 +7,7 @@ import { getMessages, sendEncryptedMessage } from '@/features/messages/actions';
 import { decryptMessageDual, encryptMessageDual, getStoredPrivateKey } from '@/lib/crypto';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
+import { useAbly } from '@/lib/ably/client-provider';
 
 export default function Chat() {
   const params = useParams();
@@ -21,6 +22,7 @@ export default function Chat() {
   const [isPending, startTransition] = useTransition();
   const bottomRef = useRef<HTMLDivElement>(null);
   const currentUserIdRef = useRef<string | null>(null);
+  const { client: ablyClient, userId: ablyUserId } = useAbly();
 
   const loadMessages = useCallback(async () => {
     const data = await getMessages(otherUserId);
@@ -31,7 +33,6 @@ export default function Chat() {
   useEffect(() => {
     const supabase = createClient();
 
-    // Cache current user id once — avoids HTTP calls in realtime callback
     supabase.auth.getUser().then(({ data: { user } }) => {
       currentUserIdRef.current = user?.id || null;
     });
@@ -44,61 +45,51 @@ export default function Chat() {
       .then(({ data }) => setOtherUser(data));
 
     loadMessages();
+  }, [otherUserId, loadMessages]);
 
-    // DO NOT auto-regenerate keys here — that would overwrite public_key in DB
-    // and make all existing encrypted messages unreadable.
-    // If private key is missing, the user needs to recover via recovery key in settings.
+  // Ably subscription — append new messages from realtime broker
+  useEffect(() => {
+    if (!ablyClient || !ablyUserId) return;
+    currentUserIdRef.current = ablyUserId;
 
-    // Realtime subscription for new messages — unique channel name per mount to avoid collisions.
-    const channelName = `chat-${otherUserId}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-    const channel = supabase
-      .channel(channelName)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'messages',
-        },
-        (payload) => {
-          const msg = payload.new as any;
-          if (msg.sender_id !== otherUserId && msg.receiver_id !== otherUserId) return;
+    const channel = ablyClient.channels.get(`user:${ablyUserId}`);
+    const supabase = createClient();
 
-          const userId = currentUserIdRef.current;
+    const handler = (msg: { data?: any }) => {
+      const payload = msg.data;
+      if (!payload) return;
+      if (payload.sender_id !== otherUserId && payload.receiver_id !== otherUserId) return;
 
-          setMessages((prev) => {
-            if (prev.some((m) => m.id === msg.id)) return prev;
-            return [
-              ...prev,
-              {
-                id: msg.id,
-                text: msg.text,
-                encrypted_key: msg.encrypted_key,
-                encrypted_key_sender: msg.encrypted_key_sender,
-                iv: msg.iv,
-                sender_id: msg.sender_id,
-                is_mine: userId ? msg.sender_id === userId : false,
-                time: new Date(msg.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
-              },
-            ];
-          });
+      setMessages((prev) => {
+        if (prev.some((m) => m.id === payload.id)) return prev;
+        return [
+          ...prev,
+          {
+            id: payload.id,
+            text: payload.text,
+            encrypted_key: payload.encrypted_key,
+            encrypted_key_sender: payload.encrypted_key_sender,
+            iv: payload.iv,
+            sender_id: payload.sender_id,
+            is_mine: payload.sender_id === ablyUserId,
+            time: new Date(payload.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+          },
+        ];
+      });
 
-          // Mark incoming as read (fire-and-forget)
-          if (userId && msg.receiver_id === userId) {
-            supabase.from('messages').update({ is_read: true }).eq('id', msg.id).then(() => {});
-          }
-        },
-      )
-      .subscribe();
+      if (payload.receiver_id === ablyUserId) {
+        supabase.from('messages').update({ is_read: true }).eq('id', payload.id).then(() => {});
+      }
+    };
 
-    // Polling fallback — only if realtime drops
-    const pollId = setInterval(() => { loadMessages(); }, 15000);
+    channel.subscribe('message:new', handler);
+    channel.subscribe('message:echo', handler);
 
     return () => {
-      supabase.removeChannel(channel);
-      clearInterval(pollId);
+      channel.unsubscribe('message:new', handler);
+      channel.unsubscribe('message:echo', handler);
     };
-  }, [otherUserId, loadMessages]);
+  }, [ablyClient, ablyUserId, otherUserId]);
 
   useEffect(() => {
     async function decrypt() {
