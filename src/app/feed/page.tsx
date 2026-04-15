@@ -12,6 +12,8 @@ import { useT } from '@/lib/useT';
 import { StoriesBar } from '@/features/stories/StoriesBar';
 import { useRealtime } from '@/lib/useRealtime';
 import { Home, PenSquare, Users, RefreshCw, Dumbbell, Car, Flame, Trophy, Bookmark } from 'lucide-react';
+import { FeedEmptyState } from '@/features/feed/FeedEmptyState';
+import { getMyProfile } from '@/features/profile/actions';
 
 export default function Feed() {
   const [activeTab, setActiveTab] = useState<'feed' | 'cabinet'>('feed');
@@ -22,6 +24,7 @@ export default function Feed() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const observerRef = useRef<HTMLDivElement>(null);
+  const [followingCount, setFollowingCount] = useState<number | null>(null);
   const t = useT();
 
   const loadPosts = (mode: 'following' | 'bookmarks' | 'trending') => {
@@ -50,6 +53,7 @@ export default function Feed() {
     loadPosts(feedMode);
     updateStreak();
     checkAndAwardAchievements();
+    getMyProfile().then((p) => setFollowingCount(p?.following_count ?? 0));
   }, [feedMode]);
 
   // Realtime — new posts appear
@@ -186,6 +190,13 @@ export default function Feed() {
                   </div>
                 )}
               </div>
+            ) : feedMode === 'following' && followingCount === 0 ? (
+              <FeedEmptyState
+                onFirstFollow={() => {
+                  getMyProfile().then((p) => setFollowingCount(p?.following_count ?? 0));
+                  loadPosts(feedMode);
+                }}
+              />
             ) : (
               <div className="forge-card flex flex-col items-center py-16 px-6 mt-4 text-center">
                 <div className="w-14 h-14 rounded-full bg-[var(--forge-purple-glow)] flex items-center justify-center mb-4">
