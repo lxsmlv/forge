@@ -132,10 +132,10 @@ export default function GroupPage() {
                     <div
                       className={`max-w-[75%] px-3.5 py-2 rounded-[18px] text-[14px] leading-snug ${
                         msg.is_mine
-                          ? 'bg-gradient-to-br from-[var(--forge-purple)] to-[var(--forge-purple-dim)] rounded-br-[6px] shadow-[0_2px_12px_rgba(139,92,246,0.25)]'
+                          ? 'rounded-br-[6px] shadow-[0_2px_12px_rgba(139,92,246,0.28)]'
                           : 'bg-[var(--forge-card)] border border-[var(--forge-border)] text-[var(--forge-text-primary)] rounded-bl-[6px]'
                       }`}
-                      style={msg.is_mine ? { color: '#ffffff' } : undefined}
+                      style={msg.is_mine ? { color: '#ffffff', background: 'var(--forge-gradient-chat)' } : undefined}
                     >
                       {!msg.is_mine && <p className="text-[11px] text-[var(--forge-purple-bright)] font-semibold mb-0.5">@{msg.sender?.username}</p>}
                       <p>{msg.text}</p>

@@ -25,9 +25,14 @@
   --forge-purple-glow: rgba(139, 92, 246, 0.18);
   --forge-purple-glow-strong: rgba(139, 92, 246, 0.32);
 
-  --forge-gradient: linear-gradient(135deg, #7c3aed 0%, #9333ea 50%, #a855f7 100%);
+  --forge-gradient: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%);
   --forge-gradient-subtle: linear-gradient(135deg, rgba(139, 92, 246, 0.16) 0%, rgba(168, 85, 247, 0.04) 100%);
   --forge-gradient-card: linear-gradient(180deg, rgba(167, 139, 250, 0.04) 0%, rgba(167, 139, 250, 0) 100%);
+
+  /* Brand gradients — same in both themes so the brand color is instantly recognisable.
+     "Purple Fire" — saturated violet → lavender, punchy not muddy. */
+  --forge-gradient-action: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #c084fc 100%);
+  --forge-gradient-chat: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
 
   --forge-success: #34d399;
   --forge-error: #f87171;
@@ -156,7 +161,7 @@ button, a, [role="button"] {
    ================================================ */
 
 .forge-btn-primary {
-  background: var(--forge-gradient);
+  background: var(--forge-gradient-action);
   color: white;
   font-weight: 600;
   border-radius: var(--forge-radius-md);
@@ -293,7 +298,7 @@ button, a, [role="button"] {
 }
 
 .forge-nav-create {
-  background: var(--forge-gradient) !important;
+  background: var(--forge-gradient-action) !important;
   box-shadow: var(--forge-shadow-glow) !important;
   transition: all var(--forge-transition-fast) !important;
 }
