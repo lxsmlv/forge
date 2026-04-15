@@ -131,29 +131,31 @@ button, a, [role="button"] {
    Card System — Glass Steel
    ================================================ */
 
+/* Static card — wrapper for display content. NO hover (doesn't flash as cursor scans). */
 .forge-card {
   background: var(--forge-card);
   background-image: var(--forge-gradient-card);
   border: 1px solid var(--forge-border);
   border-radius: var(--forge-radius-lg);
-  transition: all var(--forge-transition-normal);
   overflow: hidden;
 }
 
-.forge-card:hover {
-  background: var(--forge-card-hover);
-  border-color: var(--forge-border-hover);
-  box-shadow: var(--forge-shadow-md);
-}
-
+/* Interactive card — for clickable rows (chat list, notifications, search results). */
 .forge-card-interactive {
   cursor: pointer;
-  transition: all var(--forge-transition-fast);
+  transition: background-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.forge-card-interactive:hover {
+  background: var(--forge-card-hover);
+  border-color: var(--forge-border-hover);
 }
 
 .forge-card-interactive:active {
-  transform: scale(0.98);
-  transition: transform 100ms ease;
+  background: var(--forge-card-hover);
+  transform: scale(0.985);
+  transition: transform 80ms ease, background-color 80ms ease;
 }
 
 /* ================================================
@@ -186,6 +188,17 @@ button, a, [role="button"] {
 .forge-btn-primary:hover {
   box-shadow: var(--forge-shadow-glow-strong);
   transform: translateY(-1px);
+  filter: brightness(1.06);
+}
+
+/* Light — subtle layered shadow instead of big glow (glow on white = grey mud) */
+.light .forge-btn-primary:hover {
+  box-shadow:
+    0 0 0 1px rgba(147, 51, 234, 0.35),
+    0 3px 6px rgba(76, 29, 149, 0.18),
+    0 10px 22px rgba(76, 29, 149, 0.22);
+  transform: translateY(-1px);
+  filter: brightness(1.04);
 }
 
 .forge-btn-primary:hover::before {
@@ -195,6 +208,13 @@ button, a, [role="button"] {
 .forge-btn-primary:active {
   transform: translateY(0) scale(0.98);
   box-shadow: var(--forge-shadow-glow);
+  filter: brightness(1);
+  transition: transform 80ms ease, filter 80ms ease;
+}
+
+.forge-btn-primary:focus-visible {
+  outline: none;
+  box-shadow: var(--forge-shadow-glow), 0 0 0 3px var(--forge-purple-glow-strong);
 }
 
 .forge-btn-secondary {
@@ -215,6 +235,13 @@ button, a, [role="button"] {
 
 .forge-btn-secondary:active {
   transform: scale(0.98);
+  transition: transform 80ms ease;
+}
+
+.forge-btn-secondary:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--forge-purple-glow);
+  border-color: var(--forge-purple);
 }
 
 /* ================================================
@@ -228,8 +255,14 @@ button, a, [role="button"] {
   color: var(--forge-text-primary) !important;
   padding: 12px 16px !important;
   font-size: 14px !important;
-  transition: all var(--forge-transition-fast) !important;
+  transition: border-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 180ms cubic-bezier(0.4, 0, 0.2, 1) !important;
   outline: none !important;
+}
+
+.forge-input:hover {
+  border-color: var(--forge-border-hover) !important;
 }
 
 .forge-input:focus {
@@ -253,7 +286,9 @@ button, a, [role="button"] {
   font-weight: 500;
   color: var(--forge-text-tertiary);
   border-radius: var(--forge-radius-sm);
-  transition: all var(--forge-transition-fast);
+  transition: color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 180ms cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   border: 1px solid transparent;
 }
@@ -266,6 +301,11 @@ button, a, [role="button"] {
   color: var(--forge-purple-bright) !important;
   background: var(--forge-purple-glow) !important;
   border-color: rgba(139, 92, 246, 0.2) !important;
+}
+
+.forge-tab:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--forge-purple-glow-strong);
 }
 
 /* ================================================
@@ -285,7 +325,8 @@ button, a, [role="button"] {
 }
 
 .forge-nav-item {
-  transition: all var(--forge-transition-fast);
+  position: relative;
+  transition: color 180ms cubic-bezier(0.4, 0, 0.2, 1);
   color: var(--forge-text-tertiary);
 }
 
@@ -295,6 +336,26 @@ button, a, [role="button"] {
 
 .forge-nav-item-active {
   color: var(--forge-purple-bright) !important;
+}
+
+/* Selected indicator — gradient bar above active nav item ("I am here") */
+.forge-nav-item-active::before {
+  content: '';
+  position: absolute;
+  top: -1.5px;
+  left: 50%;
+  width: 24px;
+  height: 2px;
+  border-radius: 0 0 2px 2px;
+  background: var(--forge-gradient-action);
+  box-shadow: 0 0 8px var(--forge-purple-glow-strong);
+  transform: translateX(-50%);
+  animation: forge-nav-indicator-in 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes forge-nav-indicator-in {
+  from { opacity: 0; transform: translateX(-50%) scaleX(0.3); }
+  to   { opacity: 1; transform: translateX(-50%) scaleX(1); }
 }
 
 /* Plus FAB — "Atmosphere Planet": multi-layered glow on dark, mellowed ripple on light */
@@ -428,15 +489,26 @@ button, a, [role="button"] {
 
 .forge-badge-interactive {
   cursor: pointer;
+  transition: border-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 180ms cubic-bezier(0.4, 0, 0.2, 1),
+              color 180ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .forge-badge-interactive:hover {
   border-color: var(--forge-border-hover);
   background: var(--forge-card);
+  color: var(--forge-text-primary);
 }
 
 .forge-badge-interactive:active {
   transform: scale(0.95);
+  transition: transform 80ms ease;
+}
+
+/* Stronger selected state — purple-glow bg + full saturation, visible at a glance */
+.forge-badge-purple.forge-badge-interactive:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  background: var(--forge-purple-glow-strong);
 }
 
 /* ================================================
@@ -482,9 +554,33 @@ button, a, [role="button"] {
 }
 
 /* Press feedback for all interactive elements */
+.forge-press {
+  transition: transform 80ms ease;
+}
+
 .forge-press:active {
   transform: scale(0.97);
-  transition: transform 80ms ease;
+}
+
+/* Keyboard focus — consistent purple ring across all interactive elements */
+button:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: none;
+}
+
+/* Subtle focus ring on any focusable element without explicit styling */
+.forge-focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--forge-black), 0 0 0 4px var(--forge-purple);
+}
+
+/* Disabled state — consistent across all interactive elements */
+button:disabled,
+[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* Smooth page transitions */
