@@ -51,7 +51,6 @@ function SignUpForm() {
         password: form.password,
         username: form.username,
         full_name: form.full_name,
-        invite_code: inviteCode,
       }),
     });
 
@@ -106,9 +105,6 @@ function SignUpForm() {
           FORGE
         </h1>
 
-        <p className="text-zinc-500 text-sm">
-          Your invite code: <span className="text-purple-400 tracking-widest">{inviteCode}</span>
-        </p>
 
         <div className="flex flex-col gap-4 w-full" onKeyDown={handleKeyDown}>
           <Input

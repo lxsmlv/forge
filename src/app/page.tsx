@@ -2,64 +2,18 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { createClient } from '@/lib/supabase/client';
 import { useT } from '@/lib/useT';
+import { GoogleButton } from '@/features/auth/GoogleButton';
 import Link from 'next/link';
 
 export default function Home() {
   const [hit, setHit] = useState(false);
   const [showContent, setShowContent] = useState(false);
-  const [showInviteInput, setShowInviteInput] = useState(false);
-  const [inviteCode, setInviteCode] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
   const t = useT();
 
   const handleAnimationEnd = () => {
     setHit(true);
     setTimeout(() => setShowContent(true), 600);
-  };
-
-  const handleEnterClick = () => {
-    setShowInviteInput(true);
-  };
-
-  const handleSubmitCode = async () => {
-    if (!inviteCode.trim()) {
-      setError('Enter your invite code');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-
-    const supabase = createClient();
-    const { data, error: dbError } = await supabase
-      .from('invite_codes')
-      .select('id, used_by')
-      .eq('code', inviteCode.trim())
-      .maybeSingle();
-
-    if (dbError || !data) {
-      setError('Invalid invite code');
-      setLoading(false);
-      return;
-    }
-
-    if (data.used_by && inviteCode.trim() !== '000000') {
-      setError('This code has already been used');
-      setLoading(false);
-      return;
-    }
-
-    // Set cookie so Google OAuth callback knows invite was validated
-    document.cookie = 'forge_invited=true; path=/; max-age=3600';
-    window.location.href = '/signup?code=' + encodeURIComponent(inviteCode.trim());
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') handleSubmitCode();
   };
 
   return (
@@ -102,47 +56,24 @@ export default function Home() {
             {t('landing.subtitle')}
           </p>
 
-          {/* Invite code input or button */}
-          {!showInviteInput ? (
-            <Button
-              size="lg"
-              onClick={handleEnterClick}
-              className="bg-purple-600 hover:bg-purple-500 text-white font-bold px-8 shadow-[0_0_25px_rgba(147,51,234,0.4)] hover:shadow-[0_0_40px_rgba(147,51,234,0.6)] transition-all duration-300"
-            >
-              {t('landing.enter')}
-            </Button>
-          ) : (
-            <div className="flex flex-col items-center gap-3 animate-in fade-in duration-300">
-              <div className="flex gap-2">
-                <Input
-                  type="text"
-                  placeholder={t('landing.invite_placeholder')}
-                  value={inviteCode}
-                  onChange={(e) => {
-                    setInviteCode(e.target.value.toUpperCase());
-                    setError('');
-                  }}
-                  onKeyDown={handleKeyDown}
-                  autoFocus
-                  className="w-48 sm:w-64 bg-zinc-900 border-zinc-800 text-white text-center tracking-[0.2em] sm:tracking-[0.3em] placeholder:text-zinc-600 placeholder:tracking-[0.2em] sm:placeholder:tracking-[0.3em] focus:border-purple-600 focus:ring-purple-600/30"
-                />
-                <Button
-                  onClick={handleSubmitCode}
-                  disabled={loading}
-                  className="bg-purple-600 hover:bg-purple-500 text-white font-bold px-6 shadow-[0_0_25px_rgba(147,51,234,0.4)] transition-all duration-300 disabled:opacity-50"
-                >
-                  {loading ? '...' : 'GO'}
-                </Button>
-              </div>
-              {error && (
-                <p className="text-red-500 text-sm animate-in fade-in duration-200">{error}</p>
-              )}
-            </div>
-          )}
+          <div className="flex flex-col gap-3 w-full max-w-xs">
+            <Link href="/signup">
+              <Button
+                size="lg"
+                className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold px-8 shadow-[0_0_25px_rgba(147,51,234,0.4)] hover:shadow-[0_0_40px_rgba(147,51,234,0.6)] transition-all duration-300"
+              >
+                {t('auth.join')}
+              </Button>
+            </Link>
 
-          <p className="text-sm text-zinc-700">
-            {t('landing.invite_only')}
-          </p>
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-px bg-zinc-800" />
+              <span className="text-xs text-zinc-600">or</span>
+              <div className="flex-1 h-px bg-zinc-800" />
+            </div>
+
+            <GoogleButton mode="signup" />
+          </div>
 
           <Link href="/login" className="text-xs text-zinc-600 hover:text-purple-400 transition-colors">
             {t('landing.already_member')}

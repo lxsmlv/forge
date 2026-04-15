@@ -8,10 +8,8 @@ const translations: Record<Locale, Record<string, string>> = {
   en: {
     // Landing
     'landing.subtitle': 'Friends club for those who lift, drive, and live well.',
-    'landing.enter': 'Enter with invite code',
-    'landing.invite_only': 'Invite only. No exceptions.',
+    'landing.enter': 'Join Forge',
     'landing.already_member': 'Already a member? Sign in',
-    'landing.invite_placeholder': 'INVITE CODE',
 
     // Auth
     'auth.full_name': 'Full name',
@@ -170,10 +168,8 @@ const translations: Record<Locale, Record<string, string>> = {
   },
   ru: {
     'landing.subtitle': 'Клуб друзей для тех, кто тренируется, ездит и живёт в кайф.',
-    'landing.enter': 'Войти по инвайт-коду',
-    'landing.invite_only': 'Только по приглашению.',
+    'landing.enter': 'Присоединиться',
     'landing.already_member': 'Уже участник? Войти',
-    'landing.invite_placeholder': 'ИНВАЙТ-КОД',
 
     'auth.full_name': 'Полное имя',
     'auth.username': 'Юзернейм',
