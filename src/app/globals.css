@@ -129,26 +129,47 @@
   }
 }
 
-/* Light mode overrides */
-.light body { background: #fafafa; color: #09090b; }
-.light .bg-black { background: #fafafa; }
-.light .bg-zinc-950 { background: #f4f4f5; }
-.light .bg-zinc-900 { background: #e4e4e7; }
-.light .border-zinc-800\/50 { border-color: rgba(228, 228, 231, 0.8); }
-.light .border-zinc-800 { border-color: #d4d4d8; }
-.light .text-white { color: #09090b; }
-.light .text-zinc-400 { color: #71717a; }
-.light .text-zinc-500 { color: #52525b; }
-.light .text-zinc-600 { color: #3f3f46; }
-.light .text-zinc-700 { color: #27272a; }
+/* Light mode — forge-* tokens in design-system.css handle the palette.
+   Below: remap common hardcoded Tailwind dark-mode utility classes to forge tokens
+   so pages that still use bg-black / text-white / bg-zinc-* flip correctly. */
+.light .bg-black { background-color: var(--forge-black) !important; }
+.light .bg-zinc-950 { background-color: var(--forge-surface) !important; }
+.light .bg-zinc-950\/50 { background-color: var(--forge-surface) !important; opacity: 0.5; }
+.light .bg-zinc-900 { background-color: var(--forge-card) !important; }
+.light .bg-zinc-800 { background-color: var(--forge-card-hover) !important; }
+.light .bg-zinc-800\/50 { background-color: var(--forge-card-hover) !important; }
+.light .bg-zinc-800\/30 { background-color: var(--forge-card-hover) !important; }
 
-/* Dark mode for system elements */
+.light .border-zinc-800 { border-color: var(--forge-border-hover) !important; }
+.light .border-zinc-800\/50 { border-color: var(--forge-border) !important; }
+.light .border-zinc-800\/30 { border-color: var(--forge-border) !important; }
+.light .border-zinc-700 { border-color: var(--forge-border-hover) !important; }
+
+.light .text-white { color: var(--forge-text-primary) !important; }
+.light .text-zinc-200 { color: var(--forge-text-primary) !important; }
+.light .text-zinc-300 { color: var(--forge-text-primary) !important; }
+.light .text-zinc-400 { color: var(--forge-text-secondary) !important; }
+.light .text-zinc-500 { color: var(--forge-text-secondary) !important; }
+.light .text-zinc-600 { color: var(--forge-text-tertiary) !important; }
+.light .text-zinc-700 { color: var(--forge-text-muted) !important; }
+.light .text-zinc-800 { color: var(--forge-text-muted) !important; }
+
+/* Purple tints — already high-contrast, keep same family */
+.light .text-purple-300,
+.light .text-purple-400 { color: var(--forge-purple) !important; }
+.light .text-purple-500 { color: var(--forge-purple-bright) !important; }
+
+/* Drop shadows on dark elements look weird on light — soften */
+.light .drop-shadow-\[0_0_40px_rgba\(168\2c 85\2c 247\2c 0\.5\)\] { filter: drop-shadow(0 0 30px rgba(124, 58, 237, 0.25)); }
+.light .drop-shadow-\[0_0_60px_rgba\(168\2c 85\2c 247\2c 0\.4\)\] { filter: drop-shadow(0 0 40px rgba(124, 58, 237, 0.2)); }
+
+/* Autofill — follows active theme */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 30px #18181b inset !important;
-  -webkit-text-fill-color: #fff !important;
-  caret-color: #fff;
+  -webkit-box-shadow: 0 0 0 30px var(--forge-card) inset !important;
+  -webkit-text-fill-color: var(--forge-text-primary) !important;
+  caret-color: var(--forge-text-primary);
 }
 
 ::selection {

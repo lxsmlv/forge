@@ -71,12 +71,13 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} h-full antialiased dark`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-black text-white safe-top safe-bottom">
+      <body className="min-h-full flex flex-col safe-top safe-bottom">
         <ThemeProvider>
           <AblyRootProvider>
             <AppShell>{children}</AppShell>
-            <Toaster theme="dark" position="top-center" />
+            <Toaster position="top-center" />
           </AblyRootProvider>
         </ThemeProvider>
       </body>

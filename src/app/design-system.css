@@ -48,6 +48,37 @@
   --forge-transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* Light theme — overrides for .light class on <html> */
+.light {
+  --forge-black: #fafaf9;
+  --forge-surface: #f4f4f5;
+  --forge-card: #ffffff;
+  --forge-card-hover: #f4f4f5;
+  --forge-border: rgba(0, 0, 0, 0.08);
+  --forge-border-hover: rgba(0, 0, 0, 0.16);
+
+  --forge-text-primary: #09090b;
+  --forge-text-secondary: #52525b;
+  --forge-text-tertiary: #71717a;
+  --forge-text-muted: #a1a1aa;
+
+  --forge-purple: #7c3aed;
+  --forge-purple-bright: #6d28d9;
+  --forge-purple-dim: #5b21b6;
+  --forge-purple-glow: rgba(124, 58, 237, 0.08);
+  --forge-purple-glow-strong: rgba(124, 58, 237, 0.18);
+
+  --forge-gradient: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #a78bfa 100%);
+  --forge-gradient-subtle: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(139, 92, 246, 0.03) 100%);
+  --forge-gradient-card: linear-gradient(180deg, rgba(0, 0, 0, 0.02) 0%, rgba(0, 0, 0, 0) 100%);
+
+  --forge-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --forge-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --forge-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --forge-shadow-glow: 0 0 20px rgba(124, 58, 237, 0.15);
+  --forge-shadow-glow-strong: 0 0 40px rgba(124, 58, 237, 0.25);
+}
+
 /* ================================================
    Global Resets & Base
    ================================================ */
