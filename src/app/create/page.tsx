@@ -117,35 +117,37 @@ export default function CreatePost() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800/50">
+    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)]">
+      <header className="forge-header sticky top-0 z-50">
         <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
-          <button onClick={() => router.back()} className="text-zinc-400 hover:text-white transition-colors">
+          <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm font-medium text-zinc-400">{t('create.new_post')}</span>
-          <Button
+          <span className="text-sm font-medium text-[var(--forge-text-secondary)]">{t('create.new_post')}</span>
+          <button
             onClick={handlePublish}
             disabled={images.length === 0 || loading}
-            size="sm"
-            className="bg-purple-600 hover:bg-purple-500 text-white font-bold shadow-[0_0_15px_rgba(147,51,234,0.3)] disabled:opacity-30 disabled:shadow-none transition-all"
+            className="forge-btn-primary text-[12px] py-2 px-4 uppercase disabled:opacity-30 disabled:cursor-not-allowed"
+            style={{ letterSpacing: '0.08em' }}
           >
             {loading ? '...' : t('create.publish')}
-          </Button>
+          </button>
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 py-6 flex flex-col gap-6">
+      <main className="max-w-lg mx-auto px-4 py-6 flex flex-col gap-5">
         {images.length === 0 ? (
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="aspect-[4/3] rounded-xl border-2 border-dashed border-zinc-800 hover:border-purple-600/50 flex flex-col items-center justify-center gap-3 transition-colors bg-zinc-950"
+            className="aspect-[4/3] rounded-[var(--forge-radius-lg)] border-2 border-dashed border-[var(--forge-border)] hover:border-[rgba(139,92,246,0.4)] hover:bg-[var(--forge-card)] flex flex-col items-center justify-center gap-3 transition-all bg-[var(--forge-surface)]"
           >
-            <ImagePlus className="w-10 h-10 text-zinc-700" />
-            <span className="text-sm text-zinc-600">{t('create.add_photos')}</span>
+            <div className="w-14 h-14 rounded-full bg-[var(--forge-purple-glow)] flex items-center justify-center">
+              <ImagePlus className="w-7 h-7 text-[var(--forge-purple-bright)]" />
+            </div>
+            <span className="text-sm text-[var(--forge-text-secondary)]">{t('create.add_photos')}</span>
           </button>
         ) : (
-          <div className="relative aspect-[4/3] rounded-xl overflow-hidden">
+          <div className="forge-card relative aspect-[4/3] overflow-hidden" style={{ padding: 0 }}>
             {images[currentImage].file.type.startsWith('video/') ? (
               <video src={images[currentImage].preview} className="w-full h-full object-cover" controls playsInline muted />
             ) : (
@@ -153,7 +155,7 @@ export default function CreatePost() {
             )}
             <button
               onClick={() => removeImage(currentImage)}
-              className="absolute top-3 right-3 h-8 w-8 rounded-full bg-black/70 flex items-center justify-center hover:bg-black"
+              className="forge-glass forge-press absolute top-3 right-3 h-8 w-8 rounded-full flex items-center justify-center"
             >
               <X className="w-4 h-4 text-white" />
             </button>
@@ -161,18 +163,18 @@ export default function CreatePost() {
             {images.length > 1 && (
               <>
                 {currentImage > 0 && (
-                  <button onClick={() => setCurrentImage(currentImage - 1)} className="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-black/50 flex items-center justify-center">
+                  <button onClick={() => setCurrentImage(currentImage - 1)} className="forge-glass forge-press absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full flex items-center justify-center">
                     <ChevronLeft className="w-5 h-5 text-white" />
                   </button>
                 )}
                 {currentImage < images.length - 1 && (
-                  <button onClick={() => setCurrentImage(currentImage + 1)} className="absolute right-12 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full bg-black/50 flex items-center justify-center">
+                  <button onClick={() => setCurrentImage(currentImage + 1)} className="forge-glass forge-press absolute right-14 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full flex items-center justify-center">
                     <ChevronRight className="w-5 h-5 text-white" />
                   </button>
                 )}
                 <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
                   {images.map((_, i) => (
-                    <div key={i} className={`h-1.5 w-1.5 rounded-full transition-all ${i === currentImage ? 'bg-purple-500 w-3' : 'bg-zinc-600'}`} />
+                    <div key={i} className={`h-1.5 rounded-full transition-all ${i === currentImage ? 'bg-[var(--forge-purple-bright)] w-4 shadow-[0_0_8px_rgba(139,92,246,0.6)]' : 'bg-white/30 w-1.5'}`} />
                   ))}
                 </div>
               </>
@@ -180,7 +182,7 @@ export default function CreatePost() {
 
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="absolute bottom-3 right-3 h-8 px-3 rounded-full bg-black/70 flex items-center gap-1.5 text-xs text-white hover:bg-black"
+              className="forge-glass forge-press absolute bottom-3 right-3 h-8 px-3 rounded-full flex items-center gap-1.5 text-xs text-white"
             >
               <ImagePlus className="w-3.5 h-3.5" /> {images.length}/10
             </button>
@@ -194,22 +196,22 @@ export default function CreatePost() {
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
           rows={3}
-          className="bg-zinc-950 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30 resize-none"
+          className="forge-input resize-none"
         />
 
         <div className="relative">
-          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--forge-text-tertiary)] pointer-events-none z-10" />
           <input
             type="text"
             placeholder={t('create.add_location')}
             value={location}
             onChange={(e) => setLocation(e.target.value)}
-            className="w-full h-10 pl-10 pr-4 bg-zinc-950 border border-zinc-800 rounded-lg text-white text-sm placeholder:text-zinc-600 focus:border-purple-600 focus:ring-1 focus:ring-purple-600/30 outline-none"
+            className="forge-input w-full !pl-10"
           />
         </div>
 
-        <div className="flex flex-col gap-2">
-          <span className="text-xs text-zinc-600 uppercase tracking-wider">{t('create.category')}</span>
+        <div className="flex flex-col gap-2.5">
+          <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">{t('create.category')}</span>
           <div className="flex gap-2">
             {CATEGORIES.map((cat) => {
               const Icon = cat.icon;
@@ -218,10 +220,10 @@ export default function CreatePost() {
                 <button
                   key={cat.id}
                   onClick={() => setCategory(cat.id)}
-                  className={`flex-1 flex flex-col items-center gap-1.5 py-3 rounded-lg border transition-all ${
+                  className={`forge-press flex-1 flex flex-col items-center gap-1.5 py-3 rounded-[var(--forge-radius-md)] border transition-all ${
                     active
-                      ? 'bg-purple-600/20 border-purple-600/40 text-purple-400'
-                      : 'bg-zinc-950 border-zinc-800/50 text-zinc-600 hover:border-zinc-700'
+                      ? 'bg-[var(--forge-purple-glow)] border-[rgba(139,92,246,0.35)] text-[var(--forge-purple-bright)]'
+                      : 'bg-[var(--forge-surface)] border-[var(--forge-border)] text-[var(--forge-text-tertiary)] hover:border-[var(--forge-border-hover)] hover:text-[var(--forge-text-secondary)]'
                   }`}
                 >
                   <Icon className="w-5 h-5" />
@@ -232,7 +234,7 @@ export default function CreatePost() {
           </div>
         </div>
 
-        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+        {error && <p className="text-[var(--forge-error)] text-[13px] text-center">{error}</p>}
       </main>
     </div>
   );

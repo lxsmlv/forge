@@ -79,16 +79,16 @@ export default function Profile() {
   const initials = profile.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800/50">
+    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)]">
+      <header className="forge-header sticky top-0 z-50">
         <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
-          <button onClick={() => router.back()} className="text-zinc-400 hover:text-white transition-colors">
+          <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm font-medium text-zinc-400">@{profile.username}</span>
+          <span className="text-sm font-medium text-[var(--forge-text-secondary)]">@{profile.username}</span>
           <div className="flex items-center gap-2">
             {profile && <ProfileQR username={profile.username} />}
-            <Link href="/settings" className="text-zinc-400 hover:text-white transition-colors">
+            <Link href="/settings" className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
               <Settings className="w-5 h-5" />
             </Link>
           </div>
@@ -97,13 +97,15 @@ export default function Profile() {
 
       <main className="max-w-lg mx-auto px-4 py-6">
         <div className="flex flex-col items-center gap-4 mb-8">
-          <button onClick={() => avatarInputRef.current?.click()} className="relative group">
-            <div className="h-24 w-24 rounded-full bg-purple-600/20 border-2 border-purple-600/40 flex items-center justify-center overflow-hidden">
-              {profile.avatar_url ? (
-                <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-3xl font-bold text-purple-400">{initials}</span>
-              )}
+          <button onClick={() => avatarInputRef.current?.click()} className="relative group forge-press">
+            <div className="forge-avatar-ring">
+              <div className="h-24 w-24 rounded-full bg-[var(--forge-card)] flex items-center justify-center overflow-hidden">
+                {profile.avatar_url ? (
+                  <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-3xl font-bold text-[var(--forge-purple-bright)]">{initials}</span>
+                )}
+              </div>
             </div>
             <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
               <Edit3 className="w-5 h-5 text-white" />
@@ -121,99 +123,98 @@ export default function Profile() {
           }} />
 
           <div className="text-center">
-            <h2 className="text-xl font-bold text-white flex items-center gap-1.5 justify-center">
+            <h2 className="text-xl font-bold text-[var(--forge-text-primary)] flex items-center gap-1.5 justify-center tracking-tight">
               {profile.full_name}
-              {profile.is_verified && <span className="text-purple-400">✓</span>}
+              {profile.is_verified && <span className="text-[var(--forge-purple-bright)]">✓</span>}
             </h2>
-            {!editing && profile.bio && <p className="text-sm text-zinc-500 mt-1">{profile.bio}</p>}
+            {!editing && profile.bio && <p className="text-sm text-[var(--forge-text-secondary)] mt-1 leading-relaxed">{profile.bio}</p>}
           </div>
 
           {!editing ? (
             <>
               <div className="flex flex-wrap items-center justify-center gap-2">
                 {profile.city && (
-                  <div className="flex items-center gap-1.5 text-xs text-zinc-500 bg-zinc-950 border border-zinc-800/50 rounded-full px-3 py-1.5">
+                  <span className="forge-badge">
                     <MapPin className="w-3 h-3" />{profile.city}
-                  </div>
+                  </span>
                 )}
                 {profile.car && (
-                  <div className="flex items-center gap-1.5 text-xs text-zinc-500 bg-zinc-950 border border-zinc-800/50 rounded-full px-3 py-1.5">
+                  <span className="forge-badge">
                     <Car className="w-3 h-3" />{profile.car}
-                  </div>
+                  </span>
                 )}
               </div>
 
               {profile.sports?.length > 0 && (
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap justify-center">
                   {profile.sports.map((sport: string) => (
-                    <Badge key={sport} variant="outline" className="border-purple-600/30 text-purple-400 bg-purple-600/10 text-xs capitalize">
-                      <Dumbbell className="w-3 h-3 mr-1" />{sport}
-                    </Badge>
+                    <span key={sport} className="forge-badge forge-badge-purple capitalize">
+                      <Dumbbell className="w-3 h-3" />{sport}
+                    </span>
                   ))}
                 </div>
               )}
 
-              <button onClick={() => setEditing(true)} className="flex items-center gap-1.5 text-xs text-purple-400 hover:text-purple-300 transition-colors">
+              <button onClick={() => setEditing(true)} className="forge-press flex items-center gap-1.5 text-[12px] text-[var(--forge-purple-bright)] hover:text-[var(--forge-purple)] transition-colors">
                 <Edit3 className="w-3 h-3" /> {t('profile.edit')}
               </button>
             </>
           ) : (
             <div className="w-full flex flex-col gap-3">
               <Input placeholder="Bio" value={editForm.bio} onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
-                className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30" />
+                className="forge-input" />
               <Input placeholder="City" value={editForm.city} onChange={(e) => setEditForm({ ...editForm, city: e.target.value })}
-                className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30" />
+                className="forge-input" />
               <Input placeholder="Car" value={editForm.car} onChange={(e) => setEditForm({ ...editForm, car: e.target.value })}
-                className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30" />
-              <div className="flex gap-2">
-                {ALL_SPORTS.map((sport) => (
-                  <button key={sport} onClick={() => toggleSport(sport)}
-                    className={`text-xs px-3 py-1.5 rounded-full border capitalize transition-all ${
-                      editForm.sports.includes(sport)
-                        ? 'bg-purple-600/20 border-purple-600/40 text-purple-400'
-                        : 'border-zinc-800 text-zinc-600 hover:border-zinc-700'
-                    }`}>
-                    {sport}
-                  </button>
-                ))}
+                className="forge-input" />
+              <div className="flex gap-1.5 flex-wrap">
+                {ALL_SPORTS.map((sport) => {
+                  const active = editForm.sports.includes(sport);
+                  return (
+                    <button key={sport} onClick={() => toggleSport(sport)}
+                      className={`forge-badge forge-badge-interactive capitalize ${active ? 'forge-badge-purple' : ''}`}>
+                      {sport}
+                    </button>
+                  );
+                })}
               </div>
               <div className="flex gap-2">
-                <Button onClick={handleSaveProfile} size="sm" className="bg-purple-600 hover:bg-purple-500 text-white font-bold">
-                  <Check className="w-4 h-4 mr-1" /> Save
-                </Button>
-                <Button onClick={() => setEditing(false)} size="sm" variant="ghost" className="text-zinc-500 hover:text-white">Cancel</Button>
+                <button onClick={handleSaveProfile} className="forge-btn-primary text-[13px] py-2 px-4 flex items-center gap-1.5">
+                  <Check className="w-4 h-4" /> Save
+                </button>
+                <button onClick={() => setEditing(false)} className="forge-btn-secondary text-[13px] py-2 px-4">Cancel</button>
               </div>
             </div>
           )}
 
           <div className="flex gap-8 mt-2">
             <div className="flex flex-col items-center">
-              <span className="text-lg font-bold text-white">{profile.posts_count}</span>
-              <span className="text-xs text-zinc-600">{t('profile.posts')}</span>
+              <span className="text-lg font-bold text-[var(--forge-text-primary)] tabular-nums">{profile.posts_count}</span>
+              <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">{t('profile.posts')}</span>
             </div>
-            <Link href={`/profile/${profile.username}/followers`} className="flex flex-col items-center hover:opacity-80 transition-opacity">
-              <span className="text-lg font-bold text-white">{profile.followers_count}</span>
-              <span className="text-xs text-zinc-600">{t('profile.followers')}</span>
+            <Link href={`/profile/${profile.username}/followers`} className="flex flex-col items-center hover:opacity-80 transition-opacity forge-press">
+              <span className="text-lg font-bold text-[var(--forge-text-primary)] tabular-nums">{profile.followers_count}</span>
+              <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">{t('profile.followers')}</span>
             </Link>
-            <Link href={`/profile/${profile.username}/following`} className="flex flex-col items-center hover:opacity-80 transition-opacity">
-              <span className="text-lg font-bold text-white">{profile.following_count}</span>
-              <span className="text-xs text-zinc-600">{t('profile.following_tab')}</span>
+            <Link href={`/profile/${profile.username}/following`} className="flex flex-col items-center hover:opacity-80 transition-opacity forge-press">
+              <span className="text-lg font-bold text-[var(--forge-text-primary)] tabular-nums">{profile.following_count}</span>
+              <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">{t('profile.following_tab')}</span>
             </Link>
             <div className="flex flex-col items-center">
-              <span className="text-lg font-bold text-white">{profile.workouts_count}</span>
-              <span className="text-xs text-zinc-600">{t('profile.workouts')}</span>
+              <span className="text-lg font-bold text-[var(--forge-text-primary)] tabular-nums">{profile.workouts_count}</span>
+              <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">{t('profile.workouts')}</span>
             </div>
           </div>
         </div>
 
-        <div className="flex gap-1 bg-zinc-950 rounded-lg p-1 border border-zinc-800/50 mb-4">
+        <div className="flex gap-1 bg-[var(--forge-surface)] rounded-[var(--forge-radius-md)] p-1 border border-[var(--forge-border)] mb-4">
           <button onClick={() => setActiveTab('posts')}
-            className={`flex-1 py-2 rounded-md text-sm font-medium transition-all ${
-              activeTab === 'posts' ? 'bg-purple-600/20 text-purple-400 border border-purple-600/30' : 'text-zinc-500 hover:text-zinc-300 border border-transparent'
+            className={`forge-press flex-1 py-2 rounded-[var(--forge-radius-sm)] text-[13px] font-medium transition-all ${
+              activeTab === 'posts' ? 'bg-[var(--forge-purple-glow)] text-[var(--forge-purple-bright)] border border-[rgba(139,92,246,0.2)]' : 'text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] border border-transparent'
             }`}>{t('profile.posts')}</button>
           <button onClick={() => setActiveTab('stats')}
-            className={`flex-1 py-2 rounded-md text-sm font-medium transition-all ${
-              activeTab === 'stats' ? 'bg-purple-600/20 text-purple-400 border border-purple-600/30' : 'text-zinc-500 hover:text-zinc-300 border border-transparent'
+            className={`forge-press flex-1 py-2 rounded-[var(--forge-radius-sm)] text-[13px] font-medium transition-all ${
+              activeTab === 'stats' ? 'bg-[var(--forge-purple-glow)] text-[var(--forge-purple-bright)] border border-[rgba(139,92,246,0.2)]' : 'text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] border border-transparent'
             }`}>{t('profile.activity')}</button>
         </div>
 
@@ -225,22 +226,22 @@ export default function Profile() {
               ))}
             </div>
           ) : (
-            <div className="flex flex-col items-center py-16 text-zinc-600">
-              <p className="text-sm">{t('profile.no_posts')}</p>
+            <div className="forge-card flex flex-col items-center py-16 px-6 text-center">
+              <p className="text-sm text-[var(--forge-text-tertiary)]">{t('profile.no_posts')}</p>
             </div>
           )
         ) : (
           <>
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex flex-col items-center gap-1">
-                <Dumbbell className="w-5 h-5 text-purple-400 mb-1" />
-                <span className="text-2xl font-bold text-white">{profile.workouts_count}</span>
-                <span className="text-xs text-zinc-600">{t('profile.workouts')}</span>
+              <div className="forge-card p-4 flex flex-col items-center gap-1">
+                <Dumbbell className="w-5 h-5 text-[var(--forge-purple-bright)] mb-1" />
+                <span className="text-2xl font-bold text-[var(--forge-text-primary)] tabular-nums">{profile.workouts_count}</span>
+                <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">{t('profile.workouts')}</span>
               </div>
-              <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex flex-col items-center gap-1">
-                <Car className="w-5 h-5 text-purple-400 mb-1" />
-                <span className="text-2xl font-bold text-white">{profile.posts_count}</span>
-                <span className="text-xs text-zinc-600">{t('profile.posts')}</span>
+              <div className="forge-card p-4 flex flex-col items-center gap-1">
+                <Car className="w-5 h-5 text-[var(--forge-purple-bright)] mb-1" />
+                <span className="text-2xl font-bold text-[var(--forge-text-primary)] tabular-nums">{profile.posts_count}</span>
+                <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">{t('profile.posts')}</span>
               </div>
             </div>
 
@@ -248,17 +249,17 @@ export default function Profile() {
 
             {achievements.length > 0 && (
               <div className="mt-4">
-                <h3 className="text-sm font-medium text-zinc-400 mb-3">{t('profile.achievements')}</h3>
+                <h3 className="text-sm font-medium text-[var(--forge-text-secondary)] mb-3 uppercase tracking-wider">{t('profile.achievements')}</h3>
                 <div className="grid grid-cols-2 gap-2">
                   {achievements.map((a) => {
                     const info = ACHIEVEMENTS[a.type];
                     if (!info) return null;
                     return (
-                      <div key={a.type} className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-3 flex items-center gap-3">
+                      <div key={a.type} className="forge-card p-3 flex items-center gap-3">
                         <span className="text-2xl">{info.emoji}</span>
                         <div>
-                          <p className="text-xs font-semibold text-white">{info.title}</p>
-                          <p className="text-[10px] text-zinc-600">{info.description}</p>
+                          <p className="text-xs font-semibold text-[var(--forge-text-primary)]">{info.title}</p>
+                          <p className="text-[10px] text-[var(--forge-text-tertiary)] mt-0.5">{info.description}</p>
                         </div>
                       </div>
                     );

@@ -29,62 +29,62 @@ export default function AdminPage() {
 
   if (!authorized || loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="h-8 w-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[var(--forge-black)] flex items-center justify-center">
+        <div className="h-8 w-8 border-2 border-[var(--forge-purple)] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white pb-20">
-      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800/50">
+    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] pb-20">
+      <header className="forge-header sticky top-0 z-50">
         <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
-          <button onClick={() => router.back()} className="text-zinc-400 hover:text-white transition-colors">
+          <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm font-medium text-red-400">Admin Panel</span>
+          <span className="text-sm font-semibold text-[var(--forge-error)]">Admin Panel</span>
           <div className="w-5" />
         </div>
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-6">
         <div className="grid grid-cols-2 gap-3 mb-6">
-          <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex flex-col items-center">
-            <Users className="w-5 h-5 text-purple-400 mb-1" />
-            <span className="text-2xl font-bold text-white">{stats.users}</span>
-            <span className="text-xs text-zinc-600">Users</span>
+          <div className="forge-card p-4 flex flex-col items-center">
+            <Users className="w-5 h-5 text-[var(--forge-purple-bright)] mb-1" />
+            <span className="text-2xl font-bold text-[var(--forge-text-primary)] tabular-nums">{stats.users}</span>
+            <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">Users</span>
           </div>
-          <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex flex-col items-center">
-            <FileText className="w-5 h-5 text-purple-400 mb-1" />
-            <span className="text-2xl font-bold text-white">{stats.posts}</span>
-            <span className="text-xs text-zinc-600">Posts</span>
+          <div className="forge-card p-4 flex flex-col items-center">
+            <FileText className="w-5 h-5 text-[var(--forge-purple-bright)] mb-1" />
+            <span className="text-2xl font-bold text-[var(--forge-text-primary)] tabular-nums">{stats.posts}</span>
+            <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">Posts</span>
           </div>
-          <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex flex-col items-center">
-            <Flag className="w-5 h-5 text-red-400 mb-1" />
-            <span className="text-2xl font-bold text-white">{stats.reports}</span>
-            <span className="text-xs text-zinc-600">Reports</span>
+          <div className="forge-card p-4 flex flex-col items-center">
+            <Flag className="w-5 h-5 text-[var(--forge-error)] mb-1" />
+            <span className="text-2xl font-bold text-[var(--forge-text-primary)] tabular-nums">{stats.reports}</span>
+            <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">Reports</span>
           </div>
-          <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex flex-col items-center">
-            <Layers className="w-5 h-5 text-purple-400 mb-1" />
-            <span className="text-2xl font-bold text-white">{stats.groups}</span>
-            <span className="text-xs text-zinc-600">Groups</span>
+          <div className="forge-card p-4 flex flex-col items-center">
+            <Layers className="w-5 h-5 text-[var(--forge-purple-bright)] mb-1" />
+            <span className="text-2xl font-bold text-[var(--forge-text-primary)] tabular-nums">{stats.groups}</span>
+            <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">Groups</span>
           </div>
         </div>
 
-        <h3 className="text-sm font-medium text-zinc-400 mb-3">Reports</h3>
+        <h3 className="text-[11px] font-semibold text-[var(--forge-text-secondary)] mb-3 uppercase tracking-wider">Reports</h3>
         {reports.length === 0 ? (
-          <p className="text-center text-sm text-zinc-600 py-8">No reports</p>
+          <div className="forge-card flex flex-col items-center py-12 px-6 text-center">
+            <p className="text-sm text-[var(--forge-text-tertiary)]">No reports</p>
+          </div>
         ) : (
           <div className="flex flex-col gap-2">
             {reports.map((r) => (
-              <div key={r.id} className="bg-zinc-950 border border-red-900/30 rounded-xl p-3">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-zinc-500">
+              <div key={r.id} className="forge-card p-3" style={{ borderColor: 'rgba(248,113,113,0.2)' }}>
+                <div className="flex items-center justify-between mb-2 gap-2">
+                  <span className="text-xs text-[var(--forge-text-secondary)] truncate">
                     @{r.reporter?.username} reported @{r.post?.author?.username}
                   </span>
-                  <Button
-                    size="sm"
-                    variant="ghost"
+                  <button
                     onClick={() => {
                       startTransition(async () => {
                         if (r.post?.id) {
@@ -98,13 +98,13 @@ export default function AdminPage() {
                       });
                     }}
                     disabled={isPending}
-                    className="text-red-400 hover:text-red-300 hover:bg-red-900/20 h-7 text-xs"
+                    className="forge-press shrink-0 flex items-center gap-1 text-[11px] text-[var(--forge-error)] hover:bg-red-900/20 px-2 py-1 rounded-[var(--forge-radius-sm)] transition-colors"
                   >
-                    <Trash2 className="w-3 h-3 mr-1" /> Delete post
-                  </Button>
+                    <Trash2 className="w-3 h-3" /> Delete
+                  </button>
                 </div>
-                <p className="text-xs text-zinc-600">Reason: {r.reason}</p>
-                {r.post?.caption && <p className="text-xs text-zinc-500 mt-1 truncate">"{r.post.caption}"</p>}
+                <p className="text-xs text-[var(--forge-text-tertiary)]">Reason: {r.reason}</p>
+                {r.post?.caption && <p className="text-xs text-[var(--forge-text-secondary)] mt-1 truncate">"{r.post.caption}"</p>}
               </div>
             ))}
           </div>

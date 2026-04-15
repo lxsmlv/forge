@@ -76,21 +76,21 @@ export default function Feed() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white pb-20">
+    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] pb-20">
       <FeedHeader />
 
-      <div className="max-w-lg mx-auto border-b border-zinc-800/30">
+      <div className="max-w-lg mx-auto border-b border-[var(--forge-border)]">
         <StoriesBar />
       </div>
 
       <div className="max-w-lg mx-auto px-4 pt-4">
-        <div className="flex gap-1 bg-zinc-950 rounded-lg p-1 border border-zinc-800/50">
+        <div className="flex gap-1 bg-[var(--forge-surface)] rounded-[var(--forge-radius-md)] p-1 border border-[var(--forge-border)]">
           <button
             onClick={() => setActiveTab('feed')}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all ${
+            className={`forge-press flex-1 flex items-center justify-center gap-2 py-2 rounded-[var(--forge-radius-sm)] text-[13px] font-medium transition-all ${
               activeTab === 'feed'
-                ? 'bg-purple-600/20 text-purple-400 border border-purple-600/30'
-                : 'text-zinc-500 hover:text-zinc-300 border border-transparent'
+                ? 'bg-[var(--forge-purple-glow)] text-[var(--forge-purple-bright)] border border-[rgba(139,92,246,0.2)]'
+                : 'text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] border border-transparent'
             }`}
           >
             <Home className="w-4 h-4" />
@@ -98,10 +98,10 @@ export default function Feed() {
           </button>
           <button
             onClick={() => setActiveTab('cabinet')}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all ${
+            className={`forge-press flex-1 flex items-center justify-center gap-2 py-2 rounded-[var(--forge-radius-sm)] text-[13px] font-medium transition-all ${
               activeTab === 'cabinet'
-                ? 'bg-purple-600/20 text-purple-400 border border-purple-600/30'
-                : 'text-zinc-500 hover:text-zinc-300 border border-transparent'
+                ? 'bg-[var(--forge-purple-glow)] text-[var(--forge-purple-bright)] border border-[rgba(139,92,246,0.2)]'
+                : 'text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] border border-transparent'
             }`}
           >
             <PenSquare className="w-4 h-4" />
@@ -114,7 +114,7 @@ export default function Feed() {
         {newPostsAvailable && activeTab === 'feed' && (
           <button
             onClick={() => { setNewPostsAvailable(false); loadPosts(feedMode); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-            className="w-full mb-3 py-2 bg-purple-600/20 border border-purple-600/30 rounded-lg text-sm text-purple-400 hover:bg-purple-600/30 transition-colors"
+            className="forge-press w-full mb-3 py-2.5 bg-[var(--forge-purple-glow)] border border-[rgba(139,92,246,0.25)] rounded-[var(--forge-radius-md)] text-[13px] font-medium text-[var(--forge-purple-bright)] hover:bg-[var(--forge-purple-glow-strong)] transition-all"
           >
             ↑ New posts
           </button>
@@ -123,77 +123,50 @@ export default function Feed() {
         {activeTab === 'feed' ? (
           <>
             {/* Feed mode + category filters */}
-            <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1 scrollbar-hide">
-              <button
-                onClick={() => setFeedMode('all')}
-                className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all shrink-0 ${
-                  feedMode === 'all'
-                    ? 'border-purple-600/40 text-purple-400 bg-purple-600/10'
-                    : 'border-zinc-800 text-zinc-600 hover:border-zinc-700'
-                }`}
-              >
-                <Globe className="w-3 h-3" />
-                {t('feed.all')}
-              </button>
-              <button
-                onClick={() => setFeedMode('following')}
-                className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all shrink-0 ${
-                  feedMode === 'following'
-                    ? 'border-purple-600/40 text-purple-400 bg-purple-600/10'
-                    : 'border-zinc-800 text-zinc-600 hover:border-zinc-700'
-                }`}
-              >
-                <Users className="w-3 h-3" />
-                {t('feed.following')}
-              </button>
-              <button
-                onClick={() => setFeedMode('bookmarks')}
-                className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all shrink-0 ${
-                  feedMode === ('bookmarks')
-                    ? 'border-purple-600/40 text-purple-400 bg-purple-600/10'
-                    : 'border-zinc-800 text-zinc-600 hover:border-zinc-700'
-                }`}
-              >
-                <Bookmark className="w-3 h-3" />
-                {t('feed.saved')}
-              </button>
-              <button
-                onClick={() => setFeedMode('trending')}
-                className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all shrink-0 ${
-                  feedMode === 'trending'
-                    ? 'border-purple-600/40 text-purple-400 bg-purple-600/10'
-                    : 'border-zinc-800 text-zinc-600 hover:border-zinc-700'
-                }`}
-              >
-                <Flame className="w-3 h-3" />
-                {t('feed.trending')}
-              </button>
+            <div className="flex items-center gap-1.5 mb-4 overflow-x-auto pb-1 scrollbar-hide">
+              {([
+                { id: 'all', icon: Globe, label: t('feed.all') },
+                { id: 'following', icon: Users, label: t('feed.following') },
+                { id: 'bookmarks', icon: Bookmark, label: t('feed.saved') },
+                { id: 'trending', icon: Flame, label: t('feed.trending') },
+              ] as const).map(({ id, icon: Icon, label }) => {
+                const active = feedMode === id;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => setFeedMode(id)}
+                    className={`forge-badge forge-badge-interactive shrink-0 ${active ? 'forge-badge-purple' : ''}`}
+                  >
+                    <Icon className="w-3 h-3" />
+                    {label}
+                  </button>
+                );
+              })}
 
-              <div className="w-px h-5 bg-zinc-800 shrink-0" />
+              <div className="w-px h-5 bg-[var(--forge-border)] shrink-0 mx-1" />
 
               {[
                 { id: 'gym', icon: Dumbbell },
                 { id: 'cars', icon: Car },
                 { id: 'lifestyle', icon: Flame },
                 { id: 'sport', icon: Trophy },
-              ].map(({ id, icon: Icon }) => (
-                <button
-                  key={id}
-                  onClick={() => setCategoryFilter(categoryFilter === id ? null : id)}
-                  className={`flex items-center gap-1 text-xs px-2.5 py-1.5 rounded-full border transition-all shrink-0 capitalize ${
-                    categoryFilter === id
-                      ? 'border-purple-600/40 text-purple-400 bg-purple-600/10'
-                      : 'border-zinc-800 text-zinc-600 hover:border-zinc-700'
-                  }`}
-                >
-                  <Icon className="w-3 h-3" />
-                  {t(`cat.${id}`)}
-                </button>
-              ))}
+              ].map(({ id, icon: Icon }) => {
+                const active = categoryFilter === id;
+                return (
+                  <button
+                    key={id}
+                    onClick={() => setCategoryFilter(categoryFilter === id ? null : id)}
+                    className={`forge-badge forge-badge-interactive shrink-0 capitalize ${active ? 'forge-badge-purple' : ''}`}
+                  >
+                    <Icon className="w-3 h-3" />
+                    {t(`cat.${id}`)}
+                  </button>
+                );
+              })}
 
               <button
                 onClick={() => loadPosts(feedMode)}
-                className="h-7 w-7 rounded-full border border-zinc-800 flex items-center justify-center text-zinc-600 hover:text-purple-400 hover:border-purple-600/40 transition-all shrink-0"
+                className="forge-press h-7 w-7 rounded-full border border-[var(--forge-border)] bg-[var(--forge-surface)] flex items-center justify-center text-[var(--forge-text-tertiary)] hover:text-[var(--forge-purple-bright)] hover:border-[rgba(139,92,246,0.3)] transition-all shrink-0"
               >
                 <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
               </button>
@@ -209,17 +182,20 @@ export default function Feed() {
                 {hasMore && (
                   <div ref={observerRef} className="flex justify-center py-4">
                     {loadingMore && (
-                      <div className="h-6 w-6 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+                      <div className="h-6 w-6 border-2 border-[var(--forge-purple)] border-t-transparent rounded-full animate-spin" />
                     )}
                   </div>
                 )}
               </div>
             ) : (
-              <div className="flex flex-col items-center py-20 text-zinc-600">
-                <p className="text-lg font-medium text-zinc-500">
+              <div className="forge-card flex flex-col items-center py-16 px-6 mt-4 text-center">
+                <div className="w-14 h-14 rounded-full bg-[var(--forge-purple-glow)] flex items-center justify-center mb-4">
+                  <Flame className="w-7 h-7 text-[var(--forge-purple-bright)]" />
+                </div>
+                <p className="text-[15px] font-semibold text-[var(--forge-text-primary)]">
                   {feedMode === 'following' ? t('feed.follow_someone') : t('feed.no_posts')}
                 </p>
-                <p className="text-sm text-zinc-700 mt-1">
+                <p className="text-[13px] text-[var(--forge-text-tertiary)] mt-1.5 max-w-xs">
                   {feedMode === 'following' ? t('feed.switch_all') : t('feed.be_first')}
                 </p>
               </div>

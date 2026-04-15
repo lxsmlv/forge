@@ -23,17 +23,19 @@ export default function ReelsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="h-8 w-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[var(--forge-black)] flex items-center justify-center">
+        <div className="h-8 w-8 border-2 border-[var(--forge-purple)] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (reels.length === 0) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-zinc-600 pb-20">
-        <p className="text-sm">No reels yet</p>
-        <p className="text-xs text-zinc-700 mt-1">Upload a video post to see it here</p>
+      <div className="min-h-screen bg-[var(--forge-black)] flex flex-col items-center justify-center pb-20 px-6">
+        <div className="forge-card flex flex-col items-center py-12 px-6 text-center max-w-sm">
+          <p className="text-sm text-[var(--forge-text-primary)] font-semibold">No reels yet</p>
+          <p className="text-xs text-[var(--forge-text-tertiary)] mt-1">Upload a video post to see it here</p>
+        </div>
       </div>
     );
   }
@@ -113,35 +115,37 @@ function ReelItem({ reel, isActive, muted, onMuteToggle, onVisible }: {
 
       {/* Right side actions */}
       <div className="absolute right-3 bottom-28 flex flex-col items-center gap-5">
-        <button onClick={handleLike} disabled={isPending} className="flex flex-col items-center gap-1">
-          <Heart className={`w-7 h-7 ${liked ? 'fill-purple-500 text-purple-500' : 'text-white'}`} />
-          <span className="text-xs text-white">{likesCount}</span>
+        <button onClick={handleLike} disabled={isPending} className="forge-press flex flex-col items-center gap-1">
+          <Heart className={`w-7 h-7 transition-all ${liked ? 'fill-[var(--forge-purple)] text-[var(--forge-purple)] drop-shadow-[0_0_12px_rgba(139,92,246,0.6)]' : 'text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]'}`} />
+          <span className="text-xs text-white font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] tabular-nums">{likesCount}</span>
         </button>
-        <button className="flex flex-col items-center gap-1">
-          <MessageCircle className="w-7 h-7 text-white" />
-          <span className="text-xs text-white">{reel.comments_count}</span>
+        <button className="forge-press flex flex-col items-center gap-1">
+          <MessageCircle className="w-7 h-7 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" />
+          <span className="text-xs text-white font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] tabular-nums">{reel.comments_count}</span>
         </button>
         <button onClick={() => {
           navigator.clipboard.writeText(`${window.location.origin}/post/${reel.id}`);
           toast('Link copied');
-        }} className="flex flex-col items-center gap-1">
-          <Share2 className="w-6 h-6 text-white" />
+        }} className="forge-press flex flex-col items-center gap-1">
+          <Share2 className="w-6 h-6 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]" />
         </button>
-        <button onClick={onMuteToggle}>
-          {muted ? <VolumeX className="w-6 h-6 text-white" /> : <Volume2 className="w-6 h-6 text-white" />}
+        <button onClick={onMuteToggle} className="forge-press forge-glass h-10 w-10 rounded-full flex items-center justify-center">
+          {muted ? <VolumeX className="w-5 h-5 text-white" /> : <Volume2 className="w-5 h-5 text-white" />}
         </button>
       </div>
 
       {/* Bottom info */}
       <div className="absolute left-4 bottom-24 right-16">
         <Link href={`/profile/${reel.author.username}`} className="flex items-center gap-2 mb-2">
-          <div className="h-9 w-9 rounded-full bg-purple-600/30 border border-purple-600/50 flex items-center justify-center text-xs font-bold text-white overflow-hidden">
-            {reel.author.avatar_url ? <img src={reel.author.avatar_url} alt="" className="w-full h-full object-cover" /> : initials}
+          <div className="forge-avatar-ring">
+            <div className="h-9 w-9 rounded-full bg-[var(--forge-card)] flex items-center justify-center text-xs font-bold text-white overflow-hidden">
+              {reel.author.avatar_url ? <img src={reel.author.avatar_url} alt="" className="w-full h-full object-cover" /> : initials}
+            </div>
           </div>
-          <span className="text-sm font-semibold text-white">@{reel.author.username}</span>
-          {reel.author.is_verified && <span className="text-purple-400 text-sm">✓</span>}
+          <span className="text-sm font-semibold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">@{reel.author.username}</span>
+          {reel.author.is_verified && <span className="text-[var(--forge-purple-bright)] text-sm">✓</span>}
         </Link>
-        {reel.caption && <p className="text-sm text-white/90 line-clamp-2">{reel.caption}</p>}
+        {reel.caption && <p className="text-sm text-white/95 line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">{reel.caption}</p>}
       </div>
     </div>
   );

@@ -47,34 +47,34 @@ export default function GroupPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="h-8 w-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[var(--forge-black)] flex items-center justify-center">
+        <div className="h-8 w-8 border-2 border-[var(--forge-purple)] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!group) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-zinc-500">
+      <div className="min-h-screen bg-[var(--forge-black)] flex flex-col items-center justify-center text-[var(--forge-text-secondary)]">
         <p>Group not found</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white pb-20">
-      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800/50">
+    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] pb-20">
+      <header className="forge-header sticky top-0 z-50">
         <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
-          <button onClick={() => router.back()} className="text-zinc-400 hover:text-white transition-colors">
+          <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm font-medium text-zinc-400">{group.name}</span>
+          <span className="text-sm font-medium text-[var(--forge-text-secondary)] truncate">{group.name}</span>
           <button
             onClick={() => {
               navigator.clipboard.writeText(`${window.location.origin}/groups/${groupId}`);
               toast('Group link copied');
             }}
-            className="text-zinc-400 hover:text-white transition-colors"
+            className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors"
           >
             <Share2 className="w-5 h-5" />
           </button>
@@ -83,44 +83,39 @@ export default function GroupPage() {
 
       <main className="max-w-lg mx-auto px-4 py-6">
         <div className="flex flex-col items-center gap-4 mb-6">
-          <div className="h-16 w-16 rounded-2xl bg-purple-600/20 border-2 border-purple-600/40 flex items-center justify-center">
-            <Users className="w-7 h-7 text-purple-400" />
+          <div className="h-16 w-16 rounded-[var(--forge-radius-lg)] bg-[var(--forge-purple-glow)] border border-[rgba(139,92,246,0.3)] flex items-center justify-center shadow-[var(--forge-shadow-glow)]">
+            <Users className="w-7 h-7 text-[var(--forge-purple-bright)]" />
           </div>
           <div className="text-center">
-            <h2 className="text-lg font-bold text-white">{group.name}</h2>
-            {group.description && <p className="text-sm text-zinc-500 mt-1">{group.description}</p>}
-            <p className="text-xs text-zinc-600 mt-1">{membersCount} members</p>
+            <h2 className="text-lg font-bold text-[var(--forge-text-primary)] tracking-tight">{group.name}</h2>
+            {group.description && <p className="text-sm text-[var(--forge-text-secondary)] mt-1 leading-relaxed">{group.description}</p>}
+            <p className="text-[11px] text-[var(--forge-text-tertiary)] mt-1 uppercase tracking-wider">{membersCount} members</p>
           </div>
 
-          <Button
+          <button
             onClick={handleToggleMembership}
             disabled={isPending}
-            size="sm"
-            className={`px-6 font-bold transition-all ${
-              isMember
-                ? 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300'
-                : 'bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_20px_rgba(147,51,234,0.4)]'
-            }`}
+            className={isMember ? 'forge-btn-secondary px-5 py-2 text-[13px] flex items-center gap-2' : 'forge-btn-primary px-5 py-2 text-[13px] flex items-center gap-2'}
           >
             {isMember ? (
-              <><UserMinus className="w-4 h-4 mr-2" />Leave</>
+              <><UserMinus className="w-4 h-4" />Leave</>
             ) : (
-              <><UserPlus className="w-4 h-4 mr-2" />Join</>
+              <><UserPlus className="w-4 h-4" />Join</>
             )}
-          </Button>
+          </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 bg-zinc-950 rounded-lg p-1 border border-zinc-800/50 mb-4">
+        <div className="flex gap-1 bg-[var(--forge-surface)] rounded-[var(--forge-radius-md)] p-1 border border-[var(--forge-border)] mb-4">
           <button onClick={() => setActiveTab('posts')}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-sm font-medium transition-all ${
-              activeTab === 'posts' ? 'bg-purple-600/20 text-purple-400 border border-purple-600/30' : 'text-zinc-500 border border-transparent'
+            className={`forge-press flex-1 flex items-center justify-center gap-1.5 py-2 rounded-[var(--forge-radius-sm)] text-[13px] font-medium transition-all ${
+              activeTab === 'posts' ? 'bg-[var(--forge-purple-glow)] text-[var(--forge-purple-bright)] border border-[rgba(139,92,246,0.2)]' : 'text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] border border-transparent'
             }`}>
             Posts
           </button>
           <button onClick={() => setActiveTab('chat')}
-            className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-sm font-medium transition-all ${
-              activeTab === 'chat' ? 'bg-purple-600/20 text-purple-400 border border-purple-600/30' : 'text-zinc-500 border border-transparent'
+            className={`forge-press flex-1 flex items-center justify-center gap-1.5 py-2 rounded-[var(--forge-radius-sm)] text-[13px] font-medium transition-all ${
+              activeTab === 'chat' ? 'bg-[var(--forge-purple-glow)] text-[var(--forge-purple-bright)] border border-[rgba(139,92,246,0.2)]' : 'text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] border border-transparent'
             }`}>
             <MessageCircle className="w-3.5 h-3.5" /> Chat
           </button>
@@ -128,19 +123,20 @@ export default function GroupPage() {
 
         {activeTab === 'chat' ? (
           <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-2 max-h-[60vh] overflow-y-auto">
+            <div className="flex flex-col gap-1.5 max-h-[60vh] overflow-y-auto">
               {messages.length === 0 ? (
-                <p className="text-center text-sm text-zinc-600 py-8">No messages yet. Start chatting!</p>
+                <p className="text-center text-sm text-[var(--forge-text-tertiary)] py-8">No messages yet. Start chatting!</p>
               ) : messages.map((msg) => {
-                const initials = msg.sender?.full_name?.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2) || '?';
                 return (
                   <div key={msg.id} className={`flex ${msg.is_mine ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm ${
-                      msg.is_mine ? 'bg-purple-600 text-white rounded-br-md' : 'bg-zinc-900 text-zinc-200 rounded-bl-md'
+                    <div className={`max-w-[75%] px-3.5 py-2 rounded-[18px] text-[14px] leading-snug ${
+                      msg.is_mine
+                        ? 'bg-gradient-to-br from-[var(--forge-purple)] to-[var(--forge-purple-dim)] text-white rounded-br-[6px] shadow-[0_2px_12px_rgba(139,92,246,0.25)]'
+                        : 'bg-[var(--forge-card)] border border-[var(--forge-border)] text-[var(--forge-text-primary)] rounded-bl-[6px]'
                     }`}>
-                      {!msg.is_mine && <p className="text-xs text-purple-400 font-medium mb-0.5">@{msg.sender?.username}</p>}
+                      {!msg.is_mine && <p className="text-[11px] text-[var(--forge-purple-bright)] font-semibold mb-0.5">@{msg.sender?.username}</p>}
                       <p>{msg.text}</p>
-                      <p className={`text-[10px] mt-1 ${msg.is_mine ? 'text-purple-300' : 'text-zinc-600'}`}>{msg.time}</p>
+                      <p className={`text-[10px] mt-1 ${msg.is_mine ? 'text-purple-200/80' : 'text-[var(--forge-text-tertiary)]'}`}>{msg.time}</p>
                     </div>
                   </div>
                 );
@@ -161,7 +157,7 @@ export default function GroupPage() {
                       setMessages(updated);
                     }
                   }}
-                  className="flex-1 bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30"
+                  className="forge-input flex-1 !py-2"
                 />
                 <button
                   onClick={async () => {
@@ -172,7 +168,8 @@ export default function GroupPage() {
                     const updated = await getGroupMessages(groupId);
                     setMessages(updated);
                   }}
-                  className="h-9 w-9 rounded-lg bg-purple-600 hover:bg-purple-500 flex items-center justify-center"
+                  className="forge-press h-10 w-10 rounded-[var(--forge-radius-md)] flex items-center justify-center shadow-[var(--forge-shadow-glow)] hover:shadow-[var(--forge-shadow-glow-strong)] transition-all"
+                  style={{ background: 'var(--forge-gradient)' }}
                 >
                   <Send className="w-4 h-4 text-white" />
                 </button>
@@ -186,9 +183,9 @@ export default function GroupPage() {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center py-12 text-zinc-600">
-            <p className="text-sm">No posts in this group yet</p>
-            <p className="text-xs text-zinc-700 mt-1">Share a post to this group to get started</p>
+          <div className="forge-card flex flex-col items-center py-12 px-6 text-center">
+            <p className="text-sm text-[var(--forge-text-primary)] font-semibold">No posts in this group yet</p>
+            <p className="text-xs text-[var(--forge-text-tertiary)] mt-1">Share a post to this group to get started</p>
           </div>
         )}
       </main>

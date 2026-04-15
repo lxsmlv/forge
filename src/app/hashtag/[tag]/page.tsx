@@ -66,13 +66,13 @@ export default function HashtagPage() {
   }, [tag]);
 
   return (
-    <div className="min-h-screen bg-black text-white pb-20">
-      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800/50">
+    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] pb-20">
+      <header className="forge-header sticky top-0 z-50">
         <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
-          <button onClick={() => router.back()} className="text-zinc-400 hover:text-white transition-colors">
+          <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm font-medium text-purple-400 flex items-center gap-1">
+          <span className="text-sm font-semibold text-[var(--forge-purple-bright)] flex items-center gap-1">
             <Hash className="w-4 h-4" />{tag}
           </span>
           <div className="w-5" />
@@ -82,7 +82,7 @@ export default function HashtagPage() {
       <main className="max-w-lg mx-auto px-4 py-4">
         {loading ? (
           <div className="flex justify-center py-20">
-            <div className="h-8 w-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+            <div className="h-8 w-8 border-2 border-[var(--forge-purple)] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : posts.length > 0 ? (
           <div className="flex flex-col gap-4">
@@ -91,7 +91,9 @@ export default function HashtagPage() {
             ))}
           </div>
         ) : (
-          <p className="text-center text-sm text-zinc-600 py-20">No posts with #{tag}</p>
+          <div className="forge-card flex flex-col items-center py-16 px-6 text-center">
+            <p className="text-sm text-[var(--forge-text-tertiary)]">No posts with #{tag}</p>
+          </div>
         )}
       </main>
     </div>

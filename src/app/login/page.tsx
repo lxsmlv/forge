@@ -100,57 +100,61 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-black text-white">
-      <div className="flex flex-col items-center gap-8 px-6 w-full max-w-md">
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-[var(--forge-black)] text-[var(--forge-text-primary)] overflow-hidden">
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-[var(--forge-purple)] blur-[160px] opacity-10" />
+      </div>
+      <div className="relative flex flex-col items-center gap-8 px-6 w-full max-w-md">
         <h1
-          className="text-5xl tracking-[0.2em] text-white drop-shadow-[0_0_30px_rgba(168,85,247,0.4)]"
+          className="text-5xl tracking-[0.2em] forge-gradient-text drop-shadow-[0_0_40px_rgba(168,85,247,0.35)]"
           style={{ fontFamily: 'var(--font-display)' }}
         >
           FORGE
         </h1>
 
-        <p className="text-zinc-500 text-sm">{t('auth.welcome_back')}</p>
+        <p className="text-[var(--forge-text-secondary)] text-sm">{t('auth.welcome_back')}</p>
 
-        <div className="flex flex-col gap-4 w-full" onKeyDown={handleKeyDown}>
+        <div className="flex flex-col gap-3 w-full" onKeyDown={handleKeyDown}>
           <Input
             type="text"
             placeholder={t('auth.username') + ' / ' + t('auth.email')}
             value={email}
             onChange={(e) => { setEmail(e.target.value); setError(''); }}
-            className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30"
+            className="forge-input"
           />
           <Input
             type="password"
             placeholder={t('auth.password')}
             value={password}
             onChange={(e) => { setPassword(e.target.value); setError(''); }}
-            className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30"
+            className="forge-input"
           />
 
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+          {error && <p className="text-[var(--forge-error)] text-[13px] text-center">{error}</p>}
 
-          <Button
+          <button
             onClick={handleLogin}
             disabled={loading}
-            className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold shadow-[0_0_25px_rgba(147,51,234,0.4)] hover:shadow-[0_0_40px_rgba(147,51,234,0.6)] transition-all duration-300 disabled:opacity-50"
+            className="forge-btn-primary w-full py-3 text-[14px] tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ letterSpacing: '0.08em' }}
           >
             {loading ? t('auth.signing_in') : t('auth.signin')}
-          </Button>
+          </button>
 
-          <div className="flex items-center gap-3 w-full">
-            <div className="flex-1 h-px bg-zinc-800" />
-            <span className="text-xs text-zinc-600">or</span>
-            <div className="flex-1 h-px bg-zinc-800" />
+          <div className="flex items-center gap-3 w-full my-1">
+            <div className="flex-1 h-px bg-[var(--forge-border)]" />
+            <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-widest">or</span>
+            <div className="flex-1 h-px bg-[var(--forge-border)]" />
           </div>
 
           <GoogleButton mode="login" />
         </div>
 
         <div className="flex flex-col items-center gap-2">
-          <Link href="/reset-password" className="text-xs text-zinc-600 hover:text-purple-400 transition-colors">
+          <Link href="/reset-password" className="text-[12px] text-[var(--forge-text-tertiary)] hover:text-[var(--forge-purple-bright)] transition-colors">
             Forgot password?
           </Link>
-          <Link href="/" className="text-xs text-zinc-600 hover:text-purple-400 transition-colors">
+          <Link href="/" className="text-[12px] text-[var(--forge-text-tertiary)] hover:text-[var(--forge-purple-bright)] transition-colors">
             {t('auth.no_account')}
           </Link>
         </div>

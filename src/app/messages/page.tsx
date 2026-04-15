@@ -71,20 +71,20 @@ export default function Messages() {
   }, [searchQuery]);
 
   return (
-    <div className="min-h-screen bg-black text-white pb-20">
+    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] pb-20">
       {/* Header with FORGE */}
-      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800/50">
+      <header className="forge-header sticky top-0 z-50">
         <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
           <button
             onClick={() => { window.location.href = '/feed'; }}
-            className="text-2xl tracking-[0.15em] text-white drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]"
+            className="text-2xl tracking-[0.15em] forge-gradient-text drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]"
             style={{ fontFamily: 'var(--font-display)' }}
           >
             FORGE
           </button>
           <div className="flex items-center gap-2">
             {activeTab === 'groups' && (
-              <Link href="/groups" className="text-purple-400 hover:text-purple-300">
+              <Link href="/groups" className="forge-press text-[var(--forge-purple-bright)] hover:text-[var(--forge-purple)]">
                 <Plus className="w-5 h-5" />
               </Link>
             )}
@@ -94,13 +94,13 @@ export default function Messages() {
 
       <div className="max-w-lg mx-auto px-4 pt-4">
         {/* Tabs */}
-        <div className="flex gap-1 bg-zinc-950 rounded-lg p-1 border border-zinc-800/50 mb-3">
+        <div className="flex gap-1 bg-[var(--forge-surface)] rounded-[var(--forge-radius-md)] p-1 border border-[var(--forge-border)] mb-3">
           <button
             onClick={() => setActiveTab('chats')}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all ${
+            className={`forge-press flex-1 flex items-center justify-center gap-2 py-2 rounded-[var(--forge-radius-sm)] text-[13px] font-medium transition-all ${
               activeTab === 'chats'
-                ? 'bg-purple-600/20 text-purple-400 border border-purple-600/30'
-                : 'text-zinc-500 hover:text-zinc-300 border border-transparent'
+                ? 'bg-[var(--forge-purple-glow)] text-[var(--forge-purple-bright)] border border-[rgba(139,92,246,0.2)]'
+                : 'text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] border border-transparent'
             }`}
           >
             <MessageCircle className="w-4 h-4" />
@@ -108,10 +108,10 @@ export default function Messages() {
           </button>
           <button
             onClick={() => setActiveTab('groups')}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all ${
+            className={`forge-press flex-1 flex items-center justify-center gap-2 py-2 rounded-[var(--forge-radius-sm)] text-[13px] font-medium transition-all ${
               activeTab === 'groups'
-                ? 'bg-purple-600/20 text-purple-400 border border-purple-600/30'
-                : 'text-zinc-500 hover:text-zinc-300 border border-transparent'
+                ? 'bg-[var(--forge-purple-glow)] text-[var(--forge-purple-bright)] border border-[rgba(139,92,246,0.2)]'
+                : 'text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] border border-transparent'
             }`}
           >
             <Users className="w-4 h-4" />
@@ -122,13 +122,13 @@ export default function Messages() {
         {/* Search for new chat */}
         {activeTab === 'chats' && (
           <div className="relative mb-3">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--forge-text-tertiary)] pointer-events-none z-10" />
             <input
               type="text"
               placeholder={t('messages.search_people')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-9 pl-10 pr-4 bg-zinc-900 border border-zinc-800 rounded-lg text-white text-sm placeholder:text-zinc-600 focus:border-purple-600 focus:ring-1 focus:ring-purple-600/30 outline-none"
+              className="forge-input w-full !pl-10 !py-2"
             />
           </div>
         )}
@@ -140,33 +140,33 @@ export default function Messages() {
           <div className="mb-4">
             {searching ? (
               <div className="flex justify-center py-4">
-                <div className="h-5 w-5 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+                <div className="h-5 w-5 border-2 border-[var(--forge-purple)] border-t-transparent rounded-full animate-spin" />
               </div>
             ) : searchResults.length > 0 ? (
               <div className="flex flex-col gap-1">
-                <p className="text-xs text-zinc-600 mb-1">{t('search.people')}</p>
+                <p className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider mb-1">{t('search.people')}</p>
                 {searchResults.map((u) => {
                   const initials = u.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
                   return (
-                    <div key={u.username} className="flex items-center gap-3 px-3 py-2 rounded-lg bg-zinc-950/50 hover:bg-zinc-900 transition-colors">
+                    <div key={u.username} className="flex items-center gap-3 px-3 py-2 rounded-[var(--forge-radius-md)] hover:bg-[var(--forge-card)] transition-colors">
                       <Link href={`/messages/${u.id || u.username}`} className="flex items-center gap-3 flex-1 min-w-0">
-                        <div className="h-8 w-8 rounded-full bg-purple-600/20 border border-purple-600/30 flex items-center justify-center text-xs font-bold text-purple-400 overflow-hidden shrink-0">
+                        <div className="forge-avatar h-8 w-8 rounded-full bg-[var(--forge-purple-glow)] flex items-center justify-center text-xs font-bold text-[var(--forge-purple-bright)] overflow-hidden shrink-0">
                           {u.avatar_url ? <img src={u.avatar_url} alt="" className="w-full h-full object-cover" /> : initials}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm text-white">{u.full_name}</p>
-                          <p className="text-xs text-zinc-600">@{u.username}</p>
+                          <p className="text-sm text-[var(--forge-text-primary)] truncate">{u.full_name}</p>
+                          <p className="text-xs text-[var(--forge-text-tertiary)] truncate">@{u.username}</p>
                         </div>
                       </Link>
-                      <Link href={`/profile/${u.username}`} className="shrink-0 h-8 w-8 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center hover:border-purple-600/50 transition-colors">
-                        <User className="w-3.5 h-3.5 text-zinc-500" />
+                      <Link href={`/profile/${u.username}`} className="forge-press shrink-0 h-8 w-8 rounded-full bg-[var(--forge-surface)] border border-[var(--forge-border)] flex items-center justify-center hover:border-[rgba(139,92,246,0.4)] transition-colors">
+                        <User className="w-3.5 h-3.5 text-[var(--forge-text-tertiary)]" />
                       </Link>
                     </div>
                   );
                 })}
               </div>
             ) : (
-              <p className="text-center text-xs text-zinc-600 py-4">{t('search.no_people')}</p>
+              <p className="text-center text-xs text-[var(--forge-text-tertiary)] py-4">{t('search.no_people')}</p>
             )}
           </div>
         )}
@@ -176,10 +176,12 @@ export default function Messages() {
           <MessagesSkeleton />
         ) : activeTab === 'chats' ? (
           conversations.length === 0 && searchQuery.length < 2 ? (
-            <div className="flex flex-col items-center py-16 text-zinc-600">
-              <MessageCircle className="w-8 h-8 mb-2 text-zinc-700" />
-              <p className="text-sm">{t('messages.none')}</p>
-              <p className="text-xs text-zinc-700 mt-1">Use search above to find people</p>
+            <div className="forge-card flex flex-col items-center py-16 px-6 text-center">
+              <div className="w-14 h-14 rounded-full bg-[var(--forge-purple-glow)] flex items-center justify-center mb-3">
+                <MessageCircle className="w-7 h-7 text-[var(--forge-purple-bright)]" />
+              </div>
+              <p className="text-sm text-[var(--forge-text-primary)] font-semibold">{t('messages.none')}</p>
+              <p className="text-xs text-[var(--forge-text-tertiary)] mt-1">Use search above to find people</p>
             </div>
           ) : searchQuery.length < 2 ? (
             <div className="flex flex-col gap-2">
@@ -189,22 +191,22 @@ export default function Messages() {
                   <Link
                     key={conv.user_id}
                     href={`/messages/${conv.user_id}`}
-                    className="flex items-center gap-3 px-3 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 hover:border-purple-600/30 transition-colors"
+                    className="forge-card forge-card-interactive flex items-center gap-3 px-3 py-3"
                   >
-                    <div className="h-10 w-10 rounded-full bg-purple-600/20 border border-purple-600/30 flex items-center justify-center text-sm font-bold text-purple-400 overflow-hidden shrink-0">
+                    <div className="forge-avatar h-10 w-10 rounded-full bg-[var(--forge-purple-glow)] flex items-center justify-center text-sm font-bold text-[var(--forge-purple-bright)] overflow-hidden shrink-0">
                       {conv.avatar_url ? <img src={conv.avatar_url} alt="" className="w-full h-full object-cover" /> : initials}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <p className="text-sm font-semibold text-white">@{conv.username}</p>
-                        <span className="text-xs text-zinc-600">{conv.last_time}</span>
+                        <p className="text-sm font-semibold text-[var(--forge-text-primary)] truncate">@{conv.username}</p>
+                        <span className="text-[11px] text-[var(--forge-text-tertiary)] shrink-0 ml-2">{conv.last_time}</span>
                       </div>
-                      <p className="text-xs text-zinc-500 truncate">
+                      <p className="text-xs text-[var(--forge-text-secondary)] truncate">
                         {conv.last_message_decrypted || '🔒'}
                       </p>
                     </div>
                     {conv.unread > 0 && (
-                      <span className="h-5 min-w-5 px-1 rounded-full bg-purple-600 text-[10px] font-bold text-white flex items-center justify-center shrink-0">
+                      <span className="h-5 min-w-5 px-1.5 rounded-full bg-[var(--forge-purple)] text-[10px] font-bold text-white flex items-center justify-center shrink-0 shadow-[var(--forge-shadow-glow)]">
                         {conv.unread}
                       </span>
                     )}
@@ -215,10 +217,12 @@ export default function Messages() {
           ) : null
         ) : (
           groups.length === 0 ? (
-            <div className="flex flex-col items-center py-16 text-zinc-600">
-              <Users className="w-8 h-8 mb-2 text-zinc-700" />
-              <p className="text-sm">{t('groups.none')}</p>
-              <Link href="/groups" className="text-xs text-purple-400 mt-2">{t('groups.create')}</Link>
+            <div className="forge-card flex flex-col items-center py-16 px-6 text-center">
+              <div className="w-14 h-14 rounded-full bg-[var(--forge-purple-glow)] flex items-center justify-center mb-3">
+                <Users className="w-7 h-7 text-[var(--forge-purple-bright)]" />
+              </div>
+              <p className="text-sm text-[var(--forge-text-primary)] font-semibold">{t('groups.none')}</p>
+              <Link href="/groups" className="text-xs text-[var(--forge-purple-bright)] hover:text-[var(--forge-purple)] mt-2 transition-colors">{t('groups.create')}</Link>
             </div>
           ) : (
             <div className="flex flex-col gap-2">
@@ -226,15 +230,15 @@ export default function Messages() {
                 <Link
                   key={group.id}
                   href={`/groups/${group.id}`}
-                  className="flex items-center gap-3 px-3 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 hover:border-purple-600/30 transition-colors"
+                  className="forge-card forge-card-interactive flex items-center gap-3 px-3 py-3"
                 >
-                  <div className="h-10 w-10 rounded-xl bg-purple-600/20 border border-purple-600/30 flex items-center justify-center shrink-0">
-                    <Users className="w-5 h-5 text-purple-400" />
+                  <div className="h-10 w-10 rounded-[var(--forge-radius-md)] bg-[var(--forge-purple-glow)] border border-[rgba(139,92,246,0.2)] flex items-center justify-center shrink-0">
+                    <Users className="w-5 h-5 text-[var(--forge-purple-bright)]" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-white">{group.name}</p>
-                    {group.description && <p className="text-xs text-zinc-600 truncate">{group.description}</p>}
-                    <p className="text-xs text-zinc-700">{group.members_count} {t('groups.members')}</p>
+                    <p className="text-sm font-semibold text-[var(--forge-text-primary)]">{group.name}</p>
+                    {group.description && <p className="text-xs text-[var(--forge-text-tertiary)] truncate">{group.description}</p>}
+                    <p className="text-[11px] text-[var(--forge-text-muted)]">{group.members_count} {t('groups.members')}</p>
                   </div>
                 </Link>
               ))}

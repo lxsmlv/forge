@@ -78,22 +78,22 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800/50">
+    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)]">
+      <header className="forge-header sticky top-0 z-50">
         <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
-          <button onClick={() => router.back()} className="text-zinc-400 hover:text-white transition-colors">
+          <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm font-medium text-zinc-400">{t('settings.title')}</span>
+          <span className="text-sm font-medium text-[var(--forge-text-secondary)]">{t('settings.title')}</span>
           <div className="w-5" />
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto px-4 py-6 flex flex-col gap-6">
+      <main className="max-w-lg mx-auto px-4 py-6 flex flex-col gap-4">
         {/* Change password */}
-        <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex flex-col gap-4">
-          <div className="flex items-center gap-2 text-sm font-medium text-zinc-300">
-            <Lock className="w-4 h-4 text-purple-400" />
+        <div className="forge-card p-4 flex flex-col gap-3">
+          <div className="flex items-center gap-2 text-sm font-semibold text-[var(--forge-text-primary)]">
+            <Lock className="w-4 h-4 text-[var(--forge-purple-bright)]" />
             {t('settings.change_password')}
           </div>
           <Input
@@ -101,7 +101,7 @@ export default function Settings() {
             placeholder={t('settings.new_password')}
             value={newPassword}
             onChange={(e) => { setNewPassword(e.target.value); setPasswordMsg(''); }}
-            className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30"
+            className="forge-input"
           />
           <Input
             type="password"
@@ -109,32 +109,33 @@ export default function Settings() {
             value={confirmPassword}
             onChange={(e) => { setConfirmPassword(e.target.value); setPasswordMsg(''); }}
             onKeyDown={(e) => e.key === 'Enter' && handleChangePassword()}
-            className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30"
+            className="forge-input"
           />
           {passwordMsg && (
-            <p className={`text-sm ${passwordMsg === 'Password changed' ? 'text-green-400' : 'text-red-400'}`}>
+            <p className={`text-[13px] ${passwordMsg === 'Password changed' ? 'text-[var(--forge-success)]' : 'text-[var(--forge-error)]'}`}>
               {passwordMsg}
             </p>
           )}
-          <Button
+          <button
             onClick={handleChangePassword}
             disabled={passwordLoading}
-            className="bg-purple-600 hover:bg-purple-500 text-white font-bold disabled:opacity-50"
+            className="forge-btn-primary w-full py-2.5 text-[13px] uppercase disabled:opacity-50"
+            style={{ letterSpacing: '0.08em' }}
           >
             {passwordLoading ? '...' : t('settings.update_password')}
-          </Button>
+          </button>
         </div>
 
         {/* Theme */}
         <button
           onClick={toggleTheme}
-          className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex items-center justify-between hover:border-zinc-700 transition-colors"
+          className="forge-card forge-card-interactive p-4 flex items-center justify-between"
         >
-          <div className="flex items-center gap-3 text-sm text-zinc-400">
-            {theme === 'dark' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+          <div className="flex items-center gap-3 text-sm text-[var(--forge-text-secondary)]">
+            {theme === 'dark' ? <Moon className="w-4 h-4 text-[var(--forge-purple-bright)]" /> : <Sun className="w-4 h-4 text-[var(--forge-purple-bright)]" />}
             {t('settings.theme')}
           </div>
-          <span className="text-xs text-zinc-600">{t('settings.theme_switch')}</span>
+          <span className="text-xs text-[var(--forge-text-tertiary)]">{t('settings.theme_switch')}</span>
         </button>
 
         {/* Push Notifications */}
@@ -144,13 +145,13 @@ export default function Settings() {
             if (ok) alert('Push notifications enabled!');
           }}
           disabled={permission === 'granted'}
-          className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex items-center justify-between hover:border-zinc-700 transition-colors disabled:opacity-50"
+          className="forge-card forge-card-interactive p-4 flex items-center justify-between disabled:opacity-60"
         >
-          <div className="flex items-center gap-3 text-sm text-zinc-400">
-            <Bell className="w-4 h-4" />
+          <div className="flex items-center gap-3 text-sm text-[var(--forge-text-secondary)]">
+            <Bell className="w-4 h-4 text-[var(--forge-purple-bright)]" />
             Push
           </div>
-          <span className="text-xs text-zinc-600">
+          <span className="text-xs text-[var(--forge-text-tertiary)]">
             {permission === 'granted' ? '✓' : permission === 'denied' ? '✕' : t('settings.theme_switch')}
           </span>
         </button>
@@ -163,20 +164,21 @@ export default function Settings() {
             setLocaleState(next);
             window.location.reload();
           }}
-          className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex items-center justify-between hover:border-zinc-700 transition-colors"
+          className="forge-card forge-card-interactive p-4 flex items-center justify-between"
         >
-          <div className="flex items-center gap-3 text-sm text-zinc-400">
-            <Globe className="w-4 h-4" />
+          <div className="flex items-center gap-3 text-sm text-[var(--forge-text-secondary)]">
+            <Globe className="w-4 h-4 text-[var(--forge-purple-bright)]" />
             {locale === 'en' ? 'English' : 'Русский'}
           </div>
-          <span className="text-xs text-zinc-600">{t('settings.theme_switch')}</span>
+          <span className="text-xs text-[var(--forge-text-tertiary)]">{t('settings.theme_switch')}</span>
         </button>
 
         {/* Admin */}
         {showAdmin && (
           <Link
             href="/admin"
-            className="bg-zinc-950 border border-red-900/30 rounded-xl p-4 flex items-center gap-3 text-sm text-red-400 hover:text-red-300 hover:border-red-900/50 transition-colors"
+            className="forge-card forge-card-interactive p-4 flex items-center gap-3 text-sm text-[var(--forge-error)] hover:text-red-300 transition-colors"
+            style={{ borderColor: 'rgba(248,113,113,0.2)' }}
           >
             <Shield className="w-4 h-4" />
             Admin Panel
@@ -197,49 +199,51 @@ export default function Settings() {
               URL.revokeObjectURL(url);
             }
           }}
-          className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex items-center gap-3 text-sm text-zinc-400 hover:text-white hover:border-zinc-700 transition-colors"
+          className="forge-card forge-card-interactive p-4 flex items-center gap-3 text-sm text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)]"
         >
-          <Download className="w-4 h-4" />
+          <Download className="w-4 h-4 text-[var(--forge-purple-bright)]" />
           {t('settings.export')}
         </button>
 
         {/* Logout */}
         <button
           onClick={handleLogout}
-          className="bg-zinc-950 border border-zinc-800/50 rounded-xl p-4 flex items-center gap-3 text-sm text-zinc-400 hover:text-white hover:border-zinc-700 transition-colors"
+          className="forge-card forge-card-interactive p-4 flex items-center gap-3 text-sm text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)]"
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut className="w-4 h-4 text-[var(--forge-purple-bright)]" />
           {t('settings.signout')}
         </button>
 
         {/* Delete account */}
-        <div className="bg-zinc-950 border border-red-900/30 rounded-xl p-4 flex flex-col gap-4">
-          <div className="flex items-center gap-2 text-sm font-medium text-red-400">
+        <div className="forge-card p-4 flex flex-col gap-3" style={{ borderColor: 'rgba(248,113,113,0.2)' }}>
+          <div className="flex items-center gap-2 text-sm font-semibold text-[var(--forge-error)]">
             <Trash2 className="w-4 h-4" />
             {t('settings.danger')}
           </div>
           {!deleteConfirm ? (
-            <Button
+            <button
               onClick={() => setDeleteConfirm(true)}
-              variant="ghost"
-              className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
+              className="forge-press text-[13px] py-2 rounded-[var(--forge-radius-md)] text-[var(--forge-error)] hover:bg-red-900/20 transition-colors"
             >
               {t('settings.delete_account')}
-            </Button>
+            </button>
           ) : (
             <div className="flex flex-col gap-3">
-              <p className="text-sm text-zinc-500">{t('settings.delete_confirm')}</p>
+              <p className="text-sm text-[var(--forge-text-secondary)]">{t('settings.delete_confirm')}</p>
               <div className="flex gap-2">
-                <Button
+                <button
                   onClick={handleDeleteAccount}
                   disabled={deleteLoading}
-                  className="bg-red-600 hover:bg-red-500 text-white font-bold disabled:opacity-50"
+                  className="forge-press flex-1 py-2.5 rounded-[var(--forge-radius-md)] bg-[var(--forge-error)] hover:brightness-110 text-white font-bold text-[13px] disabled:opacity-50 transition-all"
                 >
                   {deleteLoading ? '...' : t('settings.delete_yes')}
-                </Button>
-                <Button onClick={() => setDeleteConfirm(false)} variant="ghost" className="text-zinc-500 hover:text-white">
+                </button>
+                <button
+                  onClick={() => setDeleteConfirm(false)}
+                  className="forge-btn-secondary flex-1 py-2.5 text-[13px]"
+                >
                   {t('common.cancel')}
-                </Button>
+                </button>
               </div>
             </div>
           )}

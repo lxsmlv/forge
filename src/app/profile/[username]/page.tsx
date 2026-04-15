@@ -62,9 +62,9 @@ export default function UserProfile() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-zinc-500">
+      <div className="min-h-screen bg-[var(--forge-black)] flex flex-col items-center justify-center text-[var(--forge-text-secondary)]">
         <p>User not found</p>
-        <button onClick={() => router.back()} className="mt-4 text-purple-400 hover:text-purple-300">Go back</button>
+        <button onClick={() => router.back()} className="mt-4 text-[var(--forge-purple-bright)] hover:text-[var(--forge-purple)]">Go back</button>
       </div>
     );
   }
@@ -72,33 +72,39 @@ export default function UserProfile() {
   const initials = profile.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800/50">
+    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)]">
+      <header className="forge-header sticky top-0 z-50">
         <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
-          <button onClick={() => router.back()} className="text-zinc-400 hover:text-white transition-colors">
+          <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm font-medium text-zinc-400">@{profile.username}</span>
+          <span className="text-sm font-medium text-[var(--forge-text-secondary)]">@{profile.username}</span>
           <div className="w-5" />
         </div>
       </header>
 
       <main className="max-w-lg mx-auto px-4 py-6">
         <div className="flex flex-col items-center gap-4 mb-8">
-          <div className="h-24 w-24 rounded-full bg-purple-600/20 border-2 border-purple-600/40 flex items-center justify-center">
-            <span className="text-3xl font-bold text-purple-400">{initials}</span>
+          <div className="forge-avatar-ring">
+            <div className="h-24 w-24 rounded-full bg-[var(--forge-card)] flex items-center justify-center overflow-hidden">
+              {profile.avatar_url ? (
+                <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-3xl font-bold text-[var(--forge-purple-bright)]">{initials}</span>
+              )}
+            </div>
           </div>
 
           <div className="text-center">
-            <h2 className="text-xl font-bold text-white flex items-center gap-1.5 justify-center">
+            <h2 className="text-xl font-bold text-[var(--forge-text-primary)] flex items-center gap-1.5 justify-center tracking-tight">
               {profile.full_name}
-              {profile.is_verified && <span className="text-purple-400">✓</span>}
+              {profile.is_verified && <span className="text-[var(--forge-purple-bright)]">✓</span>}
             </h2>
-            {profile.bio && <p className="text-sm text-zinc-500 mt-1">{profile.bio}</p>}
+            {profile.bio && <p className="text-sm text-[var(--forge-text-secondary)] mt-1 leading-relaxed">{profile.bio}</p>}
             {profile.last_online && (
-              <p className="text-xs text-zinc-700 mt-1 flex items-center gap-1.5 justify-center">
+              <p className="text-[11px] text-[var(--forge-text-tertiary)] mt-1.5 flex items-center gap-1.5 justify-center">
                 {Date.now() - new Date(profile.last_online).getTime() < 5 * 60 * 1000 ? (
-                  <><span className="h-2 w-2 rounded-full bg-green-400 animate-pulse" />Online now</>
+                  <><span className="h-2 w-2 rounded-full bg-[var(--forge-success)] animate-pulse shadow-[0_0_6px_rgba(52,211,153,0.5)]" />Online now</>
                 ) : (
                   <>Last seen {new Date(profile.last_online).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</>
                 )}
@@ -108,47 +114,43 @@ export default function UserProfile() {
 
           <div className="flex flex-wrap items-center justify-center gap-2">
             {profile.city && (
-              <div className="flex items-center gap-1.5 text-xs text-zinc-500 bg-zinc-950 border border-zinc-800/50 rounded-full px-3 py-1.5">
+              <span className="forge-badge">
                 <MapPin className="w-3 h-3" />{profile.city}
-              </div>
+              </span>
             )}
             {profile.car && (
-              <div className="flex items-center gap-1.5 text-xs text-zinc-500 bg-zinc-950 border border-zinc-800/50 rounded-full px-3 py-1.5">
+              <span className="forge-badge">
                 <Car className="w-3 h-3" />{profile.car}
-              </div>
+              </span>
             )}
           </div>
 
           {profile.sports?.length > 0 && (
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap justify-center">
               {profile.sports.map((sport: string) => (
-                <Badge key={sport} variant="outline" className="border-purple-600/30 text-purple-400 bg-purple-600/10 text-xs capitalize">
-                  <Dumbbell className="w-3 h-3 mr-1" />{sport}
-                </Badge>
+                <span key={sport} className="forge-badge forge-badge-purple capitalize">
+                  <Dumbbell className="w-3 h-3" />{sport}
+                </span>
               ))}
             </div>
           )}
 
           {/* Follow + Message buttons */}
           <div className="flex gap-2">
-            <Button
+            <button
               onClick={handleFollow}
               disabled={isPending}
-              className={`px-6 font-bold transition-all ${
-                following
-                  ? 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300'
-                  : 'bg-purple-600 hover:bg-purple-500 text-white shadow-[0_0_20px_rgba(147,51,234,0.4)]'
-              }`}
+              className={following ? 'forge-btn-secondary px-5 py-2 text-[13px] flex items-center gap-2' : 'forge-btn-primary px-5 py-2 text-[13px] flex items-center gap-2'}
             >
               {following ? (
-                <><UserCheck className="w-4 h-4 mr-2" />Following</>
+                <><UserCheck className="w-4 h-4" />Following</>
               ) : (
-                <><UserPlus className="w-4 h-4 mr-2" />Follow</>
+                <><UserPlus className="w-4 h-4" />Follow</>
               )}
-            </Button>
+            </button>
             <Link
               href={`/messages/${profile.id}`}
-              className="h-9 px-4 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-300 flex items-center gap-2 text-sm font-medium transition-colors"
+              className="forge-btn-secondary forge-press px-4 py-2 flex items-center"
             >
               <MessageCircle className="w-4 h-4" />
             </Link>
@@ -160,35 +162,35 @@ export default function UserProfile() {
                   toast(blocked ? 'Unblocked' : 'Blocked');
                 });
               }}
-              className={`h-9 px-3 rounded-md flex items-center transition-colors text-sm ${
-                blocked ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50' : 'bg-zinc-800 hover:bg-zinc-700 text-zinc-500'
+              className={`forge-press h-[38px] px-3 rounded-[var(--forge-radius-md)] flex items-center transition-colors text-sm border ${
+                blocked ? 'bg-red-900/20 text-[var(--forge-error)] border-red-900/30 hover:bg-red-900/30' : 'bg-[var(--forge-surface)] text-[var(--forge-text-tertiary)] border-[var(--forge-border)] hover:border-[var(--forge-border-hover)]'
               }`}
             >
               <Ban className="w-4 h-4" />
             </button>
           </div>
 
-          <div className="flex gap-8 mt-2">
+          <div className="flex gap-8 mt-2 flex-wrap justify-center">
             <div className="flex flex-col items-center">
-              <span className="text-lg font-bold text-white">{profile.posts_count}</span>
-              <span className="text-xs text-zinc-600">Posts</span>
+              <span className="text-lg font-bold text-[var(--forge-text-primary)] tabular-nums">{profile.posts_count}</span>
+              <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">Posts</span>
             </div>
-            <Link href={`/profile/${username}/followers`} className="flex flex-col items-center hover:opacity-80 transition-opacity">
-              <span className="text-lg font-bold text-white">{followersCount}</span>
-              <span className="text-xs text-zinc-600">Followers</span>
+            <Link href={`/profile/${username}/followers`} className="flex flex-col items-center hover:opacity-80 transition-opacity forge-press">
+              <span className="text-lg font-bold text-[var(--forge-text-primary)] tabular-nums">{followersCount}</span>
+              <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">Followers</span>
             </Link>
-            <Link href={`/profile/${username}/following`} className="flex flex-col items-center hover:opacity-80 transition-opacity">
-              <span className="text-lg font-bold text-white">{profile.following_count}</span>
-              <span className="text-xs text-zinc-600">Following</span>
+            <Link href={`/profile/${username}/following`} className="flex flex-col items-center hover:opacity-80 transition-opacity forge-press">
+              <span className="text-lg font-bold text-[var(--forge-text-primary)] tabular-nums">{profile.following_count}</span>
+              <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">Following</span>
             </Link>
             <div className="flex flex-col items-center">
-              <span className="text-lg font-bold text-white">{profile.workouts_count}</span>
-              <span className="text-xs text-zinc-600">Workouts</span>
+              <span className="text-lg font-bold text-[var(--forge-text-primary)] tabular-nums">{profile.workouts_count}</span>
+              <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">Workouts</span>
             </div>
             {profile.current_streak > 0 && (
               <div className="flex flex-col items-center">
-                <span className="text-lg font-bold text-orange-400">🔥{profile.current_streak}</span>
-                <span className="text-xs text-zinc-600">Streak</span>
+                <span className="text-lg font-bold text-[var(--forge-warning)] tabular-nums">🔥{profile.current_streak}</span>
+                <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-wider">Streak</span>
               </div>
             )}
           </div>
@@ -206,9 +208,9 @@ export default function UserProfile() {
                 const info = ACHIEVEMENTS[a.type];
                 if (!info) return null;
                 return (
-                  <div key={a.type} className="shrink-0 bg-zinc-950 border border-zinc-800/50 rounded-xl px-3 py-2 flex items-center gap-2">
+                  <div key={a.type} className="forge-card shrink-0 px-3 py-2 flex items-center gap-2">
                     <span className="text-lg">{info.emoji}</span>
-                    <span className="text-xs font-medium text-zinc-400">{info.title}</span>
+                    <span className="text-xs font-medium text-[var(--forge-text-secondary)]">{info.title}</span>
                   </div>
                 );
               })}
@@ -224,8 +226,8 @@ export default function UserProfile() {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center py-16 text-zinc-600">
-            <p className="text-sm">No posts yet</p>
+          <div className="forge-card flex flex-col items-center py-16 px-6 text-center">
+            <p className="text-sm text-[var(--forge-text-tertiary)]">No posts yet</p>
           </div>
         )}
       </main>

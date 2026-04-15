@@ -31,14 +31,14 @@ export default function GroupsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white pb-20">
-      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800/50">
+    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] pb-20">
+      <header className="forge-header sticky top-0 z-50">
         <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
-          <button onClick={() => router.back()} className="text-zinc-400 hover:text-white transition-colors">
+          <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <span className="text-sm font-medium text-zinc-400">Groups</span>
-          <button onClick={() => setShowCreate(!showCreate)} className="text-purple-400 hover:text-purple-300 transition-colors">
+          <span className="text-sm font-medium text-[var(--forge-text-secondary)]">Groups</span>
+          <button onClick={() => setShowCreate(!showCreate)} className="forge-press text-[var(--forge-purple-bright)] hover:text-[var(--forge-purple)] transition-colors">
             <Plus className="w-5 h-5" />
           </button>
         </div>
@@ -46,26 +46,26 @@ export default function GroupsPage() {
 
       <main className="max-w-lg mx-auto px-4 py-4">
         {showCreate && (
-          <div className="bg-zinc-950 border border-purple-600/30 rounded-xl p-4 flex flex-col gap-3 mb-4">
-            <Input placeholder="Group name" value={name} onChange={(e) => setName(e.target.value)}
-              className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30" />
-            <Textarea placeholder="Description (optional)" value={desc} onChange={(e) => setDesc(e.target.value)} rows={2}
-              className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30 resize-none" />
-            <Button onClick={handleCreate} disabled={isPending} className="bg-purple-600 hover:bg-purple-500 text-white font-bold">
+          <div className="forge-card p-4 flex flex-col gap-3 mb-4" style={{ borderColor: 'rgba(139,92,246,0.3)' }}>
+            <Input placeholder="Group name" value={name} onChange={(e) => setName(e.target.value)} className="forge-input" />
+            <Textarea placeholder="Description (optional)" value={desc} onChange={(e) => setDesc(e.target.value)} rows={2} className="forge-input resize-none" />
+            <button onClick={handleCreate} disabled={isPending} className="forge-btn-primary w-full py-2.5 text-[13px] uppercase" style={{ letterSpacing: '0.08em' }}>
               {isPending ? '...' : 'Create Group'}
-            </Button>
+            </button>
           </div>
         )}
 
         {loading ? (
           <div className="flex justify-center py-20">
-            <div className="h-8 w-8 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+            <div className="h-8 w-8 border-2 border-[var(--forge-purple)] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : groups.length === 0 ? (
-          <div className="flex flex-col items-center py-20 text-zinc-600">
-            <Users className="w-8 h-8 mb-2 text-zinc-700" />
-            <p className="text-sm">No groups yet</p>
-            <p className="text-xs text-zinc-700 mt-1">Create the first one</p>
+          <div className="forge-card flex flex-col items-center py-16 px-6 text-center">
+            <div className="w-14 h-14 rounded-full bg-[var(--forge-purple-glow)] flex items-center justify-center mb-3">
+              <Users className="w-7 h-7 text-[var(--forge-purple-bright)]" />
+            </div>
+            <p className="text-sm text-[var(--forge-text-primary)] font-semibold">No groups yet</p>
+            <p className="text-xs text-[var(--forge-text-tertiary)] mt-1">Create the first one</p>
           </div>
         ) : (
           <div className="flex flex-col gap-2">
@@ -73,15 +73,15 @@ export default function GroupsPage() {
               <Link
                 key={group.id}
                 href={`/groups/${group.id}`}
-                className="flex items-center gap-3 px-3 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 hover:border-purple-600/30 transition-colors"
+                className="forge-card forge-card-interactive flex items-center gap-3 px-3 py-3"
               >
-                <div className="h-12 w-12 rounded-xl bg-purple-600/20 border border-purple-600/30 flex items-center justify-center">
-                  <Users className="w-5 h-5 text-purple-400" />
+                <div className="h-12 w-12 rounded-[var(--forge-radius-md)] bg-[var(--forge-purple-glow)] border border-[rgba(139,92,246,0.2)] flex items-center justify-center shrink-0">
+                  <Users className="w-5 h-5 text-[var(--forge-purple-bright)]" />
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-semibold text-white">{group.name}</p>
-                  {group.description && <p className="text-xs text-zinc-600 line-clamp-1">{group.description}</p>}
-                  <p className="text-xs text-zinc-700 mt-0.5">{group.members_count} members</p>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-[var(--forge-text-primary)]">{group.name}</p>
+                  {group.description && <p className="text-xs text-[var(--forge-text-tertiary)] line-clamp-1">{group.description}</p>}
+                  <p className="text-[11px] text-[var(--forge-text-muted)] mt-0.5">{group.members_count} members</p>
                 </div>
               </Link>
             ))}

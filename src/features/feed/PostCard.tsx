@@ -103,38 +103,38 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
 
   return (
     <>
-      <div className="bg-zinc-950 border border-zinc-800/50 rounded-xl overflow-hidden">
+      <div className="forge-card">
         <div className="flex items-center gap-3 px-4 py-3">
-          <Link href={`/profile/${post.author.username}`} className="h-10 w-10 rounded-full bg-purple-600/20 border border-purple-600/30 flex items-center justify-center text-sm font-bold text-purple-400 hover:border-purple-500 transition-colors overflow-hidden">
+          <Link href={`/profile/${post.author.username}`} className="forge-avatar forge-press h-10 w-10 rounded-full bg-purple-600/15 flex items-center justify-center text-sm font-bold text-[var(--forge-purple-bright)] overflow-hidden shrink-0">
             {post.author.avatar_url ? (
               <img src={post.author.avatar_url} alt="" className="w-full h-full object-cover" />
             ) : (
               initials
             )}
           </Link>
-          <Link href={`/profile/${post.author.username}`} className="flex-1 hover:opacity-80 transition-opacity">
-            <p className="text-sm font-semibold text-white flex items-center gap-1">
+          <Link href={`/profile/${post.author.username}`} className="flex-1 min-w-0 hover:opacity-80 transition-opacity">
+            <p className="text-[14px] font-semibold text-[var(--forge-text-primary)] flex items-center gap-1 truncate">
               {post.author.full_name}
-              {post.is_verified && <BadgeCheck className="w-4 h-4 text-purple-400 fill-purple-400/20" />}
+              {post.is_verified && <BadgeCheck className="w-4 h-4 text-[var(--forge-purple-bright)] fill-[var(--forge-purple-glow)] shrink-0" />}
             </p>
-            <p className="text-xs text-zinc-600">
+            <p className="text-[11px] text-[var(--forge-text-tertiary)] truncate">
               @{post.author.username} · {post.created_at}
               {post.location && <span className="ml-1">📍 {post.location}</span>}
             </p>
           </Link>
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-zinc-700 bg-zinc-900 px-2 py-1 rounded-full uppercase tracking-wider">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="forge-badge forge-badge-purple uppercase" style={{ letterSpacing: '0.08em' }}>
               {category}
             </span>
             <div className="relative">
-              <button onClick={() => setShowMenu(!showMenu)} className="text-zinc-700 hover:text-zinc-400 transition-colors">
+              <button onClick={() => setShowMenu(!showMenu)} className="forge-press text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] transition-colors p-1 -m-1">
                 <MoreVertical className="w-4 h-4" />
               </button>
               {showMenu && (
-                <div className="absolute right-0 top-6 bg-zinc-900 border border-zinc-800 rounded-lg shadow-lg z-10 py-1 min-w-[120px]">
+                <div className="forge-glass absolute right-0 top-8 rounded-[var(--forge-radius-md)] shadow-[var(--forge-shadow-lg)] z-10 py-1 min-w-[140px] overflow-hidden">
                   <button
                     onClick={() => { setShowMenu(false); setEditing(true); setEditCaption(caption); setEditCategory(category); }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] hover:bg-[var(--forge-card-hover)] transition-colors"
                   >
                     <Edit3 className="w-4 h-4" /> Edit
                   </button>
@@ -147,7 +147,7 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
                         onDeleted?.();
                       });
                     }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] hover:bg-[var(--forge-card-hover)] transition-colors"
                   >
                     <Repeat2 className="w-4 h-4" /> Repost
                   </button>
@@ -157,13 +157,13 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
                       startTransition(() => { pinPost(post.id); });
                       toast(post.is_pinned ? 'Unpinned' : 'Pinned to profile');
                     }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] hover:bg-[var(--forge-card-hover)] transition-colors"
                   >
                     <Pin className="w-4 h-4" /> {post.is_pinned ? 'Unpin' : 'Pin to profile'}
                   </button>
                   <button
                     onClick={() => { setShowMenu(false); handleDelete(); }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-zinc-800 transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-error)] hover:bg-[var(--forge-card-hover)] transition-colors"
                   >
                     <Trash2 className="w-4 h-4" /> Delete
                   </button>
@@ -182,7 +182,7 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
                         toast('Report submitted');
                       }
                     }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-zinc-400 hover:bg-zinc-800 transition-colors"
+                    className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] hover:bg-[var(--forge-card-hover)] transition-colors"
                   >
                     <Flag className="w-4 h-4" /> Report
                   </button>
@@ -193,7 +193,7 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
         </div>
 
         <div
-          className="relative aspect-[4/3] bg-zinc-900 select-none"
+          className="relative aspect-[4/3] bg-[var(--forge-surface)] select-none"
           onClick={() => {
             const now = Date.now();
             if (now - lastTapRef.current < 300) {
@@ -227,18 +227,25 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
           {allImages.length > 1 && (
             <>
               {currentImg > 0 && (
-                <button onClick={(e) => { e.stopPropagation(); setCurrentImg(currentImg - 1); }} className="absolute left-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-black/50 flex items-center justify-center">
+                <button onClick={(e) => { e.stopPropagation(); setCurrentImg(currentImg - 1); }} className="forge-glass forge-press absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full flex items-center justify-center hover:bg-[var(--forge-card-hover)]">
                   <ChevronLeft className="w-4 h-4 text-white" />
                 </button>
               )}
               {currentImg < allImages.length - 1 && (
-                <button onClick={(e) => { e.stopPropagation(); setCurrentImg(currentImg + 1); }} className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7 rounded-full bg-black/50 flex items-center justify-center">
+                <button onClick={(e) => { e.stopPropagation(); setCurrentImg(currentImg + 1); }} className="forge-glass forge-press absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full flex items-center justify-center hover:bg-[var(--forge-card-hover)]">
                   <ChevronRight className="w-4 h-4 text-white" />
                 </button>
               )}
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+              <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex gap-1.5">
                 {allImages.map((_, i) => (
-                  <div key={i} className={`h-1.5 rounded-full transition-all ${i === currentImg ? 'bg-purple-500 w-3' : 'bg-zinc-600 w-1.5'}`} />
+                  <div
+                    key={i}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      i === currentImg
+                        ? 'bg-[var(--forge-purple-bright)] w-4 shadow-[0_0_8px_rgba(139,92,246,0.6)]'
+                        : 'bg-white/30 w-1.5'
+                    }`}
+                  />
                 ))}
               </div>
             </>
@@ -246,7 +253,7 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
 
           {showHeartAnim && (
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <Heart className="w-20 h-20 fill-purple-500 text-purple-500 animate-ping" />
+              <Heart className="w-24 h-24 fill-[var(--forge-purple)] text-[var(--forge-purple)] forge-heart-pop drop-shadow-[0_0_24px_rgba(139,92,246,0.6)]" />
             </div>
           )}
         </div>
@@ -259,13 +266,13 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
               onClick={handleLike}
               onContextMenu={(e) => { e.preventDefault(); setShowReactions(!showReactions); }}
               disabled={isPending}
-              className="flex items-center gap-1.5 group"
+              className="forge-press flex items-center gap-1.5 group"
             >
-              <Heart className={`w-5 h-5 transition-all ${liked ? 'fill-purple-500 text-purple-500 scale-110' : 'text-zinc-500 group-hover:text-purple-400'}`} />
-              <span className={`text-sm ${liked ? 'text-purple-400' : 'text-zinc-500'}`}>{likesCount}</span>
+              <Heart className={`w-[22px] h-[22px] transition-all duration-200 ${liked ? 'fill-[var(--forge-purple)] text-[var(--forge-purple)] scale-110 drop-shadow-[0_0_8px_rgba(139,92,246,0.5)]' : 'text-[var(--forge-text-secondary)] group-hover:text-[var(--forge-purple-bright)]'}`} />
+              <span className={`text-[13px] tabular-nums ${liked ? 'text-[var(--forge-purple-bright)] font-medium' : 'text-[var(--forge-text-secondary)]'}`}>{likesCount}</span>
             </button>
             {showReactions && (
-              <div className="absolute bottom-8 left-0 bg-zinc-900 border border-zinc-800 rounded-full px-2 py-1 flex gap-1 z-10 shadow-lg">
+              <div className="forge-glass absolute bottom-9 left-0 rounded-full px-2 py-1.5 flex gap-1 z-10 shadow-[var(--forge-shadow-lg)]">
                 {['🔥', '💪', '🏆', '💜', '😎', '👊'].map((emoji) => (
                   <button
                     key={emoji}
@@ -273,7 +280,7 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
                       setShowReactions(false);
                       startTransition(() => { reactToPost(post.id, emoji); });
                     }}
-                    className="text-lg hover:scale-125 transition-transform px-0.5"
+                    className="text-lg hover:scale-125 active:scale-95 transition-transform px-0.5"
                   >
                     {emoji}
                   </button>
@@ -281,13 +288,13 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
               </div>
             )}
           </div>
-          <button onClick={() => setShowComments(true)} className="flex items-center gap-1.5 group">
-            <MessageCircle className="w-5 h-5 text-zinc-500 group-hover:text-purple-400 transition-colors" />
-            <span className="text-sm text-zinc-500">{commentsCount}</span>
+          <button onClick={() => setShowComments(true)} className="forge-press flex items-center gap-1.5 group">
+            <MessageCircle className="w-[22px] h-[22px] text-[var(--forge-text-secondary)] group-hover:text-[var(--forge-purple-bright)] transition-colors" />
+            <span className="text-[13px] text-[var(--forge-text-secondary)] tabular-nums">{commentsCount}</span>
           </button>
-          <div className="flex items-center gap-3 ml-auto">
+          <div className="flex items-center gap-4 ml-auto">
             {post.views_count !== undefined && post.views_count > 0 && (
-              <span className="flex items-center gap-1 text-xs text-zinc-700">
+              <span className="flex items-center gap-1 text-[11px] text-[var(--forge-text-tertiary)] tabular-nums">
                 <Eye className="w-3.5 h-3.5" />{post.views_count}
               </span>
             )}
@@ -296,9 +303,9 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
                 setBookmarked(!bookmarked);
                 startTransition(() => { toggleBookmark(post.id); });
               }}
-              className="group"
+              className="forge-press group"
             >
-              <Bookmark className={`w-4 h-4 transition-all ${bookmarked ? 'fill-purple-500 text-purple-500' : 'text-zinc-600 group-hover:text-purple-400'}`} />
+              <Bookmark className={`w-[18px] h-[18px] transition-all ${bookmarked ? 'fill-[var(--forge-purple)] text-[var(--forge-purple)]' : 'text-[var(--forge-text-tertiary)] group-hover:text-[var(--forge-purple-bright)]'}`} />
             </button>
             <button
               onClick={() => {
@@ -306,9 +313,9 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
                 navigator.clipboard.writeText(url);
                 toast('Link copied');
               }}
-              className="group"
+              className="forge-press group"
             >
-              <Share2 className="w-4 h-4 text-zinc-600 group-hover:text-purple-400 transition-colors" />
+              <Share2 className="w-[18px] h-[18px] text-[var(--forge-text-tertiary)] group-hover:text-[var(--forge-purple-bright)] transition-colors" />
             </button>
           </div>
         </div>
@@ -316,15 +323,17 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
         {/* Caption */}
         {!editing && caption && (
           <div className="px-4 pb-4">
-            <p className="text-sm text-zinc-300">
-              <span className="font-semibold text-white mr-1.5">@{post.author.username}</span>
+            <p className="text-[14px] leading-relaxed text-[var(--forge-text-primary)]">
+              <Link href={`/profile/${post.author.username}`} className="font-semibold mr-1.5 hover:text-[var(--forge-purple-bright)] transition-colors">
+                @{post.author.username}
+              </Link>
               {renderTextWithLinks(caption).map((part, i) =>
                 part.type === 'hashtag' ? (
-                  <Link key={i} href={`/hashtag/${part.value.slice(1)}`} className="text-purple-400 hover:text-purple-300">
+                  <Link key={i} href={`/hashtag/${part.value.slice(1)}`} className="text-[var(--forge-purple-bright)] hover:text-[var(--forge-purple)] transition-colors">
                     {part.value}
                   </Link>
                 ) : part.type === 'mention' ? (
-                  <Link key={i} href={`/profile/${part.value.slice(1)}`} className="text-purple-400 hover:text-purple-300">
+                  <Link key={i} href={`/profile/${part.value.slice(1)}`} className="text-[var(--forge-purple-bright)] hover:text-[var(--forge-purple)] transition-colors">
                     {part.value}
                   </Link>
                 ) : (
@@ -343,20 +352,17 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
               onChange={(e) => setEditCaption(e.target.value)}
               rows={2}
               autoFocus
-              className="bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-600 focus:border-purple-600 focus:ring-purple-600/30 resize-none text-sm"
+              className="forge-input resize-none"
             />
-            <div className="flex gap-1.5">
+            <div className="flex gap-1.5 flex-wrap">
               {CATEGORIES.map((cat) => {
                 const Icon = cat.icon;
+                const active = editCategory === cat.id;
                 return (
                   <button
                     key={cat.id}
                     onClick={() => setEditCategory(cat.id)}
-                    className={`flex items-center gap-1 text-xs px-2 py-1 rounded-full border transition-all ${
-                      editCategory === cat.id
-                        ? 'bg-purple-600/20 border-purple-600/40 text-purple-400'
-                        : 'border-zinc-800 text-zinc-600'
-                    }`}
+                    className={`forge-badge forge-badge-interactive ${active ? 'forge-badge-purple' : ''}`}
                   >
                     <Icon className="w-3 h-3" />{cat.label}
                   </button>
@@ -364,8 +370,8 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
               })}
             </div>
             <div className="flex gap-2">
-              <Button onClick={handleSaveEdit} size="sm" className="bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs">Save</Button>
-              <Button onClick={() => setEditing(false)} size="sm" variant="ghost" className="text-zinc-500 hover:text-white text-xs">Cancel</Button>
+              <button onClick={handleSaveEdit} className="forge-btn-primary text-[13px] py-2 px-4">Save</button>
+              <button onClick={() => setEditing(false)} className="forge-btn-secondary text-[13px] py-2 px-4">Cancel</button>
             </div>
           </div>
         ) : null}
