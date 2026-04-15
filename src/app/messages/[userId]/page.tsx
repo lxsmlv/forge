@@ -42,7 +42,8 @@ export default function Chat() {
     // and make all existing encrypted messages unreadable.
     // If private key is missing, the user needs to recover via recovery key in settings.
 
-    // Realtime subscription for new messages
+    // Realtime subscription for new messages — append directly from payload,
+    // no extra server round-trip.
     const channel = supabase
       .channel(`chat-${otherUserId}`)
       .on(
@@ -52,21 +53,40 @@ export default function Chat() {
           schema: 'public',
           table: 'messages',
         },
-        (payload) => {
+        async (payload) => {
           const msg = payload.new as any;
-          // Only react to messages in this conversation
-          if (
-            (msg.sender_id === otherUserId) ||
-            (msg.receiver_id === otherUserId)
-          ) {
-            loadMessages();
+          if (msg.sender_id !== otherUserId && msg.receiver_id !== otherUserId) return;
+
+          const { data: { user } } = await supabase.auth.getUser();
+          if (!user) return;
+
+          setMessages((prev) => {
+            if (prev.some((m) => m.id === msg.id)) return prev;
+            return [
+              ...prev,
+              {
+                id: msg.id,
+                text: msg.text,
+                encrypted_key: msg.encrypted_key,
+                encrypted_key_sender: msg.encrypted_key_sender,
+                iv: msg.iv,
+                sender_id: msg.sender_id,
+                is_mine: msg.sender_id === user.id,
+                time: new Date(msg.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+              },
+            ];
+          });
+
+          // Mark incoming as read
+          if (msg.receiver_id === user.id) {
+            supabase.from('messages').update({ is_read: true }).eq('id', msg.id).then(() => {});
           }
         },
       )
       .subscribe();
 
-    // Polling fallback — in case realtime drops
-    const pollId = setInterval(() => { loadMessages(); }, 5000);
+    // Polling fallback — only if realtime drops (less aggressive now)
+    const pollId = setInterval(() => { loadMessages(); }, 20000);
 
     return () => {
       supabase.removeChannel(channel);
