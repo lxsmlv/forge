@@ -20,8 +20,7 @@ export async function publishToUser(
     const client = getRestClient();
     const channel = client.channels.get(`user:${userId}`);
     await channel.publish(event, data);
-    console.log(`[Ably] published ${event} to user:${userId}`);
   } catch (err) {
-    console.error('[Ably] publish failed', event, userId, err);
+    console.error('Ably publish failed', err);
   }
 }

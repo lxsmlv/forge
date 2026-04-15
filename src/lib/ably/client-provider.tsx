@@ -22,21 +22,15 @@ export function AblyProvider({ children, userId }: { children: ReactNode; userId
         try {
           const { token, error } = await getAblyToken();
           if (error || !token) {
-            console.error('[Ably] token error:', error);
             callback(error || 'no token', null);
             return;
           }
           callback(null, JSON.parse(token));
         } catch (e) {
-          console.error('[Ably] authCallback exception:', e);
           callback(String(e), null);
         }
       },
       clientId: userId,
-    });
-
-    realtime.connection.on((stateChange) => {
-      console.log('[Ably] connection:', stateChange.current, stateChange.reason || '');
     });
 
     setClient(realtime);
@@ -67,11 +61,9 @@ export function useAblyEvent(event: string, handler: (data: any) => void) {
     if (!client || !userId) return;
     const channel = client.channels.get(`user:${userId}`);
     const listener = (msg: Ably.Message) => {
-      console.log(`[Ably] received ${event}:`, msg.data);
       handlerRef.current(msg.data);
     };
     channel.subscribe(event, listener);
-    console.log(`[Ably] subscribed to ${event} on user:${userId}`);
     return () => {
       channel.unsubscribe(event, listener);
     };
