@@ -57,9 +57,6 @@
   --forge-transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
   --forge-transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
   --forge-transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
-
-  /* Avatar radius — squircle shape, differentiates from Instagram circles */
-  --forge-avatar-radius: 28%;
 }
 
 /* Light theme — "iron workshop at dawn" — warm parchment bg, deep violet accent, crisp typography */
@@ -430,10 +427,8 @@ button, a, [role="button"] {
    Avatar System
    ================================================ */
 
-/* Squircle avatars — !important overrides inline Tailwind rounded-full */
 .forge-avatar {
   border: 2px solid var(--forge-border);
-  border-radius: var(--forge-avatar-radius) !important;
   transition: all var(--forge-transition-fast);
 }
 
@@ -445,21 +440,17 @@ button, a, [role="button"] {
 .forge-avatar-ring {
   background: var(--forge-gradient);
   padding: 2px;
-  border-radius: calc(var(--forge-avatar-radius) + 2%);
-}
-
-/* Inner avatar inside ring — match squircle shape */
-.forge-avatar-ring > * {
-  border-radius: var(--forge-avatar-radius) !important;
+  border-radius: var(--forge-radius-full);
 }
 
 /* ================================================
    Shimmer Loading — Premium Feel
    ================================================ */
 
-/* Skeleton — metallic shimmer sweep.
-   All blocks use same animation-name with no delay → browser paints them in sync.
-   5-stop gradient with bright center hotspot = "light sweeping across forged metal". */
+/* Skeleton — cascading "spark" sweep.
+   Each block has a bright gradient moving L→R over 3s (slow, calm, uniform linear).
+   Stagger between blocks: 140ms × --i (set inline per element in skeleton JSX).
+   Effect: a spark travels across the whole card, lighting blocks sequentially. */
 @keyframes forge-shimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
@@ -469,13 +460,14 @@ button, a, [role="button"] {
   background: linear-gradient(
     90deg,
     var(--forge-card) 0%,
-    var(--forge-card-hover) 40%,
+    var(--forge-card-hover) 42%,
     var(--forge-border-hover) 50%,
-    var(--forge-card-hover) 60%,
+    var(--forge-card-hover) 58%,
     var(--forge-card) 100%
   );
   background-size: 300% 100%;
-  animation: forge-shimmer 2s linear infinite;
+  animation: forge-shimmer 3s linear infinite;
+  animation-delay: calc(var(--i, 0) * 140ms);
   border-radius: var(--forge-radius-sm);
 }
 
@@ -483,17 +475,12 @@ button, a, [role="button"] {
   background: linear-gradient(
     90deg,
     var(--forge-surface) 0%,
-    #ebe8e1 40%,
+    #ebe8e1 42%,
     #f8f6f0 50%,
-    #ebe8e1 60%,
+    #ebe8e1 58%,
     var(--forge-surface) 100%
   );
   background-size: 300% 100%;
-}
-
-/* Shimmer placeholder for avatars — matches squircle radius */
-.forge-shimmer-avatar {
-  border-radius: var(--forge-avatar-radius) !important;
 }
 
 /* ================================================
