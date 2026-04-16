@@ -411,10 +411,7 @@ button, a, [role="button"] {
   border-bottom: 1px solid var(--forge-border) !important;
 }
 
-/* Unified header height — prevents layout shift between pages */
-.forge-header > div {
-  min-height: 56px;
-}
+/* Headers rely on content + padding for height. No min-height (was causing internal gap). */
 
 /* ================================================
    Avatar System

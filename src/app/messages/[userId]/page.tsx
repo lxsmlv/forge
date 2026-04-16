@@ -256,8 +256,8 @@ export default function Chat() {
         </div>
       </main>
 
-      {/* Input bar — fixed directly above BottomNav (nav height ~46px in browser, +safe-area in PWA) */}
-      <div className="fixed left-0 right-0 z-40 bg-[var(--forge-black)] border-t border-[var(--forge-border)]" style={{ bottom: '46px' }}>
+      {/* Input bar — fixed directly above BottomNav (nav ~56px content in browser) */}
+      <div className="fixed left-0 right-0 z-40 bg-[var(--forge-black)] border-t border-[var(--forge-border)]" style={{ bottom: '54px' }}>
         <div className="max-w-lg mx-auto px-4 py-2.5 flex items-center gap-2">
           <Input
             ref={inputRef}
