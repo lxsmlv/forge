@@ -165,8 +165,8 @@ function SignUpForm() {
 
         <p className="text-[11px] text-[var(--forge-text-tertiary)] text-center">
           {t('auth.agree_prefix')}{' '}
-          <a href="/terms" className="text-[var(--forge-text-secondary)] hover:text-[var(--forge-purple-bright)] underline">{t('common.terms')}</a> {t('auth.agree_and')}{' '}
-          <a href="/privacy" className="text-[var(--forge-text-secondary)] hover:text-[var(--forge-purple-bright)] underline">{t('auth.privacy_policy')}</a>.
+          <a href="/terms" className="text-[var(--forge-text-secondary)] hover:text-[var(--forge-purple-bright)] underline">{t('auth.agree_terms')}</a> {t('auth.agree_and')}{' '}
+          <a href="/privacy" className="text-[var(--forge-text-secondary)] hover:text-[var(--forge-purple-bright)] underline">{t('auth.agree_privacy')}</a>.
         </p>
 
         <a href="/login" className="text-[12px] text-[var(--forge-text-tertiary)] hover:text-[var(--forge-purple-bright)] transition-colors">

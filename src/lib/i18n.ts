@@ -29,7 +29,8 @@ const translations: Record<Locale, Record<string, string>> = {
     'auth.already_have': 'Already have an account? Sign in',
     'auth.agree_prefix': 'By joining you agree to our',
     'auth.agree_and': 'and',
-    'auth.privacy_policy': 'Privacy Policy',
+    'auth.agree_terms': 'Terms of Service',
+    'auth.agree_privacy': 'Privacy Policy',
 
     // Feed
     'feed.tab_feed': 'Feed',
@@ -195,9 +196,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'auth.creating': 'Создаём аккаунт...',
     'auth.signing_in': 'Входим...',
     'auth.already_have': 'Уже есть аккаунт? Войти',
-    'auth.agree_prefix': 'Регистрируясь, вы соглашаетесь с',
+    'auth.agree_prefix': 'Регистрируясь, вы принимаете',
     'auth.agree_and': 'и',
-    'auth.privacy_policy': 'Политикой конфиденциальности',
+    'auth.agree_terms': 'Условия использования',
+    'auth.agree_privacy': 'Политику конфиденциальности',
 
     'feed.tab_feed': 'Лента',
     'feed.tab_cabinet': 'Кабинет',
