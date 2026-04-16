@@ -114,28 +114,28 @@ function SignUpForm() {
         <div className="flex flex-col gap-3 w-full" onKeyDown={handleKeyDown}>
           <Input
             type="text"
-            placeholder="Full name"
+            placeholder={t('auth.full_name')}
             value={form.full_name}
             onChange={(e) => updateField('full_name', e.target.value)}
             className="forge-input"
           />
           <Input
             type="text"
-            placeholder="Username"
+            placeholder={t('auth.username')}
             value={form.username}
             onChange={(e) => updateField('username', e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
             className="forge-input"
           />
           <Input
             type="email"
-            placeholder="Email"
+            placeholder={t('auth.email')}
             value={form.email}
             onChange={(e) => updateField('email', e.target.value)}
             className="forge-input"
           />
           <Input
             type="password"
-            placeholder="Password"
+            placeholder={t('auth.password')}
             value={form.password}
             onChange={(e) => updateField('password', e.target.value)}
             className="forge-input"
@@ -151,7 +151,7 @@ function SignUpForm() {
             className="forge-btn-primary w-full py-3 text-[14px] tracking-wide uppercase disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ letterSpacing: '0.08em' }}
           >
-            {loading ? 'Creating account...' : 'Join the club'}
+            {loading ? t('auth.creating') : t('auth.join')}
           </button>
 
           <div className="flex items-center gap-3 w-full my-1">
@@ -164,10 +164,14 @@ function SignUpForm() {
         </div>
 
         <p className="text-[11px] text-[var(--forge-text-tertiary)] text-center">
-          By joining you agree to our{' '}
-          <a href="/terms" className="text-[var(--forge-text-secondary)] hover:text-[var(--forge-purple-bright)] underline">Terms</a> and{' '}
-          <a href="/privacy" className="text-[var(--forge-text-secondary)] hover:text-[var(--forge-purple-bright)] underline">Privacy Policy</a>.
+          {t('auth.agree_prefix')}{' '}
+          <a href="/terms" className="text-[var(--forge-text-secondary)] hover:text-[var(--forge-purple-bright)] underline">{t('common.terms')}</a> {t('auth.agree_and')}{' '}
+          <a href="/privacy" className="text-[var(--forge-text-secondary)] hover:text-[var(--forge-purple-bright)] underline">{t('auth.privacy_policy')}</a>.
         </p>
+
+        <a href="/login" className="text-[12px] text-[var(--forge-text-tertiary)] hover:text-[var(--forge-purple-bright)] transition-colors">
+          {t('auth.already_have')}
+        </a>
       </div>
     </div>
   );
