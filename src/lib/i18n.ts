@@ -130,6 +130,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'messages.only_you': 'Only you and @{username} can read them',
     'messages.placeholder': 'Message...',
     'messages.encrypted_placeholder': '🔒 Encrypted message...',
+    'messages.type_message': 'Type a message...',
 
     // Search
     'search.placeholder': 'Search people or posts...',
@@ -278,6 +279,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'messages.only_you': 'Только ты и @{username} можете их прочитать',
     'messages.placeholder': 'Сообщение...',
     'messages.encrypted_placeholder': '🔒 Зашифрованное сообщение...',
+    'messages.type_message': 'Введите сообщение...',
 
     'search.placeholder': 'Поиск людей и постов...',
     'search.people': 'Люди',

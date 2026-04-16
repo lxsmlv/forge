@@ -8,6 +8,7 @@ import { decryptMessageDual, encryptMessageDual, getStoredPrivateKey } from '@/l
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
 import { useAbly } from '@/lib/ably/client-provider';
+import { useT } from '@/lib/useT';
 
 export default function Chat() {
   const params = useParams();
@@ -24,6 +25,7 @@ export default function Chat() {
   const inputRef = useRef<HTMLInputElement>(null);
   const currentUserIdRef = useRef<string | null>(null);
   const { client: ablyClient, userId: ablyUserId } = useAbly();
+  const t = useT();
 
   const loadMessages = useCallback(async () => {
     const data = await getMessages(otherUserId);
@@ -170,8 +172,8 @@ export default function Chat() {
   const hasE2E = !!otherUser?.public_key && !!getStoredPrivateKey();
 
   return (
-    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] pb-32">
-      <header className="forge-header sticky top-0 z-50">
+    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)]">
+      <header className="forge-header fixed top-0 left-0 right-0 z-50">
         <div className="max-w-lg mx-auto flex items-center gap-3 px-4 py-3">
           <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
@@ -199,7 +201,8 @@ export default function Chat() {
         </div>
       </header>
 
-      <main className="px-4 py-4">
+      {/* pt-16 clears fixed header (~56px), pb-36 clears fixed input + BottomNav + safe area */}
+      <main className="px-4 pt-16 pb-36">
         <div className="max-w-lg mx-auto">
           {loading ? (
             <div className="flex justify-center py-20">
@@ -241,12 +244,12 @@ export default function Chat() {
         </div>
       </main>
 
-      {/* Input bar — fixed above BottomNav */}
-      <div className="fixed bottom-16 left-0 right-0 z-40 bg-[var(--forge-black)] border-t border-[var(--forge-border)]">
+      {/* Input bar — fixed above BottomNav + safe area */}
+      <div className="fixed left-0 right-0 z-40 bg-[var(--forge-black)] border-t border-[var(--forge-border)]" style={{ bottom: 'calc(4rem + env(safe-area-inset-bottom, 0px))' }}>
         <div className="max-w-lg mx-auto px-4 py-2.5 flex gap-2">
           <Input
             ref={inputRef}
-            placeholder={hasE2E ? '🔒 Encrypted message...' : 'Message...'}
+            placeholder={t('messages.type_message')}
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
