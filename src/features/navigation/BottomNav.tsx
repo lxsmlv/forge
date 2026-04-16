@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Home, MessageCircle, Plus, BookOpen, User } from 'lucide-react';
+import { Compass, MessageCircle, Plus, LayoutDashboard, User } from 'lucide-react';
 import { useT } from '@/lib/useT';
 import { useAblyEvent } from '@/lib/ably/client-provider';
 import { getUnreadCount } from '@/features/notifications/actions';
@@ -48,12 +48,12 @@ export function BottomNav() {
   }, [pathname, refreshMessages, refreshNotifications]);
 
   const LEFT_ITEMS = [
-    { href: '/feed', icon: Home, label: t('nav.feed'), badge: 0 },
+    { href: '/feed', icon: Compass, label: t('nav.feed'), badge: 0 },
     { href: '/messages', icon: MessageCircle, label: t('messages.title'), badge: unreadMessages },
   ];
 
   const RIGHT_ITEMS = [
-    { href: '/cabinet', icon: BookOpen, label: t('feed.tab_cabinet'), badge: 0 },
+    { href: '/cabinet', icon: LayoutDashboard, label: t('feed.tab_cabinet'), badge: 0 },
     { href: '/profile', icon: User, label: t('nav.profile'), badge: 0 },
   ];
 

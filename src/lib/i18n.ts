@@ -202,7 +202,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'auth.agree_privacy': 'Политику конфиденциальности',
 
     'feed.tab_feed': 'Лента',
-    'feed.tab_cabinet': 'Кабинет',
+    'feed.tab_cabinet': 'Hub',
     'feed.following': 'Подписки',
     'feed.saved': 'Сохранённые',
     'feed.trending': 'Популярное',
@@ -217,7 +217,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'nav.search': 'Поиск',
     'nav.post': 'Пост',
     'nav.reels': 'Reels',
-    'nav.profile': 'Профиль',
+    'nav.profile': 'Me',
     'feed.no_posts': 'Постов пока нет',
     'feed.be_first': 'Будь первым кто поделится',
     'feed.follow_someone': 'Подпишись на кого-нибудь',
@@ -288,7 +288,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'reset.check_email': 'Проверьте почту — ссылка для сброса отправлена.',
     'reset.back': 'Назад к входу',
 
-    'messages.title': 'Сообщения',
+    'messages.title': 'Chat',
     'messages.chats': 'Чаты',
     'messages.none': 'Сообщений пока нет',
     'messages.search_people': 'Поиск людей...',
