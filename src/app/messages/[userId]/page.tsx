@@ -124,11 +124,16 @@ export default function Chat() {
       const results = await Promise.all(
         messages.map(async (msg) => {
           const is_mine = userId ? msg.sender_id === userId : (msg.is_mine ?? false);
+          const time = msg.time || (msg.raw_created_at
+            ? new Date(msg.raw_created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+            : msg.created_at
+              ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+              : '');
           if (msg.encrypted_key && msg.iv) {
             const decrypted = await decryptMessageDual(msg.text, msg.encrypted_key, msg.encrypted_key_sender || null, msg.iv);
-            return { ...msg, text: decrypted, is_mine };
+            return { ...msg, text: decrypted, is_mine, time };
           }
-          return { ...msg, is_mine };
+          return { ...msg, is_mine, time };
         }),
       );
       setDecryptedMessages(results);
@@ -147,7 +152,13 @@ export default function Chat() {
 
     setDecryptedMessages((prev) => [
       ...prev,
-      { id: Date.now().toString(), text: currentText, is_mine: true, time: 'now', encrypted: true },
+      {
+        id: Date.now().toString(),
+        text: currentText,
+        is_mine: true,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+        encrypted: true,
+      },
     ]);
 
     startTransition(async () => {

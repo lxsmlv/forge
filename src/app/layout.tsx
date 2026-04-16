@@ -73,7 +73,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${bebasNeue.variable} h-full antialiased dark`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col safe-top safe-bottom">
+      <body className="min-h-full flex flex-col">
         <ThemeProvider>
           <AblyRootProvider>
             <AppShell>{children}</AppShell>

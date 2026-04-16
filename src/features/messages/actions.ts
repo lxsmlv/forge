@@ -72,7 +72,7 @@ export async function getMessages(otherUserId: string) {
   return (data || []).map((m) => ({
     ...m,
     is_mine: m.sender_id === user.id,
-    time: formatTime(m.created_at),
+    raw_created_at: m.created_at,
   }));
 }
 
