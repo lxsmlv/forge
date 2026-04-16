@@ -8,7 +8,7 @@ export function PostSkeleton() {
     <div className="forge-card overflow-hidden">
       {/* Header: avatar + name/meta + category badge + menu — matches PostCard px-4 py-3 */}
       <div className="flex items-center gap-3 px-4 py-3">
-        <div className="h-10 w-10 rounded-full forge-shimmer shrink-0" />
+        <div className="h-10 w-10 forge-shimmer forge-shimmer-avatar shrink-0" />
         <div className="flex-1 min-w-0 space-y-1.5">
           <div className="h-[14px] w-32 forge-shimmer rounded-md" />
           <div className="h-[11px] w-24 forge-shimmer rounded-md" />
@@ -59,8 +59,8 @@ export function ProfileSkeleton() {
   return (
     <main className="max-w-lg mx-auto px-4 py-6">
       <div className="flex flex-col items-center gap-4 mb-8">
-        {/* Avatar ring — matches real h-24 w-24 wrapped in forge-avatar-ring (28x28 effective with 2px padding) */}
-        <div className="h-[100px] w-[100px] rounded-full forge-shimmer" />
+        {/* Avatar ring — matches real h-24 w-24 wrapped in forge-avatar-ring (squircle) */}
+        <div className="h-[100px] w-[100px] forge-shimmer" style={{ borderRadius: 'calc(var(--forge-avatar-radius) + 2%)' }} />
 
         {/* Name + @username + bio */}
         <div className="flex flex-col items-center gap-1.5 mt-1">
@@ -112,7 +112,7 @@ export function MessagesSkeleton() {
     <div className="flex flex-col gap-2">
       {[1, 2, 3, 4, 5].map((i) => (
         <div key={i} className="forge-card flex items-center gap-3 px-3 py-3">
-          <div className="h-10 w-10 rounded-full forge-shimmer shrink-0" />
+          <div className="h-10 w-10 forge-shimmer forge-shimmer-avatar shrink-0" />
           <div className="flex-1 min-w-0 space-y-1.5">
             <div className="flex items-center justify-between">
               <div className="h-[14px] w-28 forge-shimmer rounded-md" />
@@ -131,7 +131,7 @@ export function NotificationsSkeleton() {
     <div className="flex flex-col gap-2">
       {[1, 2, 3, 4, 5, 6].map((i) => (
         <div key={i} className="forge-card flex items-center gap-3 px-3 py-3">
-          <div className="h-10 w-10 rounded-full forge-shimmer shrink-0" />
+          <div className="h-10 w-10 forge-shimmer forge-shimmer-avatar shrink-0" />
           <div className="flex-1 min-w-0 space-y-1.5">
             <div className="h-[14px] w-56 forge-shimmer rounded-md" />
             <div className="h-[11px] w-16 forge-shimmer rounded-md" />
@@ -198,7 +198,7 @@ export function SearchSkeleton() {
       {/* User rows */}
       {[1, 2, 3, 4].map((i) => (
         <div key={i} className="forge-card flex items-center gap-3 px-3 py-3">
-          <div className="h-10 w-10 rounded-full forge-shimmer shrink-0" />
+          <div className="h-10 w-10 forge-shimmer forge-shimmer-avatar shrink-0" />
           <div className="flex-1 min-w-0 space-y-1.5">
             <div className="h-[14px] w-32 forge-shimmer rounded-md" />
             <div className="h-[12px] w-48 forge-shimmer rounded-md" />

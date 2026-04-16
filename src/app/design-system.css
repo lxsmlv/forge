@@ -57,6 +57,9 @@
   --forge-transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
   --forge-transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
   --forge-transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Avatar radius — squircle shape, differentiates from Instagram circles */
+  --forge-avatar-radius: 28%;
 }
 
 /* Light theme — "iron workshop at dawn" — warm parchment bg, deep violet accent, crisp typography */
@@ -94,19 +97,7 @@
   --forge-shadow-glow-strong: 0 0 0 4px rgba(91, 33, 182, 0.10), 0 12px 36px rgba(91, 33, 182, 0.28);
 }
 
-/* Subtle paper-grain texture on light bg for depth (mirrors dark's grain overlay) */
-.light body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background-image: radial-gradient(rgba(20, 14, 30, 0.025) 1px, transparent 1px);
-  background-size: 3px 3px;
-  mix-blend-mode: multiply;
-  opacity: 0.6;
-}
-.light body > * { position: relative; z-index: 1; }
+/* Paper-grain texture removed — was interfering with sticky positioning on iOS Safari. */
 
 /* ================================================
    Global Resets & Base
@@ -332,6 +323,8 @@ button, a, [role="button"] {
   backdrop-filter: saturate(180%) blur(20px) !important;
   -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
   border-top: 1px solid var(--forge-border) !important;
+  /* Clip plus button glow at nav boundary — looks full inside, no bleed above */
+  overflow: hidden;
 }
 
 .light .forge-bottom-nav {
@@ -437,8 +430,10 @@ button, a, [role="button"] {
    Avatar System
    ================================================ */
 
+/* Squircle avatars — !important overrides inline Tailwind rounded-full */
 .forge-avatar {
   border: 2px solid var(--forge-border);
+  border-radius: var(--forge-avatar-radius) !important;
   transition: all var(--forge-transition-fast);
 }
 
@@ -450,29 +445,55 @@ button, a, [role="button"] {
 .forge-avatar-ring {
   background: var(--forge-gradient);
   padding: 2px;
-  border-radius: var(--forge-radius-full);
+  border-radius: calc(var(--forge-avatar-radius) + 2%);
+}
+
+/* Inner avatar inside ring — match squircle shape */
+.forge-avatar-ring > * {
+  border-radius: var(--forge-avatar-radius) !important;
 }
 
 /* ================================================
    Shimmer Loading — Premium Feel
    ================================================ */
 
-/* Skeleton — single synchronised pulse.
-   All shimmer blocks fade opacity together → the card 'breathes' as one unit,
-   instead of N tiny sweeping gradients running chaotically. */
+/* Skeleton — metallic shimmer sweep.
+   All blocks use same animation-name with no delay → browser paints them in sync.
+   5-stop gradient with bright center hotspot = "light sweeping across forged metal". */
 @keyframes forge-shimmer {
-  0%, 100% { opacity: 0.55; }
-  50%      { opacity: 1; }
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 .forge-shimmer {
-  background: var(--forge-card-hover);
-  animation: forge-shimmer 2.2s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    var(--forge-card) 0%,
+    var(--forge-card-hover) 40%,
+    var(--forge-border-hover) 50%,
+    var(--forge-card-hover) 60%,
+    var(--forge-card) 100%
+  );
+  background-size: 300% 100%;
+  animation: forge-shimmer 2s linear infinite;
   border-radius: var(--forge-radius-sm);
 }
 
 .light .forge-shimmer {
-  background: var(--forge-surface);
+  background: linear-gradient(
+    90deg,
+    var(--forge-surface) 0%,
+    #ebe8e1 40%,
+    #f8f6f0 50%,
+    #ebe8e1 60%,
+    var(--forge-surface) 100%
+  );
+  background-size: 300% 100%;
+}
+
+/* Shimmer placeholder for avatars — matches squircle radius */
+.forge-shimmer-avatar {
+  border-radius: var(--forge-avatar-radius) !important;
 }
 
 /* ================================================
