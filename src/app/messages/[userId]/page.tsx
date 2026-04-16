@@ -173,7 +173,7 @@ export default function Chat() {
 
   return (
     <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)]">
-      <header className="forge-header fixed top-0 left-0 right-0 z-50">
+      <header className="forge-header fixed top-0 left-0 right-0 z-50 safe-top">
         <div className="max-w-lg mx-auto flex items-center gap-3 px-4 py-3">
           <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
@@ -201,8 +201,8 @@ export default function Chat() {
         </div>
       </header>
 
-      {/* pt-16 clears fixed header (~56px), pb-36 clears fixed input + BottomNav + safe area */}
-      <main className="px-4 pt-16 pb-36">
+      {/* pt-20 clears fixed header + safe-area-top, pb-36 clears fixed input + BottomNav + safe area */}
+      <main className="px-4 pt-20 pb-36">
         <div className="max-w-lg mx-auto">
           {loading ? (
             <div className="flex justify-center py-20">
@@ -246,7 +246,7 @@ export default function Chat() {
 
       {/* Input bar — fixed above BottomNav + safe area */}
       <div className="fixed left-0 right-0 z-40 bg-[var(--forge-black)] border-t border-[var(--forge-border)]" style={{ bottom: 'calc(4rem + env(safe-area-inset-bottom, 0px))' }}>
-        <div className="max-w-lg mx-auto px-4 py-2.5 flex gap-2">
+        <div className="max-w-lg mx-auto px-4 py-2.5 flex items-center gap-2">
           <Input
             ref={inputRef}
             placeholder={t('messages.type_message')}
