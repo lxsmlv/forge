@@ -67,14 +67,17 @@ export default function Login() {
       return;
     }
 
-    if (!getStoredPrivateKey()) {
+    // Always refresh private key on login — localStorage may contain a key from
+    // another account (e.g. if this device was used to register someone else).
+    // Guard-on-presence was causing "unable to decrypt" bugs after multi-account sessions.
+    {
       const supabase2 = createClient();
       const { data: { user } } = await supabase2.auth.getUser();
       if (user) {
         const { data: profile } = await supabase2.from('profiles').select('encrypted_private_key, public_key').eq('id', user.id).single();
 
         if (profile?.encrypted_private_key) {
-          // Decrypt private key with password
+          // Decrypt and overwrite any existing localStorage key
           const privateKey = await decryptPrivateKeyWithPassword(profile.encrypted_private_key, password);
           if (privateKey) {
             savePrivateKey(privateKey);

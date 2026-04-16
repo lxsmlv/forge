@@ -145,7 +145,7 @@ export default function Chat() {
   const hasE2E = !!otherUser?.public_key && !!getStoredPrivateKey();
 
   return (
-    <div className="h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] flex flex-col">
+    <div className="h-[100dvh] bg-[var(--forge-black)] text-[var(--forge-text-primary)] flex flex-col">
       <header className="forge-header shrink-0 z-50">
         <div className="max-w-lg mx-auto flex items-center gap-3 px-4 py-3">
           <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
@@ -216,8 +216,8 @@ export default function Chat() {
         </div>
       </main>
 
-      {/* Input bar — above bottom nav, not behind it */}
-      <div className="shrink-0 bg-[var(--forge-black)] border-t border-[var(--forge-border)] pb-[env(safe-area-inset-bottom)] mb-16">
+      {/* Input bar — fixed at bottom of chat (bottom nav is hidden on this page) */}
+      <div className="shrink-0 bg-[var(--forge-black)] border-t border-[var(--forge-border)] pb-[env(safe-area-inset-bottom)]">
         <div className="max-w-lg mx-auto px-4 py-2.5 flex gap-2">
           <Input
             placeholder={hasE2E ? '🔒 Encrypted message...' : 'Message...'}
