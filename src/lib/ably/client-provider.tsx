@@ -31,6 +31,9 @@ export function AblyProvider({ children, userId }: { children: ReactNode; userId
         }
       },
       clientId: userId,
+      // Fast reconnect — default 15s is too long for a chat UX
+      disconnectedRetryTimeout: 3000,
+      suspendedRetryTimeout: 10000,
     });
 
     setClient(realtime);

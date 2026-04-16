@@ -21,6 +21,7 @@ export default function Chat() {
   const [loading, setLoading] = useState(true);
   const [isPending, startTransition] = useTransition();
   const bottomRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const currentUserIdRef = useRef<string | null>(null);
   const { client: ablyClient, userId: ablyUserId } = useAbly();
 
@@ -85,11 +86,35 @@ export default function Chat() {
     channel.subscribe('message:new', handler);
     channel.subscribe('message:echo', handler);
 
+    // On reconnect, fetch any missed messages from server
+    const connectionListener = (stateChange: { current: string }) => {
+      if (stateChange.current === 'connected') {
+        loadMessages();
+      }
+    };
+    ablyClient.connection.on(connectionListener);
+
     return () => {
       channel.unsubscribe('message:new', handler);
       channel.unsubscribe('message:echo', handler);
+      ablyClient.connection.off(connectionListener);
     };
-  }, [ablyClient, ablyUserId, otherUserId]);
+  }, [ablyClient, ablyUserId, otherUserId, loadMessages]);
+
+  // Auto-focus input on desktop when typing starts (skip mobile to avoid keyboard popup)
+  useEffect(() => {
+    if (typeof window === 'undefined' || 'ontouchstart' in window) return;
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (['Tab', 'Escape', 'Shift', 'Control', 'Alt', 'Meta', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+      if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA') return;
+      inputRef.current?.focus();
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   useEffect(() => {
     async function decrypt() {
@@ -145,8 +170,8 @@ export default function Chat() {
   const hasE2E = !!otherUser?.public_key && !!getStoredPrivateKey();
 
   return (
-    <div className="h-[100dvh] bg-[var(--forge-black)] text-[var(--forge-text-primary)] flex flex-col">
-      <header className="forge-header shrink-0 z-50">
+    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] pb-32">
+      <header className="forge-header sticky top-0 z-50">
         <div className="max-w-lg mx-auto flex items-center gap-3 px-4 py-3">
           <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
@@ -174,7 +199,7 @@ export default function Chat() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto px-4 py-4">
+      <main className="px-4 py-4">
         <div className="max-w-lg mx-auto">
           {loading ? (
             <div className="flex justify-center py-20">
@@ -216,10 +241,11 @@ export default function Chat() {
         </div>
       </main>
 
-      {/* Input bar — fixed at bottom of chat (bottom nav is hidden on this page) */}
-      <div className="shrink-0 bg-[var(--forge-black)] border-t border-[var(--forge-border)] pb-[env(safe-area-inset-bottom)]">
+      {/* Input bar — fixed above BottomNav */}
+      <div className="fixed bottom-16 left-0 right-0 z-40 bg-[var(--forge-black)] border-t border-[var(--forge-border)]">
         <div className="max-w-lg mx-auto px-4 py-2.5 flex gap-2">
           <Input
+            ref={inputRef}
             placeholder={hasE2E ? '🔒 Encrypted message...' : 'Message...'}
             value={text}
             onChange={(e) => setText(e.target.value)}
