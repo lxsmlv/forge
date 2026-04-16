@@ -212,9 +212,10 @@ export default function Chat() {
         </div>
       </header>
 
-      {/* pt-20 clears fixed header + safe-area-top, pb-36 clears fixed input + BottomNav + safe area */}
-      <main className="px-4 pt-20 pb-36">
-        <div className="max-w-lg mx-auto">
+      {/* pt-20 clears fixed header + safe-area-top, pb-36 clears fixed input + BottomNav + safe area.
+          min-h trick + flex justify-end → messages cluster at BOTTOM (chat-style), not top. */}
+      <main className="px-4 pt-20 pb-36" style={{ minHeight: 'calc(100dvh - 5rem - 9rem)' }}>
+        <div className="max-w-lg mx-auto flex flex-col justify-end" style={{ minHeight: '100%' }}>
           {loading ? (
             <div className="flex justify-center py-20">
               <div className="h-6 w-6 border-2 border-[var(--forge-purple)] border-t-transparent rounded-full animate-spin" />
