@@ -160,25 +160,13 @@ export default function Feed() {
                   </div>
                 )}
               </div>
-            ) : feedMode === 'following' ? (
+            ) : (
               <FeedEmptyState
                 onFirstFollow={() => {
                   getMyProfile().then((p) => setFollowingCount(p?.following_count ?? 0));
                   loadPosts(feedMode);
                 }}
               />
-            ) : (
-              <div className="forge-card flex flex-col items-center py-16 px-6 mt-4 text-center">
-                <div className="w-14 h-14 rounded-full bg-[var(--forge-purple-glow)] flex items-center justify-center mb-4">
-                  <Flame className="w-7 h-7 text-[var(--forge-purple-bright)]" />
-                </div>
-                <p className="text-[15px] font-semibold text-[var(--forge-text-primary)]">
-                  {t('feed.no_posts')}
-                </p>
-                <p className="text-[13px] text-[var(--forge-text-tertiary)] mt-1.5 max-w-xs">
-                  {t('feed.be_first')}
-                </p>
-              </div>
             )}
         </>
       </main>
