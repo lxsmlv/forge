@@ -75,7 +75,7 @@ export default function Home() {
 
             <div className="flex items-center gap-3 my-1">
               <div className="flex-1 h-px bg-[var(--forge-border)]" />
-              <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-widest">or</span>
+              <span className="text-[11px] text-[var(--forge-text-tertiary)] uppercase tracking-widest">{t('common.or')}</span>
               <div className="flex-1 h-px bg-[var(--forge-border)]" />
             </div>
 
@@ -87,9 +87,9 @@ export default function Home() {
           </Link>
 
           <div className="flex gap-3 text-[10px] text-[var(--forge-text-muted)]">
-            <Link href="/terms" className="hover:text-[var(--forge-text-tertiary)] transition-colors">Terms</Link>
+            <Link href="/terms" className="hover:text-[var(--forge-text-tertiary)] transition-colors">{t('common.terms')}</Link>
             <span>·</span>
-            <Link href="/privacy" className="hover:text-[var(--forge-text-tertiary)] transition-colors">Privacy</Link>
+            <Link href="/privacy" className="hover:text-[var(--forge-text-tertiary)] transition-colors">{t('common.privacy')}</Link>
           </div>
         </div>
       </div>

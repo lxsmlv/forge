@@ -3,13 +3,13 @@ import Link from 'next/link';
 
 export default function Terms() {
   return (
-    <div className="min-h-screen bg-black text-white">
-      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-zinc-800/50">
+    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)]">
+      <header className="forge-header sticky top-0 z-50">
         <div className="max-w-lg mx-auto flex items-center gap-3 px-4 py-3">
-          <Link href="/" className="text-zinc-400 hover:text-white transition-colors">
+          <Link href="/" className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <span className="text-sm font-medium text-zinc-400">Terms of Service</span>
+          <span className="text-sm font-medium text-[var(--forge-text-secondary)]">Terms of Service</span>
         </div>
       </header>
       <main className="max-w-lg mx-auto px-4 py-6 prose prose-invert prose-sm prose-zinc">

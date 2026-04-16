@@ -10,6 +10,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'landing.subtitle': 'Forge your best self.',
     'landing.enter': 'Join Forge',
     'landing.already_member': 'Already a member? Sign in',
+    'common.or': 'or',
+    'common.terms': 'Terms',
+    'common.privacy': 'Privacy',
+    'common.back': 'Back',
 
     // Auth
     'auth.full_name': 'Full name',
@@ -171,6 +175,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'landing.subtitle': 'Forge your best self.',
     'landing.enter': 'Присоединиться',
     'landing.already_member': 'Уже участник? Войти',
+    'common.or': 'или',
+    'common.terms': 'Условия',
+    'common.privacy': 'Конфиденциальность',
+    'common.back': 'Назад',
 
     'auth.full_name': 'Полное имя',
     'auth.username': 'Юзернейм',
