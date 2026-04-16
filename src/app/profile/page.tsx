@@ -9,7 +9,8 @@ import { ActivityGrid } from '@/features/profile/ActivityGrid';
 import { ProfileQR } from '@/features/profile/QRCode';
 import { ProfileSkeleton } from '@/features/feed/Skeletons';
 import { PostCard } from '@/features/feed/PostCard';
-import { ArrowLeft, Settings, Car, Dumbbell, MapPin, Edit3, Check, BadgeCheck } from 'lucide-react';
+import { Settings, Car, Dumbbell, MapPin, Edit3, Check, BadgeCheck } from 'lucide-react';
+import { TopBar } from '@/features/navigation/TopBar';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -68,20 +69,23 @@ export default function Profile() {
     window.location.href = '/';
   };
 
+  const profileRightContent = (
+    <>
+      {profile && <ProfileQR username={profile.username} />}
+      <Link href="/settings" className="forge-press h-9 w-9 rounded-full bg-[var(--forge-surface)] border border-[var(--forge-border)] flex items-center justify-center hover:border-[var(--forge-border-hover)] transition-all">
+        <Settings className="w-4 h-4 text-[var(--forge-text-secondary)]" strokeWidth={2} />
+      </Link>
+    </>
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] pb-20">
-        <header className="forge-header sticky top-0 z-50">
-          <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3.5 min-h-[56px]">
-            <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <span className="text-sm font-medium text-[var(--forge-text-tertiary)]">Profile</span>
-            <Link href="/settings" className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
-              <Settings className="w-5 h-5" />
-            </Link>
-          </div>
-        </header>
+        <TopBar rightContent={
+          <Link href="/settings" className="forge-press h-9 w-9 rounded-full bg-[var(--forge-surface)] border border-[var(--forge-border)] flex items-center justify-center hover:border-[var(--forge-border-hover)] transition-all">
+            <Settings className="w-4 h-4 text-[var(--forge-text-secondary)]" strokeWidth={2} />
+          </Link>
+        } />
         <ProfileSkeleton />
       </div>
     );
@@ -93,19 +97,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)]">
-      <header className="forge-header sticky top-0 z-50">
-        <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3.5 min-h-[56px]">
-          <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div className="flex items-center gap-3">
-            {profile && <ProfileQR username={profile.username} />}
-            <Link href="/settings" className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
-              <Settings className="w-5 h-5" />
-            </Link>
-          </div>
-        </div>
-      </header>
+      <TopBar rightContent={profileRightContent} />
 
       <main className="max-w-lg mx-auto px-4 py-6">
         <div className="flex flex-col items-center gap-4 mb-8">

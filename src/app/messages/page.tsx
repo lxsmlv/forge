@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAblyEvent } from '@/lib/ably/client-provider';
 import { MessageCircle, Users, Plus, Search, User } from 'lucide-react';
+import { TopBar } from '@/features/navigation/TopBar';
 import Link from 'next/link';
 import { useT } from '@/lib/useT';
 import { MessagesSkeleton } from '@/features/feed/Skeletons';
@@ -73,25 +74,7 @@ export default function Messages() {
 
   return (
     <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] pb-20">
-      {/* Header with FORGE */}
-      <header className="forge-header sticky top-0 z-50">
-        <div className="max-w-lg mx-auto flex items-center justify-between px-4 py-3">
-          <button
-            onClick={() => { window.location.href = '/feed'; }}
-            className="text-2xl tracking-[0.15em] drop-shadow-[0_0_15px_rgba(168,85,247,0.3)]"
-            style={{ fontFamily: 'var(--font-display)' }}
-          >
-            FORGE
-          </button>
-          <div className="flex items-center gap-2">
-            {activeTab === 'groups' && (
-              <Link href="/groups" className="forge-press text-[var(--forge-purple-bright)] hover:text-[var(--forge-purple)]">
-                <Plus className="w-5 h-5" />
-              </Link>
-            )}
-          </div>
-        </div>
-      </header>
+      <TopBar />
 
       <div className="max-w-lg mx-auto px-4 pt-4">
         {/* Tabs */}
