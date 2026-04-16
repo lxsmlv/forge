@@ -183,9 +183,13 @@ export default function Chat() {
   const hasE2E = !!otherUser?.public_key && !!getStoredPrivateKey();
 
   return (
-    <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)]">
-      <header className="forge-header fixed top-0 left-0 right-0 z-50">
-        <div className="max-w-lg mx-auto flex items-center gap-3 px-4 py-3">
+    <div
+      className="flex flex-col bg-[var(--forge-black)] text-[var(--forge-text-primary)]"
+      style={{ height: 'calc(100dvh - var(--forge-nav-height))' }}
+    >
+      {/* Header — flex shrink-0, no fixed positioning needed */}
+      <header className="forge-header shrink-0">
+        <div className="max-w-lg mx-auto flex items-center gap-3 px-4 py-2.5">
           <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -212,10 +216,9 @@ export default function Chat() {
         </div>
       </header>
 
-      {/* pt-20 clears fixed header + safe-area-top, pb-36 clears fixed input + BottomNav + safe area.
-          min-h trick + flex justify-end → messages cluster at BOTTOM (chat-style), not top. */}
-      <main className="px-4 pt-20 pb-36" style={{ minHeight: 'calc(100dvh - 5rem - 9rem)' }}>
-        <div className="max-w-lg mx-auto flex flex-col justify-end" style={{ minHeight: '100%' }}>
+      {/* Messages — flex-1, scrollable, messages cluster at bottom via justify-end */}
+      <main className="flex-1 overflow-y-auto px-4 py-3">
+        <div className="max-w-lg mx-auto flex flex-col justify-end min-h-full">
           {loading ? (
             <div className="flex justify-center py-20">
               <div className="h-6 w-6 border-2 border-[var(--forge-purple)] border-t-transparent rounded-full animate-spin" />
@@ -256,9 +259,9 @@ export default function Chat() {
         </div>
       </main>
 
-      {/* Input bar — fixed directly above BottomNav (nav ~56px content in browser) */}
-      <div className="fixed left-0 right-0 z-40 bg-[var(--forge-black)] border-t border-[var(--forge-border)]" style={{ bottom: '54px' }}>
-        <div className="max-w-lg mx-auto px-4 py-2.5 flex items-center gap-2">
+      {/* Input bar — flex shrink-0, naturally at bottom of flex container */}
+      <div className="shrink-0 bg-[var(--forge-black)] border-t border-[var(--forge-border)]">
+        <div className="max-w-lg mx-auto px-4 py-2 flex items-center gap-2">
           <Input
             ref={inputRef}
             placeholder={t('messages.type_message')}
