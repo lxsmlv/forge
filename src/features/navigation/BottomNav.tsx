@@ -57,7 +57,7 @@ export function BottomNav() {
     { href: '/profile', icon: User, label: t('nav.profile'), badge: 0 },
   ];
 
-  const renderItem = ({ href, icon: Icon, label, badge }: { href: string; icon: typeof Home; label: string; badge: number }) => {
+  const renderItem = ({ href, icon: Icon, label, badge }: { href: string; icon: typeof Compass; label: string; badge: number }) => {
     const active = pathname === href || (href !== '/feed' && pathname.startsWith(href));
     return (
       <Link
