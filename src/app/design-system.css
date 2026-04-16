@@ -679,9 +679,11 @@ button:disabled,
 
 /* Dark: white text with saturated purple halo — layered for presence.
    padding-left compensates trailing letter-spacing on last char (visual centering fix). */
-/* All display-font elements (FORGE wordmark) — fix trailing letter-spacing centering */
+/* All display-font elements (FORGE wordmark) — compensate trailing letter-spacing.
+   text-indent shifts content inside the box without changing box size,
+   so text-align:center / flex centering sees the visual text centered correctly. */
 [style*="font-display"] {
-  padding-left: 0.1em;
+  text-indent: 0.2em;
 }
 
 .forge-text-glow {
