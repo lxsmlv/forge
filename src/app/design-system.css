@@ -343,26 +343,6 @@ button, a, [role="button"] {
   color: var(--forge-purple-bright) !important;
 }
 
-/* Selected indicator — gradient bar above active nav item ("I am here") */
-.forge-nav-item-active::before {
-  content: '';
-  position: absolute;
-  top: -1.5px;
-  left: 50%;
-  width: 24px;
-  height: 2px;
-  border-radius: 0 0 2px 2px;
-  background: var(--forge-gradient-action);
-  box-shadow: 0 0 8px var(--forge-purple-glow-strong);
-  transform: translateX(-50%);
-  animation: forge-nav-indicator-in 250ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes forge-nav-indicator-in {
-  from { opacity: 0; transform: translateX(-50%) scaleX(0.3); }
-  to   { opacity: 1; transform: translateX(-50%) scaleX(1); }
-}
-
 /* Plus FAB — contained planet glow.
    Dark: 3-layer halo capped at 36px so adjacent nav icons stay clean.
    Light: clean ring + drop shadow. */
