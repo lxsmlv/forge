@@ -27,12 +27,14 @@
 
   --forge-gradient: linear-gradient(135deg, #4c1d95 0%, #9333ea 50%, #c084fc 100%);
   --forge-gradient-subtle: linear-gradient(135deg, rgba(139, 92, 246, 0.16) 0%, rgba(168, 85, 247, 0.04) 100%);
-  --forge-gradient-card: linear-gradient(180deg, rgba(167, 139, 250, 0.04) 0%, rgba(167, 139, 250, 0) 100%);
+  /* Deprecated — caused banding when cards stack. Kept for backwards-compat, unused now. */
+  --forge-gradient-card: transparent;
 
   /* AB brand gradient — deep violet → purple → lavender. Same in both themes for brand recognition.
-     "Purple Fire": coal-depth start, bright blooming tip. */
-  --forge-gradient-action: linear-gradient(135deg, #4c1d95 0%, #9333ea 50%, #c084fc 100%);
-  --forge-gradient-chat: linear-gradient(135deg, #9333ea 0%, #5b21b6 100%);
+     "Purple Fire": coal-depth start, bright blooming tip.
+     5-stop to smooth out interpolation (3-stop gradients band on large buttons). */
+  --forge-gradient-action: linear-gradient(135deg, #4c1d95 0%, #6d28d9 28%, #9333ea 54%, #a855f7 78%, #c084fc 100%);
+  --forge-gradient-chat: linear-gradient(135deg, #9333ea 0%, #7c3aed 55%, #5b21b6 100%);
 
   --forge-success: #34d399;
   --forge-error: #f87171;
@@ -82,7 +84,7 @@
 
   --forge-gradient: linear-gradient(135deg, #4c1d95 0%, #6d28d9 50%, #7c3aed 100%);
   --forge-gradient-subtle: linear-gradient(135deg, rgba(91, 33, 182, 0.08) 0%, rgba(124, 58, 237, 0.03) 100%);
-  --forge-gradient-card: linear-gradient(180deg, rgba(20, 14, 30, 0.012) 0%, rgba(20, 14, 30, 0) 100%);
+  --forge-gradient-card: transparent;
 
   /* Layered shadows for depth — not flat */
   --forge-shadow-sm: 0 1px 1px rgba(20, 14, 30, 0.04), 0 1px 2px rgba(20, 14, 30, 0.04);
@@ -131,13 +133,26 @@ button, a, [role="button"] {
    Card System — Glass Steel
    ================================================ */
 
-/* Static card — wrapper for display content. NO hover (doesn't flash as cursor scans). */
+/* Static card — wrapper for display content. NO hover (doesn't flash as cursor scans).
+   Dark depth: 4-layer — top inset highlight + bottom inset darken + 2 drop shadows.
+   Reads as a solid "forged steel ingot" with light grazing from above. */
 .forge-card {
   background: var(--forge-card);
-  background-image: var(--forge-gradient-card);
   border: 1px solid var(--forge-border);
   border-radius: var(--forge-radius-lg);
   overflow: hidden;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    0 3px 8px rgba(0, 0, 0, 0.18);
+}
+
+/* Light cards: clean elevation on warm bg, no inset needed (looks weird on white) */
+.light .forge-card {
+  box-shadow:
+    0 1px 2px rgba(20, 14, 30, 0.04),
+    0 3px 10px rgba(20, 14, 30, 0.06);
 }
 
 /* Interactive card — for clickable rows (chat list, notifications, search results). */
@@ -358,15 +373,15 @@ button, a, [role="button"] {
   to   { opacity: 1; transform: translateX(-50%) scaleX(1); }
 }
 
-/* Plus FAB — "Atmosphere Planet": multi-layered glow on dark, mellowed ripple on light */
+/* Plus FAB — contained planet glow.
+   Dark: 3-layer halo capped at 36px so adjacent nav icons stay clean.
+   Light: clean ring + drop shadow. */
 .forge-nav-create {
   background: var(--forge-gradient-action) !important;
   box-shadow:
     0 0 0 1px rgba(192, 132, 252, 0.5),
-    0 0 12px rgba(192, 132, 252, 0.7),
-    0 0 28px rgba(168, 85, 247, 0.5),
-    0 0 56px rgba(147, 51, 234, 0.35),
-    0 0 96px rgba(124, 58, 237, 0.18) !important;
+    0 0 14px rgba(192, 132, 252, 0.6),
+    0 0 36px rgba(168, 85, 247, 0.25) !important;
   transition: all var(--forge-transition-fast) !important;
 }
 
@@ -379,10 +394,9 @@ button, a, [role="button"] {
 
 .forge-nav-create:hover {
   box-shadow:
-    0 0 0 1.5px rgba(216, 180, 254, 0.7),
-    0 0 16px rgba(192, 132, 252, 0.9),
-    0 0 40px rgba(168, 85, 247, 0.7),
-    0 0 80px rgba(147, 51, 234, 0.5) !important;
+    0 0 0 1.5px rgba(216, 180, 254, 0.65),
+    0 0 18px rgba(192, 132, 252, 0.75),
+    0 0 44px rgba(168, 85, 247, 0.35) !important;
   transform: scale(1.05);
 }
 
@@ -443,23 +457,22 @@ button, a, [role="button"] {
    Shimmer Loading — Premium Feel
    ================================================ */
 
+/* Skeleton — single synchronised pulse.
+   All shimmer blocks fade opacity together → the card 'breathes' as one unit,
+   instead of N tiny sweeping gradients running chaotically. */
 @keyframes forge-shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 1; }
 }
 
 .forge-shimmer {
-  background: linear-gradient(
-    90deg,
-    var(--forge-surface) 0%,
-    var(--forge-card) 25%,
-    var(--forge-card-hover) 50%,
-    var(--forge-card) 75%,
-    var(--forge-surface) 100%
-  );
-  background-size: 200% 100%;
-  animation: forge-shimmer 1.5s ease-in-out infinite;
+  background: var(--forge-card-hover);
+  animation: forge-shimmer 2.2s ease-in-out infinite;
   border-radius: var(--forge-radius-sm);
+}
+
+.light .forge-shimmer {
+  background: var(--forge-surface);
 }
 
 /* ================================================
