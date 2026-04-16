@@ -12,11 +12,11 @@ export default function Terms() {
   return (
     <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)]">
       <header className="forge-header sticky top-0 z-50">
-        <div className="max-w-lg mx-auto flex items-center gap-3 px-4 py-3">
-          <Link href="/" className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
+        <div className="max-w-lg mx-auto flex items-center gap-3 px-4 py-3.5">
+          <Link href="/" className="forge-press flex items-center justify-center h-10 w-10 -ml-2 rounded-full text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] hover:bg-[var(--forge-card-hover)] transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <span className="text-sm font-medium text-[var(--forge-text-secondary)]">
+          <span className="text-sm font-semibold text-[var(--forge-text-primary)]">
             {locale === 'ru' ? 'Условия использования' : 'Terms of Service'}
           </span>
         </div>
