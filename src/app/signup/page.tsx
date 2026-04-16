@@ -45,52 +45,58 @@ function SignUpForm() {
     setLoading(true);
     setError('');
 
-    const res = await fetch('/api/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    try {
+      const res = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+          username: form.username,
+          full_name: form.full_name,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Something went wrong');
+        setLoading(false);
+        return;
+      }
+
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email: form.email,
         password: form.password,
-        username: form.username,
-        full_name: form.full_name,
-      }),
-    });
+      });
 
-    const data = await res.json();
+      if (signInError) {
+        setError(signInError.message);
+        setLoading(false);
+        return;
+      }
 
-    if (!res.ok) {
-      setError(data.error || 'Something went wrong');
+      // Key generation can take 3-10s on mobile — expected, not a hang
+      const keyPair = await generateKeyPair();
+      savePrivateKey(keyPair.privateKey);
+
+      const encryptedByPassword = await encryptPrivateKeyWithPassword(keyPair.privateKey, form.password);
+      const recoveryKey = generateRecoveryKey();
+      const encryptedByRecovery = await encryptPrivateKeyWithPassword(keyPair.privateKey, recoveryKey);
+
+      await supabase.from('profiles').update({
+        public_key: keyPair.publicKey,
+        encrypted_private_key: encryptedByPassword,
+        recovery_encrypted_key: encryptedByRecovery,
+      }).eq('id', data.user_id);
+
+      localStorage.setItem('forge_recovery_key', recoveryKey);
+      window.location.href = `/onboarding?recovery=${encodeURIComponent(recoveryKey)}`;
+    } catch (err: any) {
+      setError(err?.message || 'Network error. Try again.');
       setLoading(false);
-      return;
     }
-
-    const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: form.email,
-      password: form.password,
-    });
-
-    if (signInError) {
-      setError(signInError.message);
-      setLoading(false);
-      return;
-    }
-
-    const keyPair = await generateKeyPair();
-    savePrivateKey(keyPair.privateKey);
-
-    const encryptedByPassword = await encryptPrivateKeyWithPassword(keyPair.privateKey, form.password);
-    const recoveryKey = generateRecoveryKey();
-    const encryptedByRecovery = await encryptPrivateKeyWithPassword(keyPair.privateKey, recoveryKey);
-
-    await supabase.from('profiles').update({
-      public_key: keyPair.publicKey,
-      encrypted_private_key: encryptedByPassword,
-      recovery_encrypted_key: encryptedByRecovery,
-    }).eq('id', data.user_id);
-
-    localStorage.setItem('forge_recovery_key', recoveryKey);
-    window.location.href = `/onboarding?recovery=${encodeURIComponent(recoveryKey)}`;
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
