@@ -184,7 +184,7 @@ export default function Chat() {
 
   return (
     <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)]">
-      <header className="forge-header fixed top-0 left-0 right-0 z-50 safe-top">
+      <header className="forge-header fixed top-0 left-0 right-0 z-50">
         <div className="max-w-lg mx-auto flex items-center gap-3 px-4 py-3">
           <button onClick={() => router.back()} className="forge-press text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] transition-colors">
             <ArrowLeft className="w-5 h-5" />

@@ -320,8 +320,8 @@ button, a, [role="button"] {
   backdrop-filter: saturate(180%) blur(20px) !important;
   -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
   border-top: 1px solid var(--forge-border) !important;
-  /* Clip plus button glow at nav boundary — looks full inside, no bleed above */
   overflow: hidden;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .light .forge-bottom-nav {
@@ -391,6 +391,7 @@ button, a, [role="button"] {
   backdrop-filter: saturate(180%) blur(20px) !important;
   -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
   border-bottom: 1px solid var(--forge-border) !important;
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
 .light .forge-header {
