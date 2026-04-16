@@ -95,7 +95,7 @@ export default function Login() {
       }
     }
 
-    window.location.href = '/feed';
+    window.location.href = '/cabinet';
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {

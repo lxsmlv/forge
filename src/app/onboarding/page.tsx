@@ -59,7 +59,7 @@ export default function Onboarding() {
       sports,
     }).eq('id', user.id);
 
-    router.push('/feed');
+    router.push('/cabinet');
   };
 
   return (

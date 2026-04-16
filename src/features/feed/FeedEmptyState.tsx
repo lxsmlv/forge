@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useTransition } from 'react';
 import Link from 'next/link';
-import { Users, UserPlus, Search } from 'lucide-react';
+import { Users, UserPlus, UserCheck, Search } from 'lucide-react';
 import { getDiscoverProfiles } from './discover-actions';
 import { toggleFollow } from '@/features/profile/follow-actions';
 import { useT } from '@/lib/useT';
@@ -13,6 +13,7 @@ interface Props {
 
 export function FeedEmptyState({ onFirstFollow }: Props) {
   const [profiles, setProfiles] = useState<any[]>([]);
+  const [followed, setFollowed] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [isPending, startTransition] = useTransition();
   const t = useT();
@@ -25,10 +26,16 @@ export function FeedEmptyState({ onFirstFollow }: Props) {
   }, []);
 
   const handleFollow = (userId: string) => {
-    setProfiles((prev) => prev.filter((p) => p.id !== userId));
+    const isFollowed = followed.has(userId);
+    setFollowed((prev) => {
+      const next = new Set(prev);
+      if (isFollowed) next.delete(userId);
+      else next.add(userId);
+      return next;
+    });
     startTransition(async () => {
       await toggleFollow(userId);
-      onFirstFollow();
+      if (!isFollowed) onFirstFollow();
     });
   };
 
@@ -69,6 +76,7 @@ export function FeedEmptyState({ onFirstFollow }: Props) {
       </div>
       <div className="flex flex-col gap-2">
         {profiles.map((profile) => {
+          const isFollowed = followed.has(profile.id);
           const initials = (profile.full_name || '?')
             .split(' ')
             .map((n: string) => n[0])
@@ -97,10 +105,17 @@ export function FeedEmptyState({ onFirstFollow }: Props) {
               <button
                 onClick={() => handleFollow(profile.id)}
                 disabled={isPending}
-                className="forge-btn-primary forge-press shrink-0 px-3 py-1.5 text-[12px] flex items-center gap-1 disabled:opacity-50"
+                className={`forge-press shrink-0 px-3 py-1.5 text-[12px] flex items-center gap-1 rounded-[var(--forge-radius-md)] transition-all disabled:opacity-50 ${
+                  isFollowed
+                    ? 'bg-[var(--forge-surface)] border border-[var(--forge-border)] text-[var(--forge-text-secondary)]'
+                    : 'forge-btn-primary'
+                }`}
               >
-                <UserPlus className="w-3.5 h-3.5" />
-                Follow
+                {isFollowed ? (
+                  <><UserCheck className="w-3.5 h-3.5" /> {t('common.unfollow')}</>
+                ) : (
+                  <><UserPlus className="w-3.5 h-3.5" /> {t('common.follow')}</>
+                )}
               </button>
             </div>
           );
