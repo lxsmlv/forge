@@ -677,12 +677,14 @@ button:disabled,
   box-shadow: var(--forge-shadow-glow-strong);
 }
 
-/* Dark: white text with saturated purple halo — layered for presence */
+/* Dark: white text with saturated purple halo — layered for presence.
+   padding-left compensates trailing letter-spacing on last char (visual centering fix). */
 .forge-text-glow {
   text-shadow:
     0 0 10px rgba(167, 139, 250, 0.6),
     0 0 28px rgba(139, 92, 246, 0.45),
     0 0 60px rgba(109, 40, 217, 0.25);
+  padding-left: 0.1em;
 }
 
 /* Light: deep violet gradient fill + soft paper-printed shadow for weight */
