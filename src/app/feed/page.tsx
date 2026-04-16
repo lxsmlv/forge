@@ -160,7 +160,7 @@ export default function Feed() {
                   </div>
                 )}
               </div>
-            ) : feedMode === 'following' && followingCount === 0 ? (
+            ) : feedMode === 'following' ? (
               <FeedEmptyState
                 onFirstFollow={() => {
                   getMyProfile().then((p) => setFollowingCount(p?.following_count ?? 0));
@@ -173,7 +173,7 @@ export default function Feed() {
                   <Flame className="w-7 h-7 text-[var(--forge-purple-bright)]" />
                 </div>
                 <p className="text-[15px] font-semibold text-[var(--forge-text-primary)]">
-                  {feedMode === 'following' ? t('feed.follow_someone') : t('feed.no_posts')}
+                  {t('feed.no_posts')}
                 </p>
                 <p className="text-[13px] text-[var(--forge-text-tertiary)] mt-1.5 max-w-xs">
                   {t('feed.be_first')}
