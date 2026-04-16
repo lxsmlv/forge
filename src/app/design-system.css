@@ -447,40 +447,47 @@ button, a, [role="button"] {
    Shimmer Loading — Premium Feel
    ================================================ */
 
-/* Skeleton — cascading "spark" sweep.
-   Each block has a bright gradient moving L→R over 3s (slow, calm, uniform linear).
-   Stagger between blocks: 140ms × --i (set inline per element in skeleton JSX).
-   Effect: a spark travels across the whole card, lighting blocks sequentially. */
+/* Skeleton — single "spark" that traverses the viewport, lighting every block at its real X.
+   Technique: background-attachment: fixed — all blocks share the viewport coord system,
+   so a gradient positioned in viewport space is seen identically by all blocks.
+   Blocks only render the portion of gradient that overlaps their bounding box.
+   Result: ONE coherent light sweep across the screen, blocks "light up" as it passes through
+   their real-world X. No cascade-by-DOM-order — pure positional truth. */
 @keyframes forge-shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0%   { background-position: -100vw 0, 0 0; }
+  100% { background-position:  100vw 0, 0 0; }
 }
 
 .forge-shimmer {
-  background: linear-gradient(
-    90deg,
-    var(--forge-card) 0%,
-    var(--forge-card-hover) 42%,
-    var(--forge-border-hover) 50%,
-    var(--forge-card-hover) 58%,
-    var(--forge-card) 100%
+  background-color: var(--forge-card-hover);
+  background-image: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(167, 139, 250, 0.22) 45%,
+    rgba(192, 132, 252, 0.42) 50%,
+    rgba(167, 139, 250, 0.22) 55%,
+    transparent 70%
   );
-  background-size: 300% 100%;
-  animation: forge-shimmer 3s linear infinite;
-  animation-delay: calc(var(--i, 0) * 140ms);
+  background-size: 100vw 100%;
+  background-attachment: fixed;
+  background-position: -100vw 0;
+  background-repeat: no-repeat;
+  animation: forge-shimmer 2.8s linear infinite;
   border-radius: var(--forge-radius-sm);
 }
 
 .light .forge-shimmer {
-  background: linear-gradient(
-    90deg,
-    var(--forge-surface) 0%,
-    #ebe8e1 42%,
-    #f8f6f0 50%,
-    #ebe8e1 58%,
-    var(--forge-surface) 100%
+  background-color: var(--forge-surface);
+  background-image: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(124, 58, 237, 0.08) 45%,
+    rgba(124, 58, 237, 0.18) 50%,
+    rgba(124, 58, 237, 0.08) 55%,
+    transparent 70%
   );
-  background-size: 300% 100%;
+  background-size: 100vw 100%;
+  background-attachment: fixed;
 }
 
 /* ================================================
