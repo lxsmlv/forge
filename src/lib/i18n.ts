@@ -34,7 +34,7 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Feed
     'feed.tab_feed': 'Feed',
-    'feed.tab_cabinet': 'Cabinet',
+    'feed.tab_cabinet': 'Hub',
     'feed.following': 'Following',
     'feed.saved': 'Saved',
     'feed.trending': 'Trending',
@@ -47,11 +47,11 @@ const translations: Record<Locale, Record<string, string>> = {
     'stories.your': 'Your story',
 
     // Nav
-    'nav.feed': 'Feed',
+    'nav.feed': 'Flow',
     'nav.search': 'Search',
     'nav.post': 'Post',
     'nav.reels': 'Reels',
-    'nav.profile': 'Profile',
+    'nav.profile': 'Me',
     'feed.no_posts': 'No posts yet',
     'feed.be_first': 'Be the first to share something',
     'feed.follow_someone': 'Follow someone to see their posts',
@@ -130,7 +130,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'reset.back': 'Back to login',
 
     // Messages
-    'messages.title': 'Messages',
+    'messages.title': 'Chat',
     'messages.chats': 'Chats',
     'messages.none': 'No messages yet',
     'messages.search_people': 'Search people...',
@@ -213,10 +213,10 @@ const translations: Record<Locale, Record<string, string>> = {
 
     'stories.your': 'Ваша история',
 
-    'nav.feed': 'Лента',
+    'nav.feed': 'Flow',
     'nav.search': 'Поиск',
     'nav.post': 'Пост',
-    'nav.reels': 'Рилсы',
+    'nav.reels': 'Reels',
     'nav.profile': 'Профиль',
     'feed.no_posts': 'Постов пока нет',
     'feed.be_first': 'Будь первым кто поделится',
