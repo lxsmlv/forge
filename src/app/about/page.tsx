@@ -33,7 +33,7 @@ export default function About() {
             FORGE
           </h1>
           <p className="text-lg sm:text-xl text-[var(--forge-text-secondary)] max-w-md font-light">
-            A friends club for those who lift, drive, and live well.
+            Forge your best self.
           </p>
           <p className="text-[13px] text-[var(--forge-text-tertiary)] max-w-sm leading-relaxed">
             Not another social network. A place where friends share their journey,

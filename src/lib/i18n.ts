@@ -7,7 +7,7 @@ export type Locale = 'en' | 'ru';
 const translations: Record<Locale, Record<string, string>> = {
   en: {
     // Landing
-    'landing.subtitle': 'Friends club for those who lift, drive, and live well.',
+    'landing.subtitle': 'Forge your best self.',
     'landing.enter': 'Join Forge',
     'landing.already_member': 'Already a member? Sign in',
 
@@ -168,7 +168,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'common.last_seen': 'Last seen',
   },
   ru: {
-    'landing.subtitle': 'Клуб друзей для тех, кто тренируется, ездит и живёт в кайф.',
+    'landing.subtitle': 'Forge your best self.',
     'landing.enter': 'Присоединиться',
     'landing.already_member': 'Уже участник? Войти',
 

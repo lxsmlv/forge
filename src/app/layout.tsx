@@ -33,8 +33,8 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'FORGE — Friends Club',
-  description: 'Lift. Drive. Live well. A friends club for those who lift, drive, and live well.',
+  title: 'FORGE — Your Best Self',
+  description: 'Forge your best self.',
   manifest: '/manifest.json',
   themeColor: '#7c3aed',
   appleWebApp: {
@@ -47,8 +47,8 @@ export const metadata: Metadata = {
     apple: '/icon-192.png',
   },
   openGraph: {
-    title: 'FORGE — Friends Club',
-    description: 'Lift. Drive. Live well. A friends club for those who lift, drive, and live well.',
+    title: 'FORGE — Your Best Self',
+    description: 'Forge your best self.',
     url: 'https://forgeclub.app',
     siteName: 'FORGE',
     type: 'website',
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FORGE — Friends Club',
+    title: 'FORGE — Your Best Self',
     description: 'Lift. Drive. Live well.',
     images: ['/og-image.png'],
   },
