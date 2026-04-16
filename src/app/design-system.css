@@ -321,7 +321,13 @@ button, a, [role="button"] {
   -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
   border-top: 1px solid var(--forge-border) !important;
   overflow: hidden;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Safe-area-bottom only in PWA — Safari handles its own bottom chrome */
+@media (display-mode: standalone) {
+  .forge-bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }
 
 .light .forge-bottom-nav {
@@ -391,7 +397,13 @@ button, a, [role="button"] {
   backdrop-filter: saturate(180%) blur(20px) !important;
   -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
   border-bottom: 1px solid var(--forge-border) !important;
-  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Safe-area-top only in PWA standalone — Safari browser handles its own status bar */
+@media (display-mode: standalone) {
+  .forge-header {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
 }
 
 .light .forge-header {
