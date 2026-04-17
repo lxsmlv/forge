@@ -83,6 +83,8 @@ const translations: Record<Locale, Record<string, string>> = {
 
     // Profile
     'profile.edit': 'Edit profile',
+    'profile.bio_label': 'About you',
+    'profile.car_label': 'Car',
     'profile.posts': 'Posts',
     'profile.followers': 'Followers',
     'profile.following_tab': 'Following',
@@ -250,6 +252,8 @@ const translations: Record<Locale, Record<string, string>> = {
     'cabinet.no_workouts': 'Тренировок пока нет',
 
     'profile.edit': 'Редактировать',
+    'profile.bio_label': 'О себе',
+    'profile.car_label': 'Машина',
     'profile.posts': 'Посты',
     'profile.followers': 'Подписчики',
     'profile.following_tab': 'Подписки',

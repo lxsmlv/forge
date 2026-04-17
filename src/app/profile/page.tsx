@@ -165,29 +165,41 @@ export default function Profile() {
               </button>
             </>
           ) : (
-            <div className="w-full flex flex-col gap-3">
-              <Input placeholder="Bio" value={editForm.bio} onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
-                className="forge-input" />
-              <Input placeholder="City" value={editForm.city} onChange={(e) => setEditForm({ ...editForm, city: e.target.value })}
-                className="forge-input" />
-              <Input placeholder="Car" value={editForm.car} onChange={(e) => setEditForm({ ...editForm, car: e.target.value })}
-                className="forge-input" />
-              <div className="flex gap-1.5 flex-wrap">
-                {ALL_SPORTS.map((sport) => {
-                  const active = editForm.sports.includes(sport);
-                  return (
-                    <button key={sport} onClick={() => toggleSport(sport)}
-                      className={`forge-badge forge-badge-interactive capitalize ${active ? 'forge-badge-purple' : ''}`}>
-                      {sport}
-                    </button>
-                  );
-                })}
+            <div className="w-full flex flex-col gap-4 forge-card p-4">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[11px] uppercase tracking-wider text-[var(--forge-text-tertiary)]">{t('profile.bio_label')}</label>
+                <Input placeholder={t('onboarding.about_you')} value={editForm.bio} onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
+                  className="forge-input" />
               </div>
-              <div className="flex gap-2">
-                <button onClick={handleSaveProfile} className="forge-btn-primary text-[13px] py-2 px-4 flex items-center gap-1.5">
-                  <Check className="w-4 h-4" /> Save
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[11px] uppercase tracking-wider text-[var(--forge-text-tertiary)]">{t('onboarding.city')}</label>
+                <Input placeholder={t('onboarding.city')} value={editForm.city} onChange={(e) => setEditForm({ ...editForm, city: e.target.value })}
+                  className="forge-input" />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[11px] uppercase tracking-wider text-[var(--forge-text-tertiary)]">{t('profile.car_label')}</label>
+                <Input placeholder={t('onboarding.your_car')} value={editForm.car} onChange={(e) => setEditForm({ ...editForm, car: e.target.value })}
+                  className="forge-input" />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[11px] uppercase tracking-wider text-[var(--forge-text-tertiary)]">{t('onboarding.what_sports')}</label>
+                <div className="flex gap-1.5 flex-wrap">
+                  {ALL_SPORTS.map((sport) => {
+                    const active = editForm.sports.includes(sport);
+                    return (
+                      <button key={sport} onClick={() => toggleSport(sport)}
+                        className={`forge-badge forge-badge-interactive ${active ? 'forge-badge-purple' : ''}`}>
+                        {t(`cat.${sport}`)}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="flex gap-2 pt-1">
+                <button onClick={handleSaveProfile} className="forge-btn-primary flex-1 text-[13px] py-2.5 flex items-center justify-center gap-1.5">
+                  <Check className="w-4 h-4" /> {t('common.save')}
                 </button>
-                <button onClick={() => setEditing(false)} className="forge-btn-secondary text-[13px] py-2 px-4">Cancel</button>
+                <button onClick={() => setEditing(false)} className="forge-btn-secondary flex-1 text-[13px] py-2.5">{t('common.cancel')}</button>
               </div>
             </div>
           )}
