@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { PhotoEditor } from '@/features/photo-editor/PhotoEditor';
 
 const ALL_SPORTS = ['gym', 'tennis', 'padel', 'running', 'other'];
 
@@ -30,6 +31,7 @@ export default function Profile() {
   const t = useT();
   const [achievements, setAchievements] = useState<any[]>([]);
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const [avatarEditFile, setAvatarEditFile] = useState<File | null>(null);
 
   useEffect(() => {
     getMyProfile().then((data) => {
@@ -115,15 +117,11 @@ export default function Profile() {
               <Edit3 className="w-5 h-5 text-white" />
             </div>
           </button>
-          <input ref={avatarInputRef} type="file" accept="image/*" className="hidden" onChange={async (e) => {
+          <input ref={avatarInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => {
             const file = e.target.files?.[0];
             if (!file) return;
-            const fd = new FormData();
-            fd.append('avatar', file);
-            const result = await uploadAvatar(fd);
-            if (result?.url) {
-              setProfile({ ...profile, avatar_url: result.url + '?t=' + Date.now() });
-            }
+            setAvatarEditFile(file);
+            if (avatarInputRef.current) avatarInputRef.current.value = '';
           }} />
 
           <div className="text-center">
@@ -289,6 +287,22 @@ export default function Profile() {
           </>
         )}
       </main>
+
+      {avatarEditFile && (
+        <PhotoEditor
+          file={avatarEditFile}
+          onSave={async (editedFile) => {
+            setAvatarEditFile(null);
+            const fd = new FormData();
+            fd.append('avatar', editedFile);
+            const result = await uploadAvatar(fd);
+            if (result?.url) {
+              setProfile({ ...profile, avatar_url: result.url + '?t=' + Date.now() });
+            }
+          }}
+          onCancel={() => setAvatarEditFile(null)}
+        />
+      )}
     </div>
   );
 }

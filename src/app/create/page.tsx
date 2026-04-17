@@ -3,11 +3,12 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, ImagePlus, X, Dumbbell, Car, Flame, Trophy, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
+import { ArrowLeft, ImagePlus, X, Dumbbell, Car, Flame, Trophy, ChevronLeft, ChevronRight, MapPin, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { compressImage } from '@/lib/compress-image';
 import { useT } from '@/lib/useT';
+import { PhotoEditor } from '@/features/photo-editor/PhotoEditor';
 
 const CATEGORIES = [
   { id: 'gym', label: 'Gym', icon: Dumbbell },
@@ -47,6 +48,7 @@ export default function CreatePost() {
   }, [caption, category, location]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const t = useT();
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -153,12 +155,22 @@ export default function CreatePost() {
             ) : (
               <img src={images[currentImage].preview} alt="" className="w-full h-full object-cover" />
             )}
-            <button
-              onClick={() => removeImage(currentImage)}
-              className="forge-glass forge-press absolute top-3 right-3 h-8 w-8 rounded-full flex items-center justify-center"
-            >
-              <X className="w-4 h-4 text-white" />
-            </button>
+            <div className="absolute top-3 right-3 flex gap-2">
+              {images[currentImage].file.type.startsWith('image/') && (
+                <button
+                  onClick={() => setEditingIndex(currentImage)}
+                  className="forge-glass forge-press h-8 w-8 rounded-full flex items-center justify-center"
+                >
+                  <Sparkles className="w-4 h-4 text-white" />
+                </button>
+              )}
+              <button
+                onClick={() => removeImage(currentImage)}
+                className="forge-glass forge-press h-8 w-8 rounded-full flex items-center justify-center"
+              >
+                <X className="w-4 h-4 text-white" />
+              </button>
+            </div>
 
             {images.length > 1 && (
               <>
@@ -236,6 +248,17 @@ export default function CreatePost() {
 
         {error && <p className="text-[var(--forge-error)] text-[13px] text-center">{error}</p>}
       </main>
+
+      {editingIndex !== null && images[editingIndex] && (
+        <PhotoEditor
+          file={images[editingIndex].file}
+          onSave={(editedFile) => {
+            setImages((prev) => prev.map((img, i) => i === editingIndex ? { file: editedFile, preview: URL.createObjectURL(editedFile) } : img));
+            setEditingIndex(null);
+          }}
+          onCancel={() => setEditingIndex(null)}
+        />
+      )}
     </div>
   );
 }
