@@ -19,7 +19,7 @@ export async function getNotes() {
   return data || [];
 }
 
-export async function createNote(title: string, text: string, category: string) {
+export async function createNote(title: string, text: string, category: string, isTask: boolean = false, dueDate: string | null = null) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return;
@@ -29,9 +29,11 @@ export async function createNote(title: string, text: string, category: string) 
     title,
     text,
     category,
+    is_task: isTask,
+    due_date: dueDate || null,
   });
 
-  revalidatePath('/feed');
+  revalidatePath('/cabinet');
 }
 
 export async function toggleNote(noteId: string) {

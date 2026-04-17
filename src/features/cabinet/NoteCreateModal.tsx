@@ -17,7 +17,7 @@ interface Props {
 
 export function NoteCreateModal({ open, onClose, onCreated }: Props) {
   const t = useT();
-  const [form, setForm] = useState({ title: '', text: '', category: 'general' });
+  const [form, setForm] = useState({ title: '', text: '', category: 'general', isTask: false, dueDate: '' });
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export function NoteCreateModal({ open, onClose, onCreated }: Props) {
   }, [open]);
 
   useEffect(() => {
-    if (open) setForm({ title: '', text: '', category: 'general' });
+    if (open) setForm({ title: '', text: '', category: 'general', isTask: false, dueDate: '' });
   }, [open]);
 
   if (!open) return null;
@@ -36,7 +36,7 @@ export function NoteCreateModal({ open, onClose, onCreated }: Props) {
   const handleSave = () => {
     if (!form.title.trim()) return;
     startTransition(async () => {
-      await createNote(form.title, form.text, form.category);
+      await createNote(form.title, form.text, form.category, form.isTask, form.dueDate || null);
       onCreated();
       onClose();
     });
@@ -89,6 +89,23 @@ export function NoteCreateModal({ open, onClose, onCreated }: Props) {
               </button>
             );
           })}
+        </div>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setForm({ ...form, isTask: !form.isTask })}
+            className={`forge-badge forge-badge-interactive ${form.isTask ? 'forge-badge-purple' : ''}`}
+          >
+            ☑ Задача
+          </button>
+          {form.isTask && (
+            <input
+              type="date"
+              value={form.dueDate}
+              onChange={(e) => setForm({ ...form, dueDate: e.target.value })}
+              className="forge-input !py-1.5 !px-3 !text-[12px] flex-1"
+            />
+          )}
         </div>
         <div className="flex gap-2 mt-2">
           <button

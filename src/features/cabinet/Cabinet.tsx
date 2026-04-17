@@ -15,11 +15,12 @@ const NOTE_CATEGORIES = ['general', 'gym', 'car', 'personal'] as const;
 interface Props {
   initialModal?: 'note' | 'workout';
   onModalClosed?: () => void;
+  forcedSection?: 'notes' | 'workouts';
 }
 
-export function Cabinet({ initialModal, onModalClosed }: Props = {}) {
+export function Cabinet({ initialModal, onModalClosed, forcedSection }: Props = {}) {
   const [activeSection, setActiveSection] = useState<'notes' | 'workouts'>(
-    initialModal === 'workout' ? 'workouts' : 'notes',
+    forcedSection || (initialModal === 'workout' ? 'workouts' : 'notes'),
   );
   const [notes, setNotes] = useState<any[]>([]);
   const [workouts, setWorkouts] = useState<any[]>([]);
@@ -100,6 +101,7 @@ export function Cabinet({ initialModal, onModalClosed }: Props = {}) {
 
   return (
     <div className="flex flex-col gap-4">
+      {!forcedSection && (
       <div className="flex gap-1 bg-[var(--forge-surface)] rounded-[var(--forge-radius-md)] p-1 border border-[var(--forge-border)]">
         <button
           onClick={() => setActiveSection('notes')}
@@ -124,6 +126,7 @@ export function Cabinet({ initialModal, onModalClosed }: Props = {}) {
           {t('cabinet.workouts')}
         </button>
       </div>
+      )}
 
       {activeSection === 'notes' ? (
         <div className="flex flex-col gap-3">
