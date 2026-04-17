@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useTransition, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Send, Shield } from 'lucide-react';
+import Link from 'next/link';
 import { getMessages, sendEncryptedMessage } from '@/features/messages/actions';
 import { decryptMessageDual, encryptMessageDual, getStoredPrivateKey } from '@/lib/crypto';
 import { Input } from '@/components/ui/input';
@@ -195,14 +196,14 @@ export default function Chat() {
           </button>
           {otherUser && (
             <>
-              <div className="forge-avatar h-9 w-9 rounded-full bg-[var(--forge-purple-glow)] flex items-center justify-center text-xs font-bold text-[var(--forge-purple-bright)] overflow-hidden shrink-0">
+              <Link href={`/profile/${otherUser.username}`} className="forge-avatar forge-press h-9 w-9 rounded-full bg-[var(--forge-purple-glow)] flex items-center justify-center text-xs font-bold text-[var(--forge-purple-bright)] overflow-hidden shrink-0">
                 {otherUser.avatar_url ? (
                   <img src={otherUser.avatar_url} alt="" className="w-full h-full object-cover" />
                 ) : (
                   initials
                 )}
-              </div>
-              <div className="flex-1 min-w-0">
+              </Link>
+              <Link href={`/profile/${otherUser.username}`} className="flex-1 min-w-0">
                 <span className="text-sm font-semibold text-[var(--forge-text-primary)] truncate block">@{otherUser.username}</span>
                 {hasE2E && (
                   <div className="flex items-center gap-1">
@@ -210,7 +211,7 @@ export default function Chat() {
                     <span className="text-[10px] text-[var(--forge-success)]">end-to-end encrypted</span>
                   </div>
                 )}
-              </div>
+              </Link>
             </>
           )}
         </div>

@@ -6,12 +6,14 @@ import { Cabinet } from '@/features/cabinet/Cabinet';
 import { HubDashboard } from '@/features/hub/HubDashboard';
 import { TopBar } from '@/features/navigation/TopBar';
 import { LayoutDashboard, StickyNote, Dumbbell } from 'lucide-react';
+import { useT } from '@/lib/useT';
 
 type HubTab = 'dashboard' | 'notes' | 'workouts';
 
 function CabinetPageInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const t = useT();
   const newParam = searchParams.get('new');
 
   // If query-param says new=note or workout, go straight to that tab
@@ -33,9 +35,9 @@ function CabinetPageInner() {
         {/* Tabs */}
         <div className="flex gap-1 bg-[var(--forge-surface)] rounded-[var(--forge-radius-md)] p-1 border border-[var(--forge-border)] mb-4">
           {([
-            { id: 'dashboard' as const, icon: LayoutDashboard, label: 'Dashboard' },
-            { id: 'notes' as const, icon: StickyNote, label: 'Notes' },
-            { id: 'workouts' as const, icon: Dumbbell, label: 'Workouts' },
+            { id: 'dashboard' as const, icon: LayoutDashboard, label: t('hub.dashboard') },
+            { id: 'notes' as const, icon: StickyNote, label: t('cabinet.notes') },
+            { id: 'workouts' as const, icon: Dumbbell, label: t('cabinet.workouts') },
           ]).map(({ id, icon: Icon, label }) => (
             <button
               key={id}

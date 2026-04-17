@@ -35,6 +35,7 @@ const translations: Record<Locale, Record<string, string>> = {
     // Feed
     'feed.tab_feed': 'Feed',
     'feed.tab_cabinet': 'Hub',
+    'hub.dashboard': 'Dashboard',
     'feed.following': 'Following',
     'feed.saved': 'Saved',
     'feed.trending': 'Trending',
@@ -208,7 +209,8 @@ const translations: Record<Locale, Record<string, string>> = {
     'auth.agree_privacy': 'Политику конфиденциальности',
 
     'feed.tab_feed': 'Лента',
-    'feed.tab_cabinet': 'Hub',
+    'feed.tab_cabinet': 'Хаб',
+    'hub.dashboard': 'Обзор',
     'feed.following': 'Подписки',
     'feed.saved': 'Сохранённые',
     'feed.trending': 'Популярное',
@@ -223,11 +225,11 @@ const translations: Record<Locale, Record<string, string>> = {
 
     'stories.your': 'Ваша история',
 
-    'nav.feed': 'Flow',
+    'nav.feed': 'Лента',
     'nav.search': 'Поиск',
     'nav.post': 'Пост',
     'nav.reels': 'Reels',
-    'nav.profile': 'Me',
+    'nav.profile': 'Я',
     'feed.no_posts': 'Постов пока нет',
     'feed.be_first': 'Будь первым кто поделится',
     'feed.follow_someone': 'Подпишись на кого-нибудь',
@@ -300,7 +302,7 @@ const translations: Record<Locale, Record<string, string>> = {
     'reset.check_email': 'Проверьте почту — ссылка для сброса отправлена.',
     'reset.back': 'Назад к входу',
 
-    'messages.title': 'Chat',
+    'messages.title': 'Чат',
     'messages.chats': 'Чаты',
     'messages.none': 'Сообщений пока нет',
     'messages.search_people': 'Поиск людей...',

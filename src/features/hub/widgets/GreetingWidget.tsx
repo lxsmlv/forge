@@ -1,7 +1,16 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Flame } from 'lucide-react';
 import { getLevel, getXpProgress } from '@/lib/xp';
+
+const GREETINGS = ['Привет', 'Хай', 'Йоу', 'Салют', 'Hey', 'Hola', 'Yo', 'Ciao', 'Aloha', 'Здарова'];
+const EMOJIS = ['👊', '🔥', '💪', '⚡', '🚀', '✨', '🎯', '💎', '🏆', '👋', '😎', '🤙', '🫡', '⭐'];
+
+function getDailyRandom<T>(arr: T[]): T {
+  const day = Math.floor(Date.now() / 86400000);
+  return arr[day % arr.length];
+}
 
 interface Props {
   fullName: string;
@@ -14,6 +23,8 @@ export function GreetingWidget({ fullName, streak, xp }: Props) {
   const level = getLevel(xp);
   const progress = getXpProgress(xp);
   const today = new Date();
+  const [greeting] = useState(() => getDailyRandom(GREETINGS));
+  const [emoji] = useState(() => getDailyRandom(EMOJIS));
   const dateStr = today.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
 
   // 7-day activity dots (placeholder — will be real data with Points engine)
@@ -24,7 +35,7 @@ export function GreetingWidget({ fullName, streak, xp }: Props) {
     <div className="col-span-full forge-card p-5">
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h2 className="text-xl font-bold text-[var(--forge-text-primary)] tracking-tight">{firstName} 👊</h2>
+          <h2 className="text-xl font-bold text-[var(--forge-text-primary)] tracking-tight">{greeting}, {firstName} {emoji}</h2>
           <p className="text-[12px] text-[var(--forge-text-tertiary)] capitalize mt-0.5">{dateStr}</p>
         </div>
         <div className="flex items-center gap-2">
