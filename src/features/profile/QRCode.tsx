@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { QrCode, X, Download } from 'lucide-react';
 
 export function ProfileQR({ username }: { username: string }) {
@@ -36,7 +37,7 @@ export function ProfileQR({ username }: { username: string }) {
     );
   }
 
-  return (
+  return createPortal(
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto"
       onClick={() => setShow(false)}
@@ -68,6 +69,8 @@ export function ProfileQR({ username }: { username: string }) {
         )}
         <p className="text-xs text-[var(--forge-text-tertiary)]">Scan to open profile</p>
       </div>
-    </div>
+    </div>,
+    document.body
+  )
   );
 }
