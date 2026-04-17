@@ -56,7 +56,7 @@ export async function getMessages(otherUserId: string) {
 
   const { data, error } = await supabase
     .from('messages')
-    .select('id, text, sender_id, created_at, encrypted_key, encrypted_key_sender, iv')
+    .select('id, text, sender_id, created_at, encrypted_key, encrypted_key_sender, iv, is_read, delivered_at')
     .or(`and(sender_id.eq.${user.id},receiver_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},receiver_id.eq.${user.id})`)
     .order('created_at', { ascending: true });
 
@@ -74,6 +74,16 @@ export async function getMessages(otherUserId: string) {
     is_mine: m.sender_id === user.id,
     raw_created_at: m.created_at,
   }));
+}
+
+export async function markDelivered(messageIds: string[]) {
+  const supabase = await createClient();
+  if (messageIds.length === 0) return;
+  await supabase
+    .from('messages')
+    .update({ delivered_at: new Date().toISOString() })
+    .in('id', messageIds)
+    .is('delivered_at', null);
 }
 
 export async function getUnreadMessagesCount() {
@@ -118,6 +128,8 @@ export async function sendEncryptedMessage(receiverId: string, text: string, enc
       sender_id: inserted.sender_id,
       receiver_id: inserted.receiver_id,
       created_at: inserted.created_at,
+      is_read: false,
+      delivered_at: null,
     };
     await Promise.all([
       publishToUser(receiverId, 'message:new', payload),

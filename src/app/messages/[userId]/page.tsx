@@ -82,7 +82,8 @@ export default function Chat() {
       });
 
       if (payload.receiver_id === ablyUserId) {
-        supabase.from('messages').update({ is_read: true }).eq('id', payload.id).then(() => {});
+        // Mark as delivered + read (user has chat open)
+        supabase.from('messages').update({ is_read: true, delivered_at: new Date().toISOString() }).eq('id', payload.id).then(() => {});
       }
     };
 
@@ -132,9 +133,9 @@ export default function Chat() {
               : '');
           if (msg.encrypted_key && msg.iv) {
             const decrypted = await decryptMessageDual(msg.text, msg.encrypted_key, msg.encrypted_key_sender || null, msg.iv);
-            return { ...msg, text: decrypted, is_mine, time };
+            return { ...msg, text: decrypted, is_mine, time, is_read: msg.is_read ?? false, delivered_at: msg.delivered_at ?? null };
           }
-          return { ...msg, is_mine, time };
+          return { ...msg, is_mine, time, is_read: msg.is_read ?? false, delivered_at: msg.delivered_at ?? null };
         }),
       );
       setDecryptedMessages(results);
@@ -246,10 +247,15 @@ export default function Chat() {
                   >
                     <p>{msg.text}</p>
                     <p
-                      className={`text-[10px] mt-1 ${msg.is_mine ? '' : 'text-[var(--forge-text-tertiary)]'}`}
+                      className={`text-[10px] mt-1 flex items-center gap-1 ${msg.is_mine ? '' : 'text-[var(--forge-text-tertiary)]'}`}
                       style={msg.is_mine ? { color: 'rgba(255,255,255,0.75)' } : undefined}
                     >
                       {msg.time}
+                      {msg.is_mine && (
+                        <span className={msg.is_read ? 'text-[var(--forge-purple-bright)]' : ''}>
+                          {msg.is_read ? '✓✓' : msg.delivered_at ? '✓✓' : '✓'}
+                        </span>
+                      )}
                     </p>
                   </div>
                 </div>
