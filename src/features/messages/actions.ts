@@ -56,7 +56,7 @@ export async function getMessages(otherUserId: string) {
 
   const { data, error } = await supabase
     .from('messages')
-    .select('id, text, sender_id, created_at, encrypted_key, encrypted_key_sender, iv, is_read, delivered_at')
+    .select('id, text, sender_id, created_at, encrypted_key, encrypted_key_sender, iv, is_read, delivered_at, media_url, media_type, media_key, media_key_sender, media_iv')
     .or(`and(sender_id.eq.${user.id},receiver_id.eq.${otherUserId}),and(sender_id.eq.${otherUserId},receiver_id.eq.${user.id})`)
     .order('created_at', { ascending: true });
 
@@ -118,19 +118,27 @@ export async function getUnreadMessagesCount() {
   return count || 0;
 }
 
-export async function sendEncryptedMessage(receiverId: string, text: string, encryptedKey: string, iv: string, encryptedKeySender?: string) {
+export async function sendEncryptedMessage(
+  receiverId: string, text: string, encryptedKey: string, iv: string, encryptedKeySender?: string,
+  media?: { url: string; type: string; mediaKey: string; mediaKeySender: string; mediaIv: string },
+) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user || !text.trim()) return;
+  if (!user || (!text.trim() && !media)) return;
 
   const { data: inserted } = await supabase.from('messages').insert({
     sender_id: user.id,
     receiver_id: receiverId,
-    text: text.trim(),
+    text: text.trim() || (media ? '📎' : ''),
     encrypted_key: encryptedKey || null,
     encrypted_key_sender: encryptedKeySender || null,
     iv: iv || null,
-  }).select('id, created_at, text, encrypted_key, encrypted_key_sender, iv, sender_id, receiver_id').single();
+    media_url: media?.url || null,
+    media_type: media?.type || null,
+    media_key: media?.mediaKey || null,
+    media_key_sender: media?.mediaKeySender || null,
+    media_iv: media?.mediaIv || null,
+  }).select('id, created_at, text, encrypted_key, encrypted_key_sender, iv, sender_id, receiver_id, media_url, media_type, media_key, media_key_sender, media_iv').single();
 
   const { data: profile } = await supabase.from('profiles').select('username').eq('id', user.id).single();
   await createNotification(receiverId, 'message', user.id);
@@ -148,6 +156,11 @@ export async function sendEncryptedMessage(receiverId: string, text: string, enc
       created_at: inserted.created_at,
       is_read: false,
       delivered_at: null,
+      media_url: inserted.media_url,
+      media_type: inserted.media_type,
+      media_key: inserted.media_key,
+      media_key_sender: inserted.media_key_sender,
+      media_iv: inserted.media_iv,
     };
     await Promise.all([
       publishToUser(receiverId, 'message:new', payload),
@@ -156,6 +169,26 @@ export async function sendEncryptedMessage(receiverId: string, text: string, enc
   }
 
   revalidatePath('/messages');
+}
+
+export async function uploadEncryptedMedia(formData: FormData): Promise<string | null> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const file = formData.get('file') as File;
+  if (!file) return null;
+
+  const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.enc`;
+
+  const { data, error } = await supabase.storage
+    .from('chat-media')
+    .upload(fileName, file, { contentType: 'application/octet-stream', upsert: false });
+
+  if (error) return null;
+
+  const { data: urlData } = supabase.storage.from('chat-media').getPublicUrl(data.path);
+  return urlData.publicUrl;
 }
 
 function formatTimeAgo(dateStr: string): string {

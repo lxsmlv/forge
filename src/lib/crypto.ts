@@ -157,6 +157,67 @@ export async function encryptMessageDual(
   };
 }
 
+// ==================== MEDIA ENCRYPTION (E2E) ====================
+
+export async function encryptMedia(
+  fileData: ArrayBuffer,
+  receiverPublicKeyBase64: string,
+  senderPublicKeyBase64: string,
+): Promise<{ encryptedBlob: Uint8Array; encryptedKeyReceiver: string; encryptedKeySender: string; iv: string }> {
+  const aesKey = await crypto.subtle.generateKey(
+    { name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt'],
+  );
+
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const encryptedContent = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, aesKey, fileData);
+  const rawAesKey = await crypto.subtle.exportKey('raw', aesKey);
+
+  const receiverPubKey = await crypto.subtle.importKey(
+    'spki', base64ToArrayBuffer(receiverPublicKeyBase64),
+    { name: 'RSA-OAEP', hash: 'SHA-256' }, false, ['encrypt'],
+  );
+  const encryptedForReceiver = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, receiverPubKey, rawAesKey);
+
+  const senderPubKey = await crypto.subtle.importKey(
+    'spki', base64ToArrayBuffer(senderPublicKeyBase64),
+    { name: 'RSA-OAEP', hash: 'SHA-256' }, false, ['encrypt'],
+  );
+  const encryptedForSender = await crypto.subtle.encrypt({ name: 'RSA-OAEP' }, senderPubKey, rawAesKey);
+
+  return {
+    encryptedBlob: new Uint8Array(encryptedContent),
+    encryptedKeyReceiver: arrayBufferToBase64(encryptedForReceiver),
+    encryptedKeySender: arrayBufferToBase64(encryptedForSender),
+    iv: arrayBufferToBase64(iv),
+  };
+}
+
+export async function decryptMedia(
+  encryptedData: ArrayBuffer,
+  encryptedKey: string,
+  encryptedKeySender: string | null,
+  ivBase64: string,
+): Promise<ArrayBuffer | null> {
+  const privateKeyBase64 = getStoredPrivateKey();
+  if (!privateKeyBase64) return null;
+
+  const privateKey = await crypto.subtle.importKey(
+    'pkcs8', base64ToArrayBuffer(privateKeyBase64),
+    { name: 'RSA-OAEP', hash: 'SHA-256' }, false, ['decrypt'],
+  );
+
+  // Try receiver key first, then sender key
+  for (const key of [encryptedKey, encryptedKeySender]) {
+    if (!key) continue;
+    try {
+      const rawAesKey = await crypto.subtle.decrypt({ name: 'RSA-OAEP' }, privateKey, base64ToArrayBuffer(key));
+      const aesKey = await crypto.subtle.importKey('raw', rawAesKey, { name: 'AES-GCM' }, false, ['decrypt']);
+      return await crypto.subtle.decrypt({ name: 'AES-GCM', iv: base64ToArrayBuffer(ivBase64) }, aesKey, encryptedData);
+    } catch { /* try next key */ }
+  }
+  return null;
+}
+
 // Legacy single encryption (backwards compatible)
 export async function encryptMessage(
   text: string,

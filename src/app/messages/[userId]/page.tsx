@@ -2,11 +2,11 @@
 
 import { useState, useEffect, useRef, useTransition, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Send, Shield, Trash2 } from 'lucide-react';
+import { ArrowLeft, Send, Shield, Trash2, ImagePlus, X } from 'lucide-react';
 import Link from 'next/link';
 import { deleteChat } from '@/features/messages/actions';
-import { getMessages, sendEncryptedMessage } from '@/features/messages/actions';
-import { decryptMessageDual, encryptMessageDual, getStoredPrivateKey } from '@/lib/crypto';
+import { getMessages, sendEncryptedMessage, uploadEncryptedMedia } from '@/features/messages/actions';
+import { decryptMessageDual, encryptMessageDual, encryptMedia, decryptMedia, getStoredPrivateKey } from '@/lib/crypto';
 import { Input } from '@/components/ui/input';
 import { createClient } from '@/lib/supabase/client';
 import { useAbly } from '@/lib/ably/client-provider';
@@ -29,6 +29,11 @@ export default function Chat() {
   const { client: ablyClient, userId: ablyUserId } = useAbly();
   const t = useT();
   const [showDeleteMenu, setShowDeleteMenu] = useState(false);
+  const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [mediaPreview, setMediaPreview] = useState<string | null>(null);
+  const [sendingMedia, setSendingMedia] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [decryptedMediaCache, setDecryptedMediaCache] = useState<Record<string, string>>({});
 
   const loadMessages = useCallback(async () => {
     const data = await getMessages(otherUserId);
@@ -79,6 +84,11 @@ export default function Chat() {
             sender_id: payload.sender_id,
             is_mine: payload.sender_id === ablyUserId,
             time: new Date(payload.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+            media_url: payload.media_url,
+            media_type: payload.media_type,
+            media_key: payload.media_key,
+            media_key_sender: payload.media_key_sender,
+            media_iv: payload.media_iv,
           },
         ];
       });
@@ -137,7 +147,7 @@ export default function Chat() {
             const decrypted = await decryptMessageDual(msg.text, msg.encrypted_key, msg.encrypted_key_sender || null, msg.iv);
             return { ...msg, text: decrypted, is_mine, time, is_read: msg.is_read ?? false, delivered_at: msg.delivered_at ?? null };
           }
-          return { ...msg, is_mine, time, is_read: msg.is_read ?? false, delivered_at: msg.delivered_at ?? null };
+          return { ...msg, is_mine, time, is_read: msg.is_read ?? false, delivered_at: msg.delivered_at ?? null, _localMediaPreview: msg._localMediaPreview };
         }),
       );
       setDecryptedMessages(results);
@@ -149,19 +159,40 @@ export default function Chat() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [decryptedMessages]);
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setMediaFile(file);
+    if (file.type.startsWith('image/')) {
+      const url = URL.createObjectURL(file);
+      setMediaPreview(url);
+    } else {
+      setMediaPreview(null);
+    }
+  };
+
+  const clearMedia = () => {
+    setMediaFile(null);
+    setMediaPreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
   const handleSend = () => {
-    if (!text.trim() || !otherUser) return;
+    if ((!text.trim() && !mediaFile) || !otherUser) return;
     const currentText = text;
+    const currentFile = mediaFile;
     setText('');
+    clearMedia();
 
     setDecryptedMessages((prev) => [
       ...prev,
       {
         id: Date.now().toString(),
-        text: currentText,
+        text: currentText || (currentFile ? '📎 Sending...' : ''),
         is_mine: true,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
         encrypted: true,
+        _localMediaPreview: currentFile?.type.startsWith('image/') ? URL.createObjectURL(currentFile) : undefined,
       },
     ]);
 
@@ -170,15 +201,41 @@ export default function Chat() {
       const { data: { user } } = await supabase.auth.getUser();
       const { data: myProfile } = user ? await supabase.from('profiles').select('public_key').eq('id', user.id).single() : { data: null };
 
+      let mediaPayload: { url: string; type: string; mediaKey: string; mediaKeySender: string; mediaIv: string } | undefined;
+
+      // Encrypt and upload media if present
+      if (currentFile && otherUser.public_key && myProfile?.public_key) {
+        setSendingMedia(true);
+        const fileBuffer = await currentFile.arrayBuffer();
+        const encMedia = await encryptMedia(fileBuffer, otherUser.public_key, myProfile.public_key);
+
+        const fd = new FormData();
+        const mediaBlob = new Blob([new Uint8Array(encMedia.encryptedBlob) as any], { type: 'application/octet-stream' });
+        fd.append('file', mediaBlob, 'media.enc');
+        const uploadedUrl = await uploadEncryptedMedia(fd);
+
+        if (uploadedUrl) {
+          mediaPayload = {
+            url: uploadedUrl,
+            type: currentFile.type,
+            mediaKey: encMedia.encryptedKeyReceiver,
+            mediaKeySender: encMedia.encryptedKeySender,
+            mediaIv: encMedia.iv,
+          };
+        }
+        setSendingMedia(false);
+      }
+
       if (otherUser.public_key && myProfile?.public_key) {
-        const encrypted = await encryptMessageDual(currentText, otherUser.public_key, myProfile.public_key);
-        await sendEncryptedMessage(otherUserId, encrypted.encryptedText, encrypted.encryptedKeyReceiver, encrypted.iv, encrypted.encryptedKeySender);
+        const textToEncrypt = currentText || (mediaPayload ? '📎' : '');
+        const encrypted = await encryptMessageDual(textToEncrypt, otherUser.public_key, myProfile.public_key);
+        await sendEncryptedMessage(otherUserId, encrypted.encryptedText, encrypted.encryptedKeyReceiver, encrypted.iv, encrypted.encryptedKeySender, mediaPayload);
       } else if (otherUser.public_key) {
         const { encryptMessage } = await import('@/lib/crypto');
-        const encrypted = await encryptMessage(currentText, otherUser.public_key);
+        const encrypted = await encryptMessage(currentText || '📎', otherUser.public_key);
         await sendEncryptedMessage(otherUserId, encrypted.encryptedText, encrypted.encryptedKey, encrypted.iv);
       } else {
-        await sendEncryptedMessage(otherUserId, currentText, '', '');
+        await sendEncryptedMessage(otherUserId, currentText || '📎', '', '');
       }
     });
   };
@@ -280,7 +337,21 @@ export default function Chat() {
                     }`}
                     style={msg.is_mine ? { color: '#ffffff', background: 'var(--forge-gradient-chat)' } : undefined}
                   >
-                    <p>{msg.text}</p>
+                    {/* Encrypted media */}
+                    {(msg.media_url || msg._localMediaPreview) && (
+                      <EncryptedImage
+                        mediaUrl={msg.media_url}
+                        mediaType={msg.media_type}
+                        mediaKey={msg.media_key}
+                        mediaKeySender={msg.media_key_sender}
+                        mediaIv={msg.media_iv}
+                        localPreview={msg._localMediaPreview}
+                        cache={decryptedMediaCache}
+                        onDecrypted={(url) => setDecryptedMediaCache((prev) => ({ ...prev, [msg.id]: url }))}
+                        msgId={msg.id}
+                      />
+                    )}
+                    {msg.text && msg.text !== '📎' && <p>{msg.text}</p>}
                     <p
                       className={`text-[10px] mt-1 flex items-center gap-1 ${msg.is_mine ? '' : 'text-[var(--forge-text-tertiary)]'}`}
                       style={msg.is_mine ? { color: 'rgba(255,255,255,0.75)' } : undefined}
@@ -301,9 +372,35 @@ export default function Chat() {
         </div>
       </main>
 
-      {/* Input bar — flex shrink-0, naturally at bottom of flex container */}
+      {/* Input bar */}
       <div className="shrink-0 bg-[var(--forge-black)] border-t border-[var(--forge-border)]">
+        {/* Media preview */}
+        {mediaPreview && (
+          <div className="max-w-lg mx-auto px-4 pt-2">
+            <div className="relative inline-block">
+              <img src={mediaPreview} alt="" className="h-16 rounded-[var(--forge-radius-md)] border border-[var(--forge-border)]" />
+              <button onClick={clearMedia} className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-[var(--forge-error)] flex items-center justify-center forge-press">
+                <X className="w-3 h-3" style={{ color: '#fff' }} />
+              </button>
+            </div>
+          </div>
+        )}
+        {mediaFile && !mediaPreview && (
+          <div className="max-w-lg mx-auto px-4 pt-2">
+            <div className="relative inline-flex items-center gap-2 forge-badge">
+              <span className="text-[11px] truncate max-w-[150px]">{mediaFile.name}</span>
+              <button onClick={clearMedia} className="text-[var(--forge-error)] forge-press"><X className="w-3 h-3" /></button>
+            </div>
+          </div>
+        )}
         <div className="max-w-lg mx-auto px-4 py-2 flex items-center gap-2">
+          <input ref={fileInputRef} type="file" accept="image/*,video/*" className="hidden" onChange={handleFileSelect} />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="forge-press h-10 w-10 rounded-[var(--forge-radius-md)] bg-[var(--forge-surface)] border border-[var(--forge-border)] flex items-center justify-center shrink-0 hover:border-[var(--forge-border-hover)] transition-colors"
+          >
+            <ImagePlus className="w-4 h-4 text-[var(--forge-text-tertiary)]" />
+          </button>
           <Input
             ref={inputRef}
             placeholder={t('messages.type_message')}
@@ -314,7 +411,7 @@ export default function Chat() {
           />
           <button
             onClick={handleSend}
-            disabled={!text.trim() || isPending}
+            disabled={(!text.trim() && !mediaFile) || isPending || sendingMedia}
             className="forge-press h-10 w-10 rounded-[var(--forge-radius-md)] bg-[var(--forge-gradient)] shadow-[var(--forge-shadow-glow)] flex items-center justify-center transition-all disabled:opacity-30 disabled:shadow-none hover:shadow-[var(--forge-shadow-glow-strong)]"
             style={{ background: 'var(--forge-gradient)' }}
           >
@@ -323,5 +420,59 @@ export default function Chat() {
         </div>
       </div>
     </div>
+  );
+}
+
+function EncryptedImage({
+  mediaUrl, mediaType, mediaKey, mediaKeySender, mediaIv, localPreview, cache, onDecrypted, msgId,
+}: {
+  mediaUrl?: string; mediaType?: string; mediaKey?: string; mediaKeySender?: string; mediaIv?: string;
+  localPreview?: string; cache: Record<string, string>; onDecrypted: (url: string) => void; msgId: string;
+}) {
+  const [src, setSrc] = useState<string | null>(cache[msgId] || localPreview || null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (src || !mediaUrl || !mediaKey || !mediaIv) return;
+    let cancelled = false;
+
+    async function decrypt() {
+      setLoading(true);
+      try {
+        const response = await fetch(mediaUrl!);
+        const encryptedData = await response.arrayBuffer();
+        const decrypted = await decryptMedia(encryptedData, mediaKey!, mediaKeySender || null, mediaIv!);
+        if (decrypted && !cancelled) {
+          const blob = new Blob([decrypted], { type: mediaType || 'image/jpeg' });
+          const url = URL.createObjectURL(blob);
+          setSrc(url);
+          onDecrypted(url);
+        }
+      } catch {
+        // Decryption failed
+      }
+      if (!cancelled) setLoading(false);
+    }
+    decrypt();
+    return () => { cancelled = true; };
+  }, [mediaUrl, mediaKey, mediaKeySender, mediaIv, mediaType, src, onDecrypted, msgId]);
+
+  if (loading) {
+    return (
+      <div className="w-48 h-32 rounded-[var(--forge-radius-md)] bg-[var(--forge-surface)] flex items-center justify-center mb-1">
+        <div className="h-4 w-4 border-2 border-[var(--forge-purple)] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!src) return null;
+
+  return (
+    <img
+      src={src}
+      alt=""
+      className="max-w-full max-h-[200px] rounded-[var(--forge-radius-md)] mb-1 cursor-pointer"
+      onClick={() => window.open(src, '_blank')}
+    />
   );
 }
