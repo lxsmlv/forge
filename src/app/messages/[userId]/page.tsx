@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef, useTransition, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Send, Shield } from 'lucide-react';
+import { ArrowLeft, Send, Shield, Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { deleteChat } from '@/features/messages/actions';
 import { getMessages, sendEncryptedMessage } from '@/features/messages/actions';
 import { decryptMessageDual, encryptMessageDual, getStoredPrivateKey } from '@/lib/crypto';
 import { Input } from '@/components/ui/input';
@@ -27,6 +28,7 @@ export default function Chat() {
   const currentUserIdRef = useRef<string | null>(null);
   const { client: ablyClient, userId: ablyUserId } = useAbly();
   const t = useT();
+  const [showDeleteMenu, setShowDeleteMenu] = useState(false);
 
   const loadMessages = useCallback(async () => {
     const data = await getMessages(otherUserId);
@@ -213,6 +215,39 @@ export default function Chat() {
                   </div>
                 )}
               </Link>
+              <div className="relative ml-auto shrink-0">
+                <button onClick={() => setShowDeleteMenu(!showDeleteMenu)} className="forge-press h-8 w-8 rounded-full flex items-center justify-center text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] hover:bg-[var(--forge-card-hover)] transition-colors">
+                  <Trash2 className="w-4 h-4" />
+                </button>
+                {showDeleteMenu && (
+                  <div className="forge-glass absolute right-0 top-10 rounded-[var(--forge-radius-md)] shadow-[var(--forge-shadow-lg)] z-10 py-1 min-w-[180px] overflow-hidden">
+                    <button
+                      onClick={async () => {
+                        setShowDeleteMenu(false);
+                        if (confirm(t('chat.delete_confirm_me'))) {
+                          await deleteChat(otherUserId, false);
+                          router.push('/messages');
+                        }
+                      }}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-text-secondary)] hover:bg-[var(--forge-card-hover)] transition-colors"
+                    >
+                      {t('chat.delete_me')}
+                    </button>
+                    <button
+                      onClick={async () => {
+                        setShowDeleteMenu(false);
+                        if (confirm(t('chat.delete_confirm_both'))) {
+                          await deleteChat(otherUserId, true);
+                          router.push('/messages');
+                        }
+                      }}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-error)] hover:bg-[var(--forge-card-hover)] transition-colors"
+                    >
+                      {t('chat.delete_both')}
+                    </button>
+                  </div>
+                )}
+              </div>
             </>
           )}
         </div>

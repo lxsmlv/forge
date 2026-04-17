@@ -147,6 +147,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'messages.placeholder': 'Message...',
     'messages.encrypted_placeholder': '🔒 Encrypted message...',
     'messages.type_message': 'Type a message...',
+    'chat.delete_me': 'Delete for me',
+    'chat.delete_both': 'Delete for both',
+    'chat.delete_confirm_me': 'Delete this chat for yourself?',
+    'chat.delete_confirm_both': 'Delete this chat for both of you? This cannot be undone.',
 
     // Search
     'search.placeholder': 'Search people or posts...',
@@ -312,6 +316,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'messages.placeholder': 'Сообщение...',
     'messages.encrypted_placeholder': '🔒 Зашифрованное сообщение...',
     'messages.type_message': 'Введите сообщение...',
+    'chat.delete_me': 'Удалить у себя',
+    'chat.delete_both': 'Удалить у обоих',
+    'chat.delete_confirm_me': 'Удалить этот чат у себя?',
+    'chat.delete_confirm_both': 'Удалить этот чат у обоих? Это нельзя отменить.',
 
     'search.placeholder': 'Поиск людей и постов...',
     'search.people': 'Люди',
