@@ -163,8 +163,8 @@ export default function Feed() {
             ) : (
               <FeedEmptyState
                 onFirstFollow={() => {
+                  // Don't reload feed (causes spinner flash). Just update count silently.
                   getMyProfile().then((p) => setFollowingCount(p?.following_count ?? 0));
-                  loadPosts(feedMode);
                 }}
               />
             )}

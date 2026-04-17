@@ -105,16 +105,16 @@ export function FeedEmptyState({ onFirstFollow }: Props) {
               <button
                 onClick={() => handleFollow(profile.id)}
                 disabled={isPending}
-                className={`forge-press shrink-0 px-2.5 py-1 text-[11px] flex items-center gap-1 rounded-[var(--forge-radius-sm)] transition-all disabled:opacity-50 ${
+                className={`forge-press shrink-0 h-7 w-7 flex items-center justify-center rounded-full transition-all disabled:opacity-50 ${
                   isFollowed
-                    ? 'bg-[var(--forge-surface)] border border-[var(--forge-border)] text-[var(--forge-text-secondary)]'
-                    : 'forge-btn-primary'
+                    ? 'bg-[var(--forge-purple-glow)] text-[var(--forge-purple-bright)] border border-[rgba(139,92,246,0.3)]'
+                    : 'bg-[var(--forge-surface)] text-[var(--forge-text-secondary)] border border-[var(--forge-border)] hover:border-[var(--forge-border-hover)]'
                 }`}
               >
                 {isFollowed ? (
-                  <><UserCheck className="w-3 h-3" /></>
+                  <UserCheck className="w-3.5 h-3.5" />
                 ) : (
-                  <><UserPlus className="w-3 h-3" /></>
+                  <UserPlus className="w-3.5 h-3.5" />
                 )}
               </button>
             </div>
