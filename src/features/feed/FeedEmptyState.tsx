@@ -84,8 +84,8 @@ export function FeedEmptyState({ onFirstFollow }: Props) {
             .toUpperCase()
             .slice(0, 2);
           return (
-            <div key={profile.id} className="forge-card flex items-center gap-3 px-3 py-3">
-              <Link href={`/profile/${profile.username}`} className="forge-avatar h-10 w-10 rounded-full bg-[var(--forge-purple-glow)] flex items-center justify-center text-sm font-bold text-[var(--forge-purple-bright)] overflow-hidden shrink-0">
+            <div key={profile.id} className="forge-card flex items-center gap-2.5 px-3 py-2">
+              <Link href={`/profile/${profile.username}`} className="forge-avatar h-8 w-8 rounded-full bg-[var(--forge-purple-glow)] flex items-center justify-center text-xs font-bold text-[var(--forge-purple-bright)] overflow-hidden shrink-0">
                 {profile.avatar_url ? (
                   <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
                 ) : (
@@ -105,16 +105,16 @@ export function FeedEmptyState({ onFirstFollow }: Props) {
               <button
                 onClick={() => handleFollow(profile.id)}
                 disabled={isPending}
-                className={`forge-press shrink-0 px-3 py-1.5 text-[12px] flex items-center gap-1 rounded-[var(--forge-radius-md)] transition-all disabled:opacity-50 ${
+                className={`forge-press shrink-0 px-2.5 py-1 text-[11px] flex items-center gap-1 rounded-[var(--forge-radius-sm)] transition-all disabled:opacity-50 ${
                   isFollowed
                     ? 'bg-[var(--forge-surface)] border border-[var(--forge-border)] text-[var(--forge-text-secondary)]'
                     : 'forge-btn-primary'
                 }`}
               >
                 {isFollowed ? (
-                  <><UserCheck className="w-3.5 h-3.5" /> {t('common.unfollow')}</>
+                  <><UserCheck className="w-3 h-3" /></>
                 ) : (
-                  <><UserPlus className="w-3.5 h-3.5" /> {t('common.follow')}</>
+                  <><UserPlus className="w-3 h-3" /></>
                 )}
               </button>
             </div>
