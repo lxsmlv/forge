@@ -1,14 +1,18 @@
 'use client';
 
 import { Flame } from 'lucide-react';
+import { getLevel, getXpProgress } from '@/lib/xp';
 
 interface Props {
   fullName: string;
   streak: number;
+  xp: number;
 }
 
-export function GreetingWidget({ fullName, streak }: Props) {
+export function GreetingWidget({ fullName, streak, xp }: Props) {
   const firstName = fullName.split(' ')[0] || fullName;
+  const level = getLevel(xp);
+  const progress = getXpProgress(xp);
   const today = new Date();
   const dateStr = today.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' });
 
@@ -31,8 +35,8 @@ export function GreetingWidget({ fullName, streak }: Props) {
             </div>
           )}
           <div className="px-3 py-1.5 rounded-full border border-[rgba(139,92,246,0.25)]" style={{ background: 'var(--forge-gradient-subtle)' }}>
-            <span className="text-xs font-bold text-[var(--forge-purple-bright)]">Lvl 1</span>
-            <span className="text-[10px] text-[var(--forge-text-tertiary)] ml-1">0 XP</span>
+            <span className="text-xs font-bold text-[var(--forge-purple-bright)]">Lvl {level}</span>
+            <span className="text-[10px] text-[var(--forge-text-tertiary)] ml-1">{progress.current}/{progress.needed} XP</span>
           </div>
         </div>
       </div>
@@ -41,7 +45,7 @@ export function GreetingWidget({ fullName, streak }: Props) {
       <div className="h-2 rounded-full bg-[var(--forge-surface)] overflow-hidden mb-4">
         <div
           className="h-full rounded-full transition-all duration-700"
-          style={{ width: '0%', background: 'var(--forge-gradient-action)' }}
+          style={{ width: `${progress.percent}%`, background: 'var(--forge-gradient-action)' }}
         />
       </div>
 

@@ -72,7 +72,7 @@ export function HubDashboard({ onSwitchTab }: Props) {
   return (
     <div className="flex flex-col gap-3">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        <GreetingWidget fullName={data.profile.full_name} streak={data.profile.current_streak} />
+        <GreetingWidget fullName={data.profile.full_name} streak={data.profile.current_streak} xp={data.profile.xp} />
 
         {visible('today') && (
           <TodayWidget tasks={data.todayTasks} onToggle={toggleTask} onHide={() => hideWidget('today')} />

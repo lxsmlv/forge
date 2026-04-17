@@ -96,6 +96,9 @@ export async function toggleLike(postId: string) {
       await createNotification(post.author_id, 'like', user.id, postId);
       const { data: profile } = await supabase.from('profiles').select('username').eq('id', user.id).single();
       sendPush(post.author_id, 'FORGE', `@${profile?.username || 'Someone'} liked your post`, `/post/${postId}`);
+      // Award XP to post author for receiving like
+      const { awardXP } = await import('@/features/hub/xp-actions');
+      await awardXP(post.author_id, 2);
     }
   }
 

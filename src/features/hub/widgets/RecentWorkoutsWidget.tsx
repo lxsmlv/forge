@@ -31,7 +31,7 @@ export function RecentWorkoutsWidget({ workouts, onViewAll, onHide }: Props) {
       ) : (
         <div className="flex flex-col gap-1.5">
           {workouts.map((w) => (
-            <p key={w.id} className="text-[12px] text-[var(--forge-text-primary)] truncate">
+            <p key={w.id} className="text-[13px] text-[var(--forge-text-primary)] font-medium truncate">
               {w.type} — {w.duration_min} мин — {timeAgo(w.created_at)} назад
             </p>
           ))}

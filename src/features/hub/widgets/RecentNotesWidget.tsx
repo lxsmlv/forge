@@ -21,7 +21,7 @@ export function RecentNotesWidget({ notes, onViewAll, onHide }: Props) {
       ) : (
         <div className="flex flex-col gap-1.5">
           {notes.map((n) => (
-            <p key={n.id} className={`text-[12px] truncate ${n.is_done ? 'line-through text-[var(--forge-text-muted)]' : 'text-[var(--forge-text-primary)]'}`}>
+            <p key={n.id} className={`text-[13px] truncate ${n.is_done ? 'line-through text-[var(--forge-text-tertiary)]' : 'text-[var(--forge-text-primary)] font-medium'}`}>
               {n.title}
             </p>
           ))}

@@ -2,6 +2,8 @@
 
 import { createClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { awardXP } from '@/features/hub/xp-actions';
+import { XP_REWARDS } from '@/lib/xp';
 
 export async function getNotes() {
   const supabase = await createClient();
@@ -33,6 +35,7 @@ export async function createNote(title: string, text: string, category: string, 
     due_date: dueDate || null,
   });
 
+  await awardXP(user.id, XP_REWARDS.note);
   revalidatePath('/cabinet');
 }
 
@@ -101,5 +104,6 @@ export async function createWorkout(type: string, durationMin: number, notes: st
     notes: notes || null,
   });
 
-  revalidatePath('/feed');
+  await awardXP(user.id, XP_REWARDS.workout);
+  revalidatePath('/cabinet');
 }
