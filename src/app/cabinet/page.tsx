@@ -4,19 +4,20 @@ import { Suspense, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Cabinet } from '@/features/cabinet/Cabinet';
 import { HubDashboard } from '@/features/hub/HubDashboard';
+import { GoalsSection } from '@/features/goals/GoalsSection';
 import { TopBar } from '@/features/navigation/TopBar';
-import { LayoutDashboard, StickyNote, Dumbbell } from 'lucide-react';
+import { LayoutDashboard, StickyNote, Dumbbell, Target } from 'lucide-react';
 import { useT } from '@/lib/useT';
 
-type HubTab = 'dashboard' | 'notes' | 'workouts';
+type HubTab = 'dashboard' | 'notes' | 'workouts' | 'goals';
 
 function CabinetPageInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const t = useT();
   const newParam = searchParams.get('new');
+  const isRu = typeof window !== 'undefined' && (localStorage.getItem('forge-locale') || 'en') === 'ru';
 
-  // If query-param says new=note or workout, go straight to that tab
   const initialTab: HubTab = newParam === 'note' ? 'notes' : newParam === 'workout' ? 'workouts' : 'dashboard';
   const [activeTab, setActiveTab] = useState<HubTab>(initialTab);
   const initialModal = newParam === 'note' || newParam === 'workout' ? newParam : undefined;
@@ -38,6 +39,7 @@ function CabinetPageInner() {
             { id: 'dashboard' as const, icon: LayoutDashboard, label: t('hub.dashboard') },
             { id: 'notes' as const, icon: StickyNote, label: t('cabinet.notes') },
             { id: 'workouts' as const, icon: Dumbbell, label: t('cabinet.workouts') },
+            { id: 'goals' as const, icon: Target, label: isRu ? 'Цели' : 'Goals' },
           ]).map(({ id, icon: Icon, label }) => (
             <button
               key={id}
@@ -54,9 +56,8 @@ function CabinetPageInner() {
           ))}
         </div>
 
-        {/* Content */}
         {activeTab === 'dashboard' && (
-          <HubDashboard onSwitchTab={(tab) => setActiveTab(tab)} />
+          <HubDashboard onSwitchTab={(tab) => setActiveTab(tab as HubTab)} />
         )}
         {activeTab === 'notes' && (
           <Cabinet
@@ -71,6 +72,9 @@ function CabinetPageInner() {
             onModalClosed={handleModalClosed}
             forcedSection="workouts"
           />
+        )}
+        {activeTab === 'goals' && (
+          <GoalsSection />
         )}
       </main>
     </div>

@@ -12,6 +12,7 @@ const WIDGET_LABELS: Record<string, string> = {
   activity: '📊 Активность за 30 дней',
   pulse: '⚡ Пульс активности',
   calendar: '📅 Календарь',
+  goals: '🎯 Цели',
 };
 
 interface Props {
