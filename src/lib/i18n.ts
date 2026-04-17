@@ -42,6 +42,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'cat.cars': 'Cars',
     'cat.lifestyle': 'Lifestyle',
     'cat.sport': 'Sport',
+    'cat.tennis': 'Tennis',
+    'cat.padel': 'Padel',
+    'cat.running': 'Running',
+    'cat.other': 'Other',
 
     // Stories
     'stories.your': 'Your story',
@@ -210,6 +214,10 @@ const translations: Record<Locale, Record<string, string>> = {
     'cat.cars': 'Машины',
     'cat.lifestyle': 'Лайфстайл',
     'cat.sport': 'Спорт',
+    'cat.tennis': 'Теннис',
+    'cat.padel': 'Падел',
+    'cat.running': 'Бег',
+    'cat.other': 'Другое',
 
     'stories.your': 'Ваша история',
 

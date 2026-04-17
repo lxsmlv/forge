@@ -1,15 +1,14 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { ArrowRight, Camera, Dumbbell, Car } from 'lucide-react';
+import { ArrowRight, Camera, Dumbbell, MapPin } from 'lucide-react';
 import { useT } from '@/lib/useT';
 
-const ALL_SPORTS = ['gym', 'tennis', 'padel', 'running', 'other'];
+const ALL_SPORTS = ['gym', 'tennis', 'padel', 'running', 'other'] as const;
 
 export default function Onboarding() {
   const router = useRouter();
@@ -20,7 +19,6 @@ export default function Onboarding() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [bio, setBio] = useState('');
   const [city, setCity] = useState('');
-  const [car, setCar] = useState('');
   const [sports, setSports] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const t = useT();
@@ -55,7 +53,6 @@ export default function Onboarding() {
     await supabase.from('profiles').update({
       bio: bio || null,
       city: city || null,
-      car: car || null,
       sports,
     }).eq('id', user.id);
 
@@ -76,11 +73,11 @@ export default function Onboarding() {
         </h1>
 
         <div className="flex gap-1.5">
-          {[1, 2, 3].map((s) => (
+          {[1, 2].map((s) => (
             <div
               key={s}
               className={`h-1 rounded-full transition-all duration-300 ${
-                step >= s ? 'bg-[var(--forge-purple)] w-12 shadow-[0_0_8px_rgba(139,92,246,0.5)]' : 'bg-[var(--forge-border)] w-10'
+                step >= s ? 'bg-[var(--forge-purple)] w-14 shadow-[0_0_8px_rgba(139,92,246,0.5)]' : 'bg-[var(--forge-border)] w-10'
               }`}
             />
           ))}
@@ -109,14 +106,19 @@ export default function Onboarding() {
               className="forge-input resize-none"
             />
             <button onClick={() => setStep(2)} className="forge-btn-primary w-full py-3 text-[14px] uppercase flex items-center justify-center gap-2" style={{ letterSpacing: '0.08em' }}>
-              Next <ArrowRight className="w-4 h-4" />
+              {t('onboarding.next')} <ArrowRight className="w-4 h-4" />
+            </button>
+            <button onClick={handleFinish} className="text-[12px] text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] transition-colors">
+              {t('onboarding.skip')}
             </button>
           </div>
         )}
 
         {step === 2 && (
           <div className="flex flex-col items-center gap-6 w-full animate-in fade-in duration-300">
-            <p className="text-[var(--forge-text-secondary)] text-sm flex items-center gap-2"><Dumbbell className="w-4 h-4 text-[var(--forge-purple-bright)]" /> {t('onboarding.what_sports')}</p>
+            <p className="text-[var(--forge-text-secondary)] text-sm flex items-center gap-2">
+              <Dumbbell className="w-4 h-4 text-[var(--forge-purple-bright)]" /> {t('onboarding.what_sports')}
+            </p>
             <div className="flex flex-wrap gap-2 justify-center">
               {ALL_SPORTS.map((s) => {
                 const active = sports.includes(s);
@@ -124,35 +126,27 @@ export default function Onboarding() {
                   <button
                     key={s}
                     onClick={() => toggleSport(s)}
-                    className={`forge-badge forge-badge-interactive capitalize ${active ? 'forge-badge-purple' : ''}`}
+                    className={`forge-badge forge-badge-interactive ${active ? 'forge-badge-purple' : ''}`}
                     style={{ fontSize: '13px', padding: '8px 16px' }}
                   >
-                    {s}
+                    {t(`cat.${s}`)}
                   </button>
                 );
               })}
             </div>
-            <button onClick={() => setStep(3)} className="forge-btn-primary w-full py-3 text-[14px] uppercase flex items-center justify-center gap-2" style={{ letterSpacing: '0.08em' }}>
-              Next <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-        )}
 
-        {step === 3 && (
-          <div className="flex flex-col items-center gap-6 w-full animate-in fade-in duration-300">
-            <p className="text-[var(--forge-text-secondary)] text-sm flex items-center gap-2"><Car className="w-4 h-4 text-[var(--forge-purple-bright)]" /> {t('onboarding.your_car')}</p>
-            <Input
-              placeholder={t('onboarding.your_car')}
-              value={car}
-              onChange={(e) => setCar(e.target.value)}
-              className="forge-input"
-            />
-            <Input
-              placeholder={t('onboarding.city')}
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              className="forge-input"
-            />
+            <div className="w-full">
+              <p className="text-[var(--forge-text-secondary)] text-sm flex items-center gap-2 mb-3">
+                <MapPin className="w-4 h-4 text-[var(--forge-purple-bright)]" /> {t('onboarding.city')}
+              </p>
+              <Input
+                placeholder={t('onboarding.city')}
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="forge-input"
+              />
+            </div>
+
             <button
               onClick={handleFinish}
               disabled={loading}
@@ -162,7 +156,7 @@ export default function Onboarding() {
               {loading ? t('onboarding.setting_up') : t('onboarding.enter')}
             </button>
             <button onClick={handleFinish} className="text-[12px] text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] transition-colors">
-              Skip for now
+              {t('onboarding.skip')}
             </button>
           </div>
         )}
