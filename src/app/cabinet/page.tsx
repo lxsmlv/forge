@@ -29,7 +29,7 @@ function CabinetPageInner() {
     <div className="min-h-screen bg-[var(--forge-black)] text-[var(--forge-text-primary)] pb-20">
       <TopBar />
 
-      <main className="max-w-lg mx-auto px-4 py-4">
+      <main className="max-w-3xl mx-auto px-4 py-4">
         {/* Tabs */}
         <div className="flex gap-1 bg-[var(--forge-surface)] rounded-[var(--forge-radius-md)] p-1 border border-[var(--forge-border)] mb-4">
           {([

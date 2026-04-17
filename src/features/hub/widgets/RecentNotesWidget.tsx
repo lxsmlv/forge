@@ -14,7 +14,10 @@ export function RecentNotesWidget({ notes, onViewAll, onHide }: Props) {
         <button onClick={onViewAll} className="text-[10px] text-[var(--forge-purple-bright)] hover:text-[var(--forge-purple)] forge-press">все →</button>
       </div>
       {notes.length === 0 ? (
-        <p className="text-[12px] text-[var(--forge-text-tertiary)]">Пусто</p>
+        <div className="flex flex-col items-center py-3 text-center">
+          <div className="text-2xl mb-1">📝</div>
+          <p className="text-[11px] text-[var(--forge-text-tertiary)]">Запиши первую мысль</p>
+        </div>
       ) : (
         <div className="flex flex-col gap-1.5">
           {notes.map((n) => (

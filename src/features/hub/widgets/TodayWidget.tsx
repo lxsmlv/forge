@@ -20,7 +20,11 @@ export function TodayWidget({ tasks, onToggle, onHide }: Props) {
       <button onClick={onHide} className="absolute top-3 right-3 text-[var(--forge-text-muted)] hover:text-[var(--forge-text-tertiary)] forge-press"><X className="w-3.5 h-3.5" /></button>
       <div className="text-[10px] text-[var(--forge-text-tertiary)] uppercase tracking-wider mb-3">📋 Сегодня</div>
       {tasks.length === 0 ? (
-        <p className="text-[13px] text-[var(--forge-text-tertiary)]">Нет задач на сегодня 💪</p>
+        <div className="flex flex-col items-center py-4 text-center">
+          <div className="text-3xl mb-2">🎯</div>
+          <p className="text-[13px] text-[var(--forge-text-secondary)] font-medium">Свободный день</p>
+          <p className="text-[11px] text-[var(--forge-text-tertiary)] mt-1">Добавь задачу через + или запиши заметку</p>
+        </div>
       ) : (
         <div className="flex flex-col gap-2">
           {tasks.slice(0, 5).map((task) => (
