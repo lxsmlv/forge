@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useTransition } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Users, UserPlus, UserCheck, Search } from 'lucide-react';
 import { getDiscoverProfiles } from './discover-actions';
@@ -14,8 +14,8 @@ interface Props {
 export function FeedEmptyState({ onFirstFollow }: Props) {
   const [profiles, setProfiles] = useState<any[]>([]);
   const [followed, setFollowed] = useState<Set<string>>(new Set());
+  const [pending, setPending] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
-  const [isPending, startTransition] = useTransition();
   const t = useT();
 
   useEffect(() => {
@@ -25,7 +25,8 @@ export function FeedEmptyState({ onFirstFollow }: Props) {
     });
   }, []);
 
-  const handleFollow = (userId: string) => {
+  const handleFollow = async (userId: string) => {
+    if (pending.has(userId)) return;
     const isFollowed = followed.has(userId);
     setFollowed((prev) => {
       const next = new Set(prev);
@@ -33,19 +34,17 @@ export function FeedEmptyState({ onFirstFollow }: Props) {
       else next.add(userId);
       return next;
     });
-    startTransition(async () => {
-      await toggleFollow(userId);
-      if (!isFollowed) onFirstFollow();
+    setPending((prev) => new Set(prev).add(userId));
+    await toggleFollow(userId);
+    setPending((prev) => {
+      const next = new Set(prev);
+      next.delete(userId);
+      return next;
     });
+    if (!isFollowed) onFirstFollow();
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center py-12">
-        <div className="h-6 w-6 border-2 border-[var(--forge-purple)] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
+  if (loading) return null;
 
   if (profiles.length === 0) {
     return (
@@ -104,7 +103,7 @@ export function FeedEmptyState({ onFirstFollow }: Props) {
               </Link>
               <button
                 onClick={() => handleFollow(profile.id)}
-                disabled={isPending}
+                disabled={pending.has(profile.id)}
                 className={`forge-press shrink-0 h-7 w-7 flex items-center justify-center rounded-full transition-all disabled:opacity-50 ${
                   isFollowed
                     ? 'bg-[var(--forge-purple-glow)] text-[var(--forge-purple-bright)] border border-[rgba(139,92,246,0.3)]'
