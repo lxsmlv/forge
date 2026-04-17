@@ -21,7 +21,7 @@ export async function getNotes() {
   return data || [];
 }
 
-export async function createNote(title: string, text: string, category: string, isTask: boolean = false, dueDate: string | null = null) {
+export async function createNote(title: string, text: string, category: string, isTask: boolean = false, dueDate: string | null = null, tags?: string[]) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return;
@@ -33,6 +33,7 @@ export async function createNote(title: string, text: string, category: string, 
     category,
     is_task: isTask,
     due_date: dueDate || null,
+    tags: tags && tags.length > 0 ? tags : null,
   });
 
   await awardXP(user.id, XP_REWARDS.note);

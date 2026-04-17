@@ -140,7 +140,8 @@ export function Cabinet({ initialModal, onModalClosed, forcedSection }: Props = 
 
           <div className="flex gap-1.5 flex-wrap mb-2">
             {['all', ...NOTE_CATEGORIES].map((cat) => {
-              const labels: Record<string, string> = { all: 'All', general: 'General', gym: t('cat.gym'), car: t('cat.cars'), personal: 'Personal' };
+              const isRu = typeof window !== 'undefined' && (localStorage.getItem('forge-locale') || 'en') === 'ru';
+              const labels: Record<string, string> = { all: isRu ? 'Все' : 'All', general: isRu ? 'Общее' : 'General', gym: t('cat.gym'), car: isRu ? 'Авто' : 'Car', personal: isRu ? 'Личное' : 'Personal' };
               const active = (cat === 'all' && !noteFilter) || noteFilter === cat;
               return (
                 <button
@@ -161,7 +162,20 @@ export function Cabinet({ initialModal, onModalClosed, forcedSection }: Props = 
             </div>
           ) : (
             (noteFilter ? notes.filter((n) => n.category === noteFilter) : notes).map((note) => (
-              <NoteCard key={note.id} {...note} onToggle={handleToggleNote} onDelete={handleDeleteNote} />
+              <NoteCard
+                key={note.id}
+                id={note.id}
+                title={note.title}
+                text={note.text}
+                category={note.category}
+                is_done={note.is_done}
+                is_task={note.is_task}
+                due_date={note.due_date}
+                tags={note.tags}
+                pinned={note.pinned}
+                onToggle={handleToggleNote}
+                onDelete={handleDeleteNote}
+              />
             ))
           )}
         </div>
