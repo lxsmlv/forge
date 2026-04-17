@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { getProfileByUsername, toggleFollow } from '@/features/profile/follow-actions';
 import { getUserAchievements } from '@/features/achievements/actions';
 import { ACHIEVEMENTS } from '@/lib/achievements';
-import { ActivityGrid } from '@/features/profile/ActivityGrid';
+// ActivityGrid removed from public profiles
 import { ProfileSkeleton } from '@/features/feed/Skeletons';
 import { PostCard } from '@/features/feed/PostCard';
 import { ArrowLeft, Car, Dumbbell, MapPin, UserPlus, UserCheck, MessageCircle, Ban, BadgeCheck } from 'lucide-react';
@@ -209,7 +209,7 @@ export default function UserProfile() {
         </div>
 
         <div className="max-w-lg mx-auto px-4">
-          <ActivityGrid userId={profile.id} />
+          {/* Activity moved to Hub */}
         </div>
 
         {/* Achievements */}

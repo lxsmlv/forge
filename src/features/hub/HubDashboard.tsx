@@ -9,12 +9,14 @@ import { RecentNotesWidget } from './widgets/RecentNotesWidget';
 import { RecentWorkoutsWidget } from './widgets/RecentWorkoutsWidget';
 import { BadgesWidget } from './widgets/BadgesWidget';
 import { QuickAddWidget } from './widgets/QuickAddWidget';
+import { ActivityWidget } from './widgets/ActivityWidget';
 import { WidgetManager } from './WidgetManager';
 import { NoteCreateModal } from '@/features/cabinet/NoteCreateModal';
 import { WorkoutCreateModal } from '@/features/cabinet/WorkoutCreateModal';
+import { useAbly } from '@/lib/ably/client-provider';
 import { Plus } from 'lucide-react';
 
-const HIDEABLE_WIDGETS = ['today', 'stats', 'recent-notes', 'recent-workouts', 'badges'];
+const HIDEABLE_WIDGETS = ['today', 'stats', 'recent-notes', 'recent-workouts', 'badges', 'activity'];
 const STORAGE_KEY = 'forge-hub-hidden';
 
 interface Props {
@@ -22,6 +24,7 @@ interface Props {
 }
 
 export function HubDashboard({ onSwitchTab }: Props) {
+  const { userId } = useAbly();
   const [data, setData] = useState<HubData | null>(null);
   const [loading, setLoading] = useState(true);
   const [hidden, setHidden] = useState<string[]>([]);
@@ -97,6 +100,10 @@ export function HubDashboard({ onSwitchTab }: Props) {
 
         {visible('badges') && (
           <BadgesWidget achievements={data.achievements} onHide={() => hideWidget('badges')} />
+        )}
+
+        {visible('activity') && userId && (
+          <ActivityWidget userId={userId} onHide={() => hideWidget('activity')} />
         )}
       </div>
 

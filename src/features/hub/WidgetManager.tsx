@@ -9,6 +9,7 @@ const WIDGET_LABELS: Record<string, string> = {
   'recent-notes': '📝 Заметки',
   'recent-workouts': '💪 Тренировки',
   badges: '🏆 Бейджи',
+  activity: '📊 Активность за 30 дней',
 };
 
 interface Props {

@@ -5,7 +5,7 @@ import { getMyProfile, updateProfile, uploadAvatar } from '@/features/profile/ac
 import { getUserAchievements } from '@/features/achievements/actions';
 import { ACHIEVEMENTS } from '@/lib/achievements';
 import { useT } from '@/lib/useT';
-import { ActivityGrid } from '@/features/profile/ActivityGrid';
+// ActivityGrid moved to Hub (private only) — removed from public profile
 import { ProfileQR } from '@/features/profile/QRCode';
 import { ProfileSkeleton } from '@/features/feed/Skeletons';
 import { PostCard } from '@/features/feed/PostCard';
@@ -262,7 +262,7 @@ export default function Profile() {
               </div>
             </div>
 
-            <ActivityGrid userId={profile.id} />
+            {/* Activity moved to Hub — private only */}
 
             {achievements.length > 0 && (
               <div className="mt-4">
