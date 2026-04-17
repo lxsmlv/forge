@@ -92,7 +92,14 @@ export async function getWorkouts() {
   return data || [];
 }
 
-export async function createWorkout(type: string, durationMin: number, notes: string) {
+export async function createWorkout(
+  type: string,
+  durationMin: number,
+  notes: string,
+  mood?: number,
+  intensity?: number,
+  exercises?: Array<{ name: string }>,
+) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return;
@@ -102,6 +109,9 @@ export async function createWorkout(type: string, durationMin: number, notes: st
     type,
     duration_min: durationMin,
     notes: notes || null,
+    mood: mood || null,
+    intensity: intensity || null,
+    exercises: exercises && exercises.length > 0 ? exercises.filter((e) => e.name.trim()) : null,
   });
 
   await awardXP(user.id, XP_REWARDS.workout);

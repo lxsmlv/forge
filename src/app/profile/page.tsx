@@ -271,12 +271,14 @@ export default function Profile() {
                   {achievements.map((a) => {
                     const info = ACHIEVEMENTS[a.type];
                     if (!info) return null;
+                    const locale = typeof window !== 'undefined' ? (localStorage.getItem('forge-locale') || 'en') : 'en';
+                    const isRu = locale === 'ru';
                     return (
                       <div key={a.type} className="forge-card p-3 flex items-center gap-3">
                         <span className="text-2xl">{info.emoji}</span>
                         <div>
-                          <p className="text-xs font-semibold text-[var(--forge-text-primary)]">{info.title}</p>
-                          <p className="text-[10px] text-[var(--forge-text-tertiary)] mt-0.5">{info.description}</p>
+                          <p className="text-xs font-semibold text-[var(--forge-text-primary)]">{isRu ? info.titleRu : info.title}</p>
+                          <p className="text-[10px] text-[var(--forge-text-tertiary)] mt-0.5">{isRu ? info.descriptionRu : info.description}</p>
                         </div>
                       </div>
                     );

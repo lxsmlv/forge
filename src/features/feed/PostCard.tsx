@@ -87,7 +87,7 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
   };
 
   const handleDelete = () => {
-    if (!confirm('Delete this post?')) return;
+    if (!confirm(t('common.delete_confirm'))) return;
     startTransition(async () => {
       await deletePost(post.id);
       onDeleted?.();

@@ -182,7 +182,16 @@ export function Cabinet({ initialModal, onModalClosed, forcedSection }: Props = 
             </div>
           ) : (
             workouts.map((w) => (
-              <WorkoutCard key={w.id} {...w} duration_min={w.duration_min} created_at={formatTimeAgo(w.created_at)} />
+              <WorkoutCard
+                key={w.id}
+                type={w.type}
+                duration_min={w.duration_min}
+                notes={w.notes}
+                mood={w.mood}
+                intensity={w.intensity}
+                exercises={w.exercises}
+                created_at={formatTimeAgo(w.created_at)}
+              />
             ))
           )}
         </div>

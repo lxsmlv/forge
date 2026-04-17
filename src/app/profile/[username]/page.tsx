@@ -219,10 +219,11 @@ export default function UserProfile() {
               {achievements.map((a) => {
                 const info = ACHIEVEMENTS[a.type];
                 if (!info) return null;
+                const locale = typeof window !== 'undefined' ? (localStorage.getItem('forge-locale') || 'en') : 'en';
                 return (
                   <div key={a.type} className="forge-card shrink-0 px-3 py-2 flex items-center gap-2">
                     <span className="text-lg">{info.emoji}</span>
-                    <span className="text-xs font-medium text-[var(--forge-text-secondary)]">{info.title}</span>
+                    <span className="text-xs font-medium text-[var(--forge-text-secondary)]">{locale === 'ru' ? info.titleRu : info.title}</span>
                   </div>
                 );
               })}

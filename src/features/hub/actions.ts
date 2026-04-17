@@ -7,7 +7,7 @@ export interface HubData {
   todayTasks: Array<{ id: string; title: string; is_done: boolean; due_date: string | null }>;
   stats: { workouts_count: number; notes_count: number; tasks_done_count: number };
   recentNotes: Array<{ id: string; title: string; text: string; created_at: string; is_done: boolean; category: string }>;
-  recentWorkouts: Array<{ id: string; type: string; duration_min: number; created_at: string; notes: string }>;
+  recentWorkouts: Array<{ id: string; type: string; duration_min: number; created_at: string; notes: string; mood?: number | null }>;
   achievements: Array<{ type: string }>;
 }
 
@@ -25,7 +25,7 @@ export async function getHubData(): Promise<HubData | null> {
     supabase.from('workouts').select('*', { count: 'exact', head: true }).eq('user_id', user.id),
     supabase.from('notes').select('*', { count: 'exact', head: true }).eq('user_id', user.id).eq('is_task', true).eq('is_done', true),
     supabase.from('notes').select('id, title, text, created_at, is_done, category').eq('user_id', user.id).order('created_at', { ascending: false }).limit(3),
-    supabase.from('workouts').select('id, type, duration_min, created_at, notes').eq('user_id', user.id).order('created_at', { ascending: false }).limit(3),
+    supabase.from('workouts').select('id, type, duration_min, created_at, notes, mood').eq('user_id', user.id).order('created_at', { ascending: false }).limit(3),
     supabase.from('user_achievements').select('type').eq('user_id', user.id).order('created_at', { ascending: false }).limit(4),
   ]);
 

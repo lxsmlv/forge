@@ -10,13 +10,15 @@ import { RecentWorkoutsWidget } from './widgets/RecentWorkoutsWidget';
 import { BadgesWidget } from './widgets/BadgesWidget';
 import { QuickAddWidget } from './widgets/QuickAddWidget';
 import { ActivityWidget } from './widgets/ActivityWidget';
+import { PulseWidget } from './widgets/PulseWidget';
 import { WidgetManager } from './WidgetManager';
 import { NoteCreateModal } from '@/features/cabinet/NoteCreateModal';
 import { WorkoutCreateModal } from '@/features/cabinet/WorkoutCreateModal';
 import { useAbly } from '@/lib/ably/client-provider';
+import { useT } from '@/lib/useT';
 import { Plus } from 'lucide-react';
 
-const HIDEABLE_WIDGETS = ['today', 'stats', 'recent-notes', 'recent-workouts', 'badges', 'activity'];
+const HIDEABLE_WIDGETS = ['today', 'stats', 'recent-notes', 'recent-workouts', 'badges', 'activity', 'pulse'];
 const STORAGE_KEY = 'forge-hub-hidden';
 
 interface Props {
@@ -25,6 +27,7 @@ interface Props {
 
 export function HubDashboard({ onSwitchTab }: Props) {
   const { userId } = useAbly();
+  const t = useT();
   const [data, setData] = useState<HubData | null>(null);
   const [loading, setLoading] = useState(true);
   const [hidden, setHidden] = useState<string[]>([]);
@@ -105,6 +108,10 @@ export function HubDashboard({ onSwitchTab }: Props) {
         {visible('activity') && userId && (
           <ActivityWidget userId={userId} onHide={() => hideWidget('activity')} />
         )}
+
+        {visible('pulse') && userId && (
+          <PulseWidget userId={userId} onHide={() => hideWidget('pulse')} />
+        )}
       </div>
 
       {hidden.length > 0 && (
@@ -112,7 +119,7 @@ export function HubDashboard({ onSwitchTab }: Props) {
           onClick={() => setShowManager(true)}
           className="forge-btn-secondary w-full py-2.5 text-[12px] flex items-center justify-center gap-1.5"
         >
-          <Plus className="w-3.5 h-3.5" /> Добавить виджет
+          <Plus className="w-3.5 h-3.5" /> {t('hub.add_widget')}
         </button>
       )}
 
