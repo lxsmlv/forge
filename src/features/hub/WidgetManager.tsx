@@ -11,6 +11,7 @@ const WIDGET_LABELS: Record<string, string> = {
   badges: '🏆 Бейджи',
   activity: '📊 Активность за 30 дней',
   pulse: '⚡ Пульс активности',
+  calendar: '📅 Календарь',
 };
 
 interface Props {

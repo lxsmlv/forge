@@ -11,6 +11,7 @@ import { BadgesWidget } from './widgets/BadgesWidget';
 import { QuickAddWidget } from './widgets/QuickAddWidget';
 import { ActivityWidget } from './widgets/ActivityWidget';
 import { PulseWidget } from './widgets/PulseWidget';
+import { CalendarWidget } from './widgets/CalendarWidget';
 import { WidgetManager } from './WidgetManager';
 import { NoteCreateModal } from '@/features/cabinet/NoteCreateModal';
 import { WorkoutCreateModal } from '@/features/cabinet/WorkoutCreateModal';
@@ -18,7 +19,7 @@ import { useAbly } from '@/lib/ably/client-provider';
 import { useT } from '@/lib/useT';
 import { Plus } from 'lucide-react';
 
-const HIDEABLE_WIDGETS = ['today', 'stats', 'recent-notes', 'recent-workouts', 'badges', 'activity', 'pulse'];
+const HIDEABLE_WIDGETS = ['today', 'stats', 'recent-notes', 'recent-workouts', 'badges', 'activity', 'pulse', 'calendar'];
 const STORAGE_KEY = 'forge-hub-hidden';
 
 interface Props {
@@ -111,6 +112,10 @@ export function HubDashboard({ onSwitchTab }: Props) {
 
         {visible('pulse') && userId && (
           <PulseWidget userId={userId} onHide={() => hideWidget('pulse')} />
+        )}
+
+        {visible('calendar') && userId && (
+          <CalendarWidget userId={userId} onHide={() => hideWidget('calendar')} />
         )}
       </div>
 
