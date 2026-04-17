@@ -11,6 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
 import { renderTextWithLinks } from '@/lib/hashtags';
 import { toast } from 'sonner';
+import { useT } from '@/lib/useT';
 
 const CATEGORIES = [
   { id: 'gym', label: 'Gym', icon: Dumbbell },
@@ -38,9 +39,11 @@ interface PostProps {
   location?: string;
   is_pinned?: boolean;
   is_verified?: boolean;
+  is_own?: boolean;
 }
 
 export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () => void }) {
+  const t = useT();
   const [liked, setLiked] = useState(post.is_liked);
   const [likesCount, setLikesCount] = useState(post.likes_count);
   const [commentsCount, setCommentsCount] = useState(post.comments_count);
@@ -132,60 +135,68 @@ export function PostCard({ post, onDeleted }: { post: PostProps; onDeleted?: () 
               </button>
               {showMenu && (
                 <div className="forge-glass absolute right-0 top-8 rounded-[var(--forge-radius-md)] shadow-[var(--forge-shadow-lg)] z-10 py-1 min-w-[140px] overflow-hidden">
-                  <button
-                    onClick={() => { setShowMenu(false); setEditing(true); setEditCaption(caption); setEditCategory(category); }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] hover:bg-[var(--forge-card-hover)] transition-colors"
-                  >
-                    <Edit3 className="w-4 h-4" /> Edit
-                  </button>
+                  {post.is_own && (
+                    <button
+                      onClick={() => { setShowMenu(false); setEditing(true); setEditCaption(caption); setEditCategory(category); }}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] hover:bg-[var(--forge-card-hover)] transition-colors"
+                    >
+                      <Edit3 className="w-4 h-4" /> {t('common.edit')}
+                    </button>
+                  )}
                   <button
                     onClick={() => {
                       setShowMenu(false);
                       startTransition(async () => {
                         await repostPost(post.id);
-                        toast('Reposted');
+                        toast(t('common.repost'));
                         onDeleted?.();
                       });
                     }}
                     className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] hover:bg-[var(--forge-card-hover)] transition-colors"
                   >
-                    <Repeat2 className="w-4 h-4" /> Repost
+                    <Repeat2 className="w-4 h-4" /> {t('common.repost')}
                   </button>
-                  <button
-                    onClick={() => {
-                      setShowMenu(false);
-                      startTransition(() => { pinPost(post.id); });
-                      toast(post.is_pinned ? 'Unpinned' : 'Pinned to profile');
-                    }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] hover:bg-[var(--forge-card-hover)] transition-colors"
-                  >
-                    <Pin className="w-4 h-4" /> {post.is_pinned ? 'Unpin' : 'Pin to profile'}
-                  </button>
-                  <button
-                    onClick={() => { setShowMenu(false); handleDelete(); }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-error)] hover:bg-[var(--forge-card-hover)] transition-colors"
-                  >
-                    <Trash2 className="w-4 h-4" /> Delete
-                  </button>
-                  <button
-                    onClick={async () => {
-                      setShowMenu(false);
-                      const { createClient } = await import('@/lib/supabase/client');
-                      const supabase = createClient();
-                      const { data: { user } } = await supabase.auth.getUser();
-                      if (user) {
-                        await supabase.from('reports').insert({
-                          reporter_id: user.id,
-                          post_id: post.id,
-                          reason: 'inappropriate content',
-                        });
-                        toast('Report submitted');
-                      }
-                    }}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] hover:bg-[var(--forge-card-hover)] transition-colors"
-                  >
-                    <Flag className="w-4 h-4" /> Report
-                  </button>
+                  {post.is_own && (
+                    <button
+                      onClick={() => {
+                        setShowMenu(false);
+                        startTransition(() => { pinPost(post.id); });
+                        toast(post.is_pinned ? t('common.unpin') : t('common.pin'));
+                      }}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-text-secondary)] hover:text-[var(--forge-text-primary)] hover:bg-[var(--forge-card-hover)] transition-colors"
+                    >
+                      <Pin className="w-4 h-4" /> {post.is_pinned ? t('common.unpin') : t('common.pin')}
+                    </button>
+                  )}
+                  {post.is_own && (
+                    <button
+                      onClick={() => { setShowMenu(false); handleDelete(); }}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-error)] hover:bg-[var(--forge-card-hover)] transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" /> {t('common.delete')}
+                    </button>
+                  )}
+                  {!post.is_own && (
+                    <button
+                      onClick={async () => {
+                        setShowMenu(false);
+                        const { createClient } = await import('@/lib/supabase/client');
+                        const supabase = createClient();
+                        const { data: { user } } = await supabase.auth.getUser();
+                        if (user) {
+                          await supabase.from('reports').insert({
+                            reporter_id: user.id,
+                            post_id: post.id,
+                            reason: 'inappropriate content',
+                          });
+                          toast(t('common.report'));
+                        }
+                      }}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-[var(--forge-text-tertiary)] hover:text-[var(--forge-text-secondary)] hover:bg-[var(--forge-card-hover)] transition-colors"
+                    >
+                      <Flag className="w-4 h-4" /> {t('common.report')}
+                    </button>
+                  )}
                 </div>
               )}
             </div>

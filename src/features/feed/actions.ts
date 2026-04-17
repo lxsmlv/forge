@@ -65,6 +65,7 @@ export async function getPosts(mode: 'following' | 'bookmarks' | 'trending' = 'f
     is_liked: user ? post.likes?.some((l: any) => l.user_id === user.id) : false,
     is_bookmarked: user ? post.bookmarks?.some((b: any) => b.user_id === user.id) : false,
     is_verified: post.author?.is_verified || false,
+    is_own: user ? post.author_id === user.id : false,
   }));
 
   if (mode === 'trending') {
