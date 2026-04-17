@@ -1,13 +1,13 @@
 'use client';
 
 import { useState, useEffect, useTransition } from 'react';
-import { X, Hash } from 'lucide-react';
+import { X, Hash, Plus } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { createNote } from './actions';
 import { useT } from '@/lib/useT';
 
-const NOTE_CATEGORIES = ['general', 'gym', 'car', 'personal'] as const;
+const DEFAULT_CATEGORIES = ['general', 'gym', 'car', 'personal'] as const;
 
 interface Props {
   open: boolean;
@@ -104,8 +104,8 @@ export function NoteCreateModal({ open, onClose, onCreated }: Props) {
         {/* Category */}
         <div className="flex flex-col gap-1.5">
           <label className="text-[10px] uppercase tracking-wider text-[var(--forge-text-tertiary)]">{isRu ? 'Категория' : 'Category'}</label>
-          <div className="flex gap-1.5 flex-wrap">
-            {NOTE_CATEGORIES.map((cat) => {
+          <div className="flex gap-1.5 flex-wrap items-center">
+            {DEFAULT_CATEGORIES.map((cat) => {
               const active = form.category === cat;
               return (
                 <button
@@ -117,6 +117,24 @@ export function NoteCreateModal({ open, onClose, onCreated }: Props) {
                 </button>
               );
             })}
+            {/* Custom category — just type any name */}
+            {!DEFAULT_CATEGORIES.includes(form.category as any) && form.category && (
+              <span className="forge-badge forge-badge-purple">{form.category}</span>
+            )}
+            <input
+              placeholder={isRu ? '+ своя' : '+ custom'}
+              className="bg-transparent text-[11px] text-[var(--forge-text-secondary)] outline-none w-16 placeholder:text-[var(--forge-text-muted)]"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  const val = (e.target as HTMLInputElement).value.trim().toLowerCase();
+                  if (val) {
+                    setForm({ ...form, category: val });
+                    (e.target as HTMLInputElement).value = '';
+                  }
+                }
+              }}
+            />
           </div>
         </div>
 

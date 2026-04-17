@@ -10,7 +10,7 @@ import { useT } from '@/lib/useT';
 import { NoteCreateModal } from './NoteCreateModal';
 import { WorkoutCreateModal } from './WorkoutCreateModal';
 
-const NOTE_CATEGORIES = ['general', 'gym', 'car', 'personal'] as const;
+const DEFAULT_NOTE_CATEGORIES = ['general', 'gym', 'car', 'personal'];
 
 interface Props {
   initialModal?: 'note' | 'workout';
@@ -139,20 +139,25 @@ export function Cabinet({ initialModal, onModalClosed, forcedSection }: Props = 
           </button>
 
           <div className="flex gap-1.5 flex-wrap mb-2">
-            {['all', ...NOTE_CATEGORIES].map((cat) => {
+            {(() => {
               const isRu = typeof window !== 'undefined' && (localStorage.getItem('forge-locale') || 'en') === 'ru';
               const labels: Record<string, string> = { all: isRu ? 'Все' : 'All', general: isRu ? 'Общее' : 'General', gym: t('cat.gym'), car: isRu ? 'Авто' : 'Car', personal: isRu ? 'Личное' : 'Personal' };
-              const active = (cat === 'all' && !noteFilter) || noteFilter === cat;
-              return (
-                <button
-                  key={cat}
-                  onClick={() => setNoteFilter(cat === 'all' ? null : cat)}
-                  className={`forge-badge forge-badge-interactive ${active ? 'forge-badge-purple' : ''}`}
-                >
-                  {labels[cat] || cat}
-                </button>
-              );
-            })}
+              // Collect unique categories from actual notes
+              const uniqueCats = new Set(notes.map((n) => n.category));
+              const allCats = ['all', ...DEFAULT_NOTE_CATEGORIES.filter((c) => uniqueCats.has(c)), ...[...uniqueCats].filter((c) => !DEFAULT_NOTE_CATEGORIES.includes(c))];
+              return allCats.map((cat) => {
+                const active = (cat === 'all' && !noteFilter) || noteFilter === cat;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setNoteFilter(cat === 'all' ? null : cat)}
+                    className={`forge-badge forge-badge-interactive ${active ? 'forge-badge-purple' : ''}`}
+                  >
+                    {labels[cat] || cat}
+                  </button>
+                );
+              });
+            })()}
           </div>
 
           {(noteFilter ? notes.filter((n) => n.category === noteFilter) : notes).length === 0 ? (

@@ -126,7 +126,7 @@ export function WorkoutCreateModal({ open, onClose, onCreated }: Props) {
         {/* Workout type */}
         <div className="flex flex-col gap-1.5">
           <label className="text-[10px] uppercase tracking-wider text-[var(--forge-text-tertiary)]">{isRu ? 'Тип' : 'Type'}</label>
-          <div className="flex gap-1.5 flex-wrap">
+          <div className="flex gap-1.5 flex-wrap items-center">
             {WORKOUT_TYPES.map((type) => {
               const active = form.type === type;
               return (
@@ -139,6 +139,23 @@ export function WorkoutCreateModal({ open, onClose, onCreated }: Props) {
                 </button>
               );
             })}
+            {!WORKOUT_TYPES.includes(form.type as any) && form.type && (
+              <span className="forge-badge forge-badge-purple capitalize">{form.type}</span>
+            )}
+            <input
+              placeholder={isRu ? '+ своё' : '+ custom'}
+              className="bg-transparent text-[11px] text-[var(--forge-text-secondary)] outline-none w-16 placeholder:text-[var(--forge-text-muted)]"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  const val = (e.target as HTMLInputElement).value.trim().toLowerCase();
+                  if (val) {
+                    setForm({ ...form, type: val });
+                    (e.target as HTMLInputElement).value = '';
+                  }
+                }
+              }}
+            />
           </div>
         </div>
 
