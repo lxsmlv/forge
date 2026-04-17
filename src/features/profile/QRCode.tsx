@@ -71,6 +71,5 @@ export function ProfileQR({ username }: { username: string }) {
       </div>
     </div>,
     document.body
-  )
   );
 }
