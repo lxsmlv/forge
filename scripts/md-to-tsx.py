@@ -54,19 +54,19 @@ def format_inline(t: str) -> str:
             parts.append(fld_repl(m))
             i += len(m.group(0))
             continue
-        # Жирный
+        # Жирный — рекурсивно через format_inline, чтобы _____ внутри тоже стало полем
         m = re.match(r"\*\*(.+?)\*\*", t[i:])
         if m:
-            parts.append(f"<b>{jsx_text(m.group(1))}</b>")
+            parts.append(f"<b>{format_inline(m.group(1))}</b>")
             i += len(m.group(0))
             continue
-        # Курсив
+        # Курсив — тоже рекурсивно
         m = re.match(r"(?<!\*)\*([^*]+)\*(?!\*)", t[i:])
         if m:
-            parts.append(f"<i>{jsx_text(m.group(1))}</i>")
+            parts.append(f"<i>{format_inline(m.group(1))}</i>")
             i += len(m.group(0))
             continue
-        # Inline code
+        # Inline code (без рекурсии — там литералы)
         m = re.match(r"`([^`]+)`", t[i:])
         if m:
             parts.append(f"<code>{jsx_text(m.group(1))}</code>")
