@@ -16,6 +16,7 @@ DST = Path("/Users/alexsamoilov/WebstormProjects/MyProjects/forge/src/app/q/[id]
 
 cb_counter = [0]
 fld_counter = [0]
+table_counter = [0]
 
 
 def esc(s: str) -> str:
@@ -93,13 +94,39 @@ def format_inline(t: str) -> str:
     return "".join(parts)
 
 
+def emit_table(headers: list[str], rows: list[list[str]]) -> str:
+    """Эмитит <DynTable id=... headers={[...]} rows={[[...]]} />."""
+    table_counter[0] += 1
+    tid = f"t{table_counter[0]}"
+
+    headers_jsx = ", ".join(f"<>{h}</>" for h in headers)
+
+    rows_parts = []
+    for row in rows:
+        cells_jsx = ", ".join(f"<>{c}</>" for c in row)
+        rows_parts.append(f"[{cells_jsx}]")
+    rows_jsx = ", ".join(rows_parts)
+
+    return f"<DynTable id='{tid}' headers={{[{headers_jsx}]}} rows={{[{rows_jsx}]}} />"
+
+
 def md_to_tsx(md: str) -> str:
     out = []
     lines = md.split("\n")
     in_table = False
+    pending_headers: list[str] = []
+    pending_rows: list[list[str]] = []
     in_frontmatter = False
     fm_seen = False
     i = 0
+
+    def flush_table():
+        nonlocal in_table, pending_headers, pending_rows
+        if in_table:
+            out.append(emit_table(pending_headers, pending_rows))
+            in_table = False
+            pending_headers = []
+            pending_rows = []
 
     while i < len(lines):
         line = lines[i]
@@ -119,9 +146,7 @@ def md_to_tsx(md: str) -> str:
         # Чекбокс
         m = re.match(r"^\s*-?\s*\[( |x|X)\]\s+(.+)$", line)
         if m:
-            if in_table:
-                out.append("</tbody></table></div>")
-                in_table = False
+            flush_table()
             cb_id = next_cb_id()
             label = format_inline(m.group(2))
             out.append(f"<Cb id='{cb_id}'>{label}</Cb>")
@@ -135,29 +160,23 @@ def md_to_tsx(md: str) -> str:
                 if i + 1 < len(lines) and re.match(r"^\s*\|?[\s|:\-]+\|?\s*$", lines[i + 1]):
                     in_table = True
                     cells = [c.strip() for c in line.strip().strip("|").split("|")]
-                    out.append('<div className="tbl-wrap"><table><thead><tr>')
-                    for c in cells:
-                        out.append(f"<th>{format_inline(c)}</th>")
-                    out.append("</tr></thead><tbody>")
+                    pending_headers = [format_inline(c) for c in cells]
                     i += 2  # пропускаем разделитель
                     continue
             if in_table:
                 cells = [c.strip() for c in line.strip().strip("|").split("|")]
-                out.append("<tr>")
+                row_cells: list[str] = []
                 for c in cells:
                     if c == "":
-                        # Пустая ячейка → поле
-                        out.append(f"<td>{{f('{next_fld_id()}')}}</td>")
+                        row_cells.append(f"{{f('{next_fld_id()}')}}")
                     else:
-                        out.append(f"<td>{format_inline(c)}</td>")
-                out.append("</tr>")
+                        row_cells.append(format_inline(c))
+                pending_rows.append(row_cells)
                 i += 1
                 continue
 
         # Если были в таблице и строка не табличная — закрыть
-        if in_table:
-            out.append("</tbody></table></div>")
-            in_table = False
+        flush_table()
 
         # Заголовки
         if line.startswith("#### "):
@@ -185,8 +204,7 @@ def md_to_tsx(md: str) -> str:
 
         i += 1
 
-    if in_table:
-        out.append("</tbody></table></div>")
+    flush_table()
 
     return "\n      ".join(out)
 
@@ -196,7 +214,8 @@ def main():
     body = md_to_tsx(md)
 
     tsx = f"""// AUTO-GENERATED from {SRC.name}. Не редактировать вручную — пересобрать через scripts/md-to-tsx.py
-import {{ Cb, Fld }} from '../QuestionnaireFields';
+import {{ Cb }} from '../QuestionnaireFields';
+import {{ DynTable }} from '../DynTable';
 import type {{ ReactNode }} from 'react';
 
 export const POLINA_CB_COUNT = {cb_counter[0]};

@@ -347,6 +347,60 @@ strong {
   background: rgba(244, 234, 212, 0.35);
 }
 
+/* Кнопка добавления строки + ячейка действий */
+.tbl-wrap th.row-action,
+.tbl-wrap td.row-action {
+  min-width: 44px;
+  width: 44px;
+  padding: 4px;
+  text-align: center;
+  background: transparent;
+}
+button.row-del {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--rose-deep);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  opacity: 0.55;
+  transition: all 0.15s ease;
+}
+button.row-del:hover {
+  background: var(--rose-soft);
+  opacity: 1;
+}
+button.row-add {
+  appearance: none;
+  display: block;
+  margin: 10px auto 4px;
+  padding: 9px 18px;
+  background: transparent;
+  color: var(--clay);
+  border: 1.5px dashed var(--clay-soft);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+button.row-add:hover {
+  background: var(--card);
+  border-color: var(--clay);
+  color: var(--rose-deep);
+}
+button.row-add:active {
+  transform: scale(0.97);
+}
+.extra-row td {
+  background: rgba(244, 234, 212, 0.45);
+}
+
 /* Поля внутри ячеек таблицы — крупная тач-зона, явная линия */
 .qn-body td input.inline-fld {
   display: block;
@@ -485,6 +539,154 @@ input.inline-fld:not(:placeholder-shown):not(:focus) {
 /* ===== Misc ===== */
 .qn-footer-spacer {
   height: 40px;
+}
+
+/* ===== Admin view ===== */
+.admin-bar {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  margin: 0 -16px 18px;
+  padding: 16px 18px;
+  background: linear-gradient(180deg, rgba(239, 230, 210, 0.97), rgba(239, 230, 210, 0.85));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.admin-bar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.admin-bar-info .eyebrow {
+  display: inline-block;
+  font-family: var(--font-numerals);
+  font-size: 10px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--clay);
+}
+.admin-bar-info strong {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--ink);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-bar-meta {
+  font-family: var(--font-numerals);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+.admin-bar-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.admin-btn {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 9px 14px;
+  background: transparent;
+  color: var(--ink-soft);
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.admin-btn:hover {
+  background: var(--card);
+  color: var(--ink);
+}
+.admin-btn-primary {
+  background: var(--clay);
+  color: #fdfaf2;
+  border-color: var(--clay);
+}
+.admin-btn-primary:hover {
+  background: var(--rose-deep);
+  border-color: var(--rose-deep);
+  color: #fff;
+}
+
+.admin-readonly {
+  padding-top: 28px;
+}
+
+/* Read-only checkbox */
+.cb-ro {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 4px 0;
+  padding: 6px 0;
+  font-size: 15.5px;
+  line-height: 1.5;
+}
+.cb-ro-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.cb-ro:not(.is-checked) .cb-ro-mark {
+  background: transparent;
+  border: 1.5px solid var(--rule);
+  color: var(--ink-faded);
+}
+.cb-ro.is-checked .cb-ro-mark {
+  background: var(--olive);
+  color: #fdfaf2;
+}
+.cb-ro.is-checked .cb-ro-text {
+  color: var(--ink);
+}
+.cb-ro:not(.is-checked) .cb-ro-text {
+  color: var(--ink-faded);
+}
+
+/* Read-only field */
+.fld-ro {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+.fld-ro.is-filled {
+  background: var(--olive-soft);
+  color: var(--ink);
+  border-bottom: 1px solid var(--olive);
+}
+.fld-ro.is-empty {
+  color: var(--ink-faded);
+  font-style: italic;
+  opacity: 0.5;
+}
+.qn-body td .fld-ro {
+  display: block;
+  min-height: 28px;
+  padding: 4px 6px;
 }
 
 /* selection */

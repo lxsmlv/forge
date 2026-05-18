@@ -93,7 +93,7 @@ export function QuestionnaireForm({ id, clientLabel, initialAnswers, initialUpda
   })();
 
   return (
-    <QuestionnaireProvider value={{ answers, setAnswer }}>
+    <QuestionnaireProvider value={{ answers, setAnswer, mode: 'edit' }}>
       <div className="qn-progress">
         <div className="qn-progress-row">
           <span>
