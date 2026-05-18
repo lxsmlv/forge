@@ -153,9 +153,6 @@ b {
   font-weight: 600;
   color: #9a2954;
   font-size: 13px;
-  position: sticky;
-  top: 50px;
-  z-index: 10;
 }
 
 /* ===== Checkbox + Field ===== */
