@@ -106,9 +106,10 @@ export function QuestionnaireForm({ id, clientLabel, initialAnswers, initialUpda
         </div>
       </div>
 
-      <div className="qn-header">
-        <h1>{clientLabel}</h1>
-      </div>
+      <header className="qn-header">
+        <span className="eyebrow">workbook · 2026</span>
+        <h1>{renderHeading(clientLabel)}</h1>
+      </header>
 
       <div className="qn-body">
         <PolinaContent f={(fid) => <Fld key={fid} id={fid} />} />
@@ -116,5 +117,19 @@ export function QuestionnaireForm({ id, clientLabel, initialAnswers, initialUpda
 
       <div className="qn-footer-spacer" />
     </QuestionnaireProvider>
+  );
+}
+
+function renderHeading(label: string) {
+  const idx = label.indexOf(' — ');
+  if (idx === -1) return label;
+  const head = label.slice(0, idx);
+  const tail = label.slice(idx + 3);
+  return (
+    <>
+      {head}
+      <br />
+      <em>{tail}</em>
+    </>
   );
 }
