@@ -6,29 +6,38 @@
 ============================================================= */
 
 :root {
-  /* paper & text */
-  --paper: #f5ebd9;
-  --paper-edge: #ebdbc0;
-  --card: #fdfaf2;
+  /* paper & text — warmer, muted */
+  --paper: #efe6d2;
+  --paper-edge: #e1d3b6;
+  --card: #faf3e3;
   --card-shadow: 0 1px 0 rgba(58, 36, 24, 0.04),
     0 6px 16px -8px rgba(120, 70, 40, 0.18),
-    0 24px 48px -28px rgba(120, 70, 40, 0.25);
-  --ink: #3a2418;
-  --ink-soft: #6b4c3a;
-  --ink-faded: #a89180;
+    0 24px 48px -28px rgba(120, 70, 40, 0.22);
+  --ink: #2c1e15;
+  --ink-soft: #5d4234;
+  --ink-faded: #9a8270;
 
-  /* accents */
-  --blush: #d99fa5;
-  --blush-soft: #f0d7d9;
-  --blush-deep: #b86f7a;
-  --caramel: #b06536;
-  --caramel-soft: #e8c7a8;
-  --sage: #8aa385;
-  --sage-soft: #dde6d8;
+  /* accents — sophisticated mauve + clay */
+  --rose: #b08185;          /* mauve-rose (бывший blush, менее girly) */
+  --rose-soft: #e6cfd1;
+  --rose-deep: #7e4f54;
+  --clay: #9c5836;          /* burnt clay (бывший caramel, глубже) */
+  --clay-soft: #dcb898;
+  --olive: #7a8a6e;         /* dusty olive (бывший sage) */
+  --olive-soft: #d2d8c5;
+
+  /* поддержка старых имён (на случай если где-то остались) */
+  --blush: var(--rose);
+  --blush-soft: var(--rose-soft);
+  --blush-deep: var(--rose-deep);
+  --caramel: var(--clay);
+  --caramel-soft: var(--clay-soft);
+  --sage: var(--olive);
+  --sage-soft: var(--olive-soft);
 
   /* lines */
-  --rule: #e2cdb1;
-  --rule-soft: #ece0c8;
+  --rule: #d4bf9a;
+  --rule-soft: #e3d3b3;
 
   /* fonts */
   --font-display: var(--font-display), 'Spectral', Georgia, serif;
@@ -295,7 +304,7 @@ strong {
   margin: 16px -10px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  background: var(--paper);
+  background: #fefaee;
   border: 1px solid var(--rule-soft);
   border-radius: 10px;
   padding: 2px;
@@ -309,12 +318,12 @@ strong {
 }
 .qn-body th,
 .qn-body td {
-  padding: 10px 12px;
+  padding: 8px 10px;
   text-align: left;
   vertical-align: top;
-  min-width: 110px;
+  min-width: 130px;
   border-bottom: 1px solid var(--rule-soft);
-  border-right: 1px dashed var(--rule-soft);
+  border-right: 1px solid var(--rule-soft);
 }
 .qn-body th:last-child,
 .qn-body td:last-child {
@@ -329,9 +338,48 @@ strong {
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--caramel);
-  background: var(--paper);
-  border-bottom: 2px solid var(--caramel-soft);
+  color: var(--clay);
+  background: #f4ead4;
+  border-bottom: 2px solid var(--clay-soft);
+  padding: 10px;
+}
+.qn-body tbody tr:nth-child(even) td {
+  background: rgba(244, 234, 212, 0.35);
+}
+
+/* Поля внутри ячеек таблицы — крупная тач-зона, явная линия */
+.qn-body td input.inline-fld {
+  display: block;
+  width: 100%;
+  min-width: 110px;
+  min-height: 36px;
+  padding: 6px 8px;
+  background: rgba(255, 252, 240, 0.6);
+  border: 1px dashed var(--rule);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: 14.5px;
+  color: var(--ink);
+  transition: all 0.15s ease;
+}
+.qn-body td input.inline-fld::placeholder {
+  color: var(--ink-faded);
+  opacity: 0.5;
+  font-style: italic;
+}
+.qn-body td input.inline-fld:focus {
+  background: #fff;
+  border-color: var(--clay);
+  border-style: solid;
+  box-shadow: 0 0 0 3px rgba(156, 88, 54, 0.12);
+}
+.qn-body td input.inline-fld:not(:placeholder-shown):not(:focus) {
+  background: #fff;
+  border-color: var(--olive);
+  border-style: solid;
+  color: var(--ink);
+  font-weight: 500;
 }
 
 /* ===== Checkbox ===== */
